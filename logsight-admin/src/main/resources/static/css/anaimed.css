@@ -1,0 +1,4 @@
+.anim-rotate{
+    transition: transform 0.3s linear;
+    transform:rotate(180deg);
+}

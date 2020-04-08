@@ -1,0 +1,16 @@
+spring:
+  messages:
+    basename: i18n/message
+    encoding: UTF-8
+thymeleaf:
+  cache: false
+  check-template-location:  true
+  enabled: true
+  encoding: utf-8
+  mode: HTML
+  prefix: classpath:/templates/
+  suffix: .html
+logsight:
+  #config-path: /home/ubuntu/
+  #input:
+  #  log-path: ppp
