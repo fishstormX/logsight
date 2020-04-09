@@ -23,9 +23,8 @@ import java.sql.SQLException;
 @MapperScan(basePackages = "cn.fishmaple.logsight.dao.mapper", sqlSessionFactoryRef = "h2SqlSessionFactory")
 public class H2DataSourceConf {
     @Autowired
-    private ConfigLoader configLoader;
-
-    private Class<? extends DataSource> dataSourceType = DruidDataSource.class;
+    ConfigLoader configLoader;
+    Class<? extends DataSource> dataSourceType = DruidDataSource.class;
     @Bean(name = "h2DataSource")
     @Primary
     public DataSource getDateSource(){
@@ -70,9 +69,7 @@ public class H2DataSourceConf {
             String s = new String(tmp,"UTF-8");
             System.out.println(s);
             druidDataSource.getConnection().createStatement().execute(s);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SQLException|IOException e) {
             e.printStackTrace();
         }
         return druidDataSource;
