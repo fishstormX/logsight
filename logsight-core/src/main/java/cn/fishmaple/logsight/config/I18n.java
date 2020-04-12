@@ -25,8 +25,4 @@ public class I18n {
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage(code, args, defaultMsg, locale);
     }
-    @PostConstruct
-    public void init(){
-
-    }
 }

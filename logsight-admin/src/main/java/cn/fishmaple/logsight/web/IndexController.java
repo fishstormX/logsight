@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class IndexController {
     @Autowired
-    SettingService settingService;
+    private SettingService settingService;
 
     @RequestMapping(value={"setting","/setting/{cased}"})
     public String setting(Model model, @PathVariable(required = false)Integer cased,@RequestParam(defaultValue = "0") int p,@RequestParam(defaultValue = "0") int dr){

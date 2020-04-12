@@ -24,10 +24,10 @@ import java.sql.SQLException;
 public class H2DataSourceConf {
     @Autowired
     private ConfigLoader configLoader;
-    private Class<? extends DataSource> dataSourceType = DruidDataSource.class;
     @Bean(name = "h2DataSource")
     @Primary
     public DataSource getDateSource(){
+        Class<? extends DataSource> dataSourceType = DruidDataSource.class;
         try {
             dataSourceType = (Class<? extends DataSource>) Class.forName("com.alibaba.druid.pool.DruidDataSource");
         } catch (ClassNotFoundException e) {
