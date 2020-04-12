@@ -16,7 +16,7 @@
     <module th:replace="modules/navbar :: side"></module>
     <div id="page-content-wrapper">
         <module th:replace="modules/navbar :: top"></module>
-        <module th:replace="modules/main :: main"></module>
+        <module th:replace="${page}::${module}"></module>
     </div>
 </div>
 <module th:replace="modules/copyright :: copyright"></module>

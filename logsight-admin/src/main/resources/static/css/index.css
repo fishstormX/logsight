@@ -54,3 +54,16 @@ body {
         margin-left: -15rem;
     }
 }
+main{
+    margin:40px;
+}
+.btn-righticon{
+    margin-right: 10px;
+}
+.card-text{
+    display: inline;
+    line-height: 40px;
+}
+#add-logpath-btn{
+    float:right;
+}

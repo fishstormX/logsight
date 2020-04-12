@@ -10,19 +10,16 @@ function getQueryString(name,defaultValue)
 window.dr=parseInt(getQueryString("dr",0))
 console.log(window.dr)
 $("#btn-sidebar").click(function(){
-    console.log("asdasd")
     if($("#sidebar-wrapper").attr("class") === "bg-dark"){
         $("#btn-sidebar").attr("class","cm-btn anim-rotate")
         $("#sidebar-wrapper").attr("class","bg-dark toggled")
         $("#index-logo").attr("class","cm-navbar-brand navbar-brand")
         window.dr=1
-        console.log(window.dr)
     }else{
         $("#btn-sidebar").attr("class","cm-btn")
         $("#sidebar-wrapper").attr("class","bg-dark")
         $("#index-logo").attr("class","cm-navbar-brand navbar-brand cm-none")
         window.dr=0
-        console.log(window.dr)
     }
 })
 $(".navbar-tab").click(function(){
