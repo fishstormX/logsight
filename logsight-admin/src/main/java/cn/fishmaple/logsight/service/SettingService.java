@@ -14,9 +14,9 @@ import java.util.List;
 @Service
 public class SettingService {
     @Autowired
-    LogFieldMapper logFieldMapper;
+    private LogFieldMapper logFieldMapper;
     @Autowired
-    I18n i18n;
+    private I18n i18n;
     public List<LogField> getPagesLogField(Integer page){
         List<LogFieldDTO> logFieldDTOList = logFieldMapper.selectAPage(page*10,10);
         TimeUtil.initedFormatter();
@@ -33,8 +33,5 @@ public class SettingService {
 
         });
         return list;
-    }
-    public void TransLogFields(){
-
     }
 }
