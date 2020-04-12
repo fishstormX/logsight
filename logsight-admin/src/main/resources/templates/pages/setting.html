@@ -1,13 +1,58 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
-<div  th:fragment="setting">
-    <nav class="nav flex-column" id="setting-menu">
-        <a class="nav-link active" href="#" th:text="#{i18n.setting_logpath}"></a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link" href="#">Link</a>
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-    </nav>
-</div>
+<main th:fragment="setting">
+    <div class="row" th:fragment="setting">
+        <nav class="nav flex-column col-3" id="setting-menu">
+            <a class="nav-link" data-toggle="tab" href="#set-logpath" th:text="#{i18n.setting_logfield}"></a>
+            <a class="nav-link" data-toggle="tab" href="#v-pills-profile">Link</a>
+            <a class="nav-link" data-toggle="tab" href="#v-pills-messages">Link</a>
+            <a class="nav-link" data-toggle="tab" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </nav>
+        <div class="col-5">
+            <div class="tab-content">
+                <div class="card tab-pane fade" id="set-logpath" role="tabpanel" aria-labelledby="set-logpath">
+                    <div class="card-body">
+                        <h3 th:text="#{i18n.setting_logfield}" class="card-title text-center"></h3>
+                        <p th:text="#{i18n.setting_logfield_des}" class="card-text"></p>
+                        <button class="btn btn-primary" type="submit" id="add-logpath-btn">
+                            <svg class="btn-righticon" width="16px" height="16px" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" clip-rule="evenodd"/>
+                            </svg>
+                            <span th:text="#{i18n.setting_logfield_add}"></span>
+                        </button>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col" th:text="#{i18n.setting_logfield_table_path}"></th>
+                                    <th scope="col" th:text="#{i18n.setting_logfield_table_timeline}"></th>
+                                    <th scope="col" th:text="#{i18n.setting_logfield_table_status}"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="logField,logFieldStat : ${logFields}">
+                                    <th th:text="${logField.id}"></th>
+                                    <td th:text="${logField.path}"></td>
+                                    <td th:text="${logField.time}"></td>
+                                    <td th:class="${logField.status==1}?'text-success':'text-danger'" th:text="${logField.statusStr}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div >
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">...2</div>
+                <div class="card-body tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">.2..</div>
+                <div class="card-body tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">.`..</div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </div>
+</main>
 </body>
 </html>
