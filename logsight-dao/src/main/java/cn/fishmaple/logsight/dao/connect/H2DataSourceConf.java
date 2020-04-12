@@ -27,12 +27,6 @@ public class H2DataSourceConf {
     @Bean(name = "h2DataSource")
     @Primary
     public DataSource getDateSource(){
-        Class<? extends DataSource> dataSourceType = DruidDataSource.class;
-        try {
-            dataSourceType = (Class<? extends DataSource>) Class.forName("com.alibaba.druid.pool.DruidDataSource");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
         String driverClassName = configLoader.getConfig("datasource.h2.driver-class-name","org.h2.Driver");
         String url = configLoader.getConfig("datasource.h2.url")+";CASE_INSENSITIVE_IDENTIFIERS=TRUE;database_to_upper=false;IGNORECASE=TRUE;AUTO_SERVER=TRUE;MODE=MySQL;AUTO_RECONNECT=TRUE";
         String username = configLoader.getConfig("datasource.h2.username","sa");
