@@ -5,14 +5,32 @@ import java.util.Date;
 public class LogFieldDTO {
     private Integer id;
     private String path;
-    private Date timeline;
+    private Date createTime;
     private Integer status;
+    private Integer fileCount;
+    private Date timeline;
 
     public LogFieldDTO() {
     }
 
-    public LogFieldDTO(String path, Date timeline) {
+    public LogFieldDTO(String path, Date createTime) {
         this.path = path;
+        this.createTime = createTime;
+    }
+
+    public Integer getFileCount() {
+        return fileCount;
+    }
+
+    public void setFileCount(Integer fileCount) {
+        this.fileCount = fileCount;
+    }
+
+    public Date getTimeline() {
+        return timeline;
+    }
+
+    public void setTimeline(Date timeline) {
         this.timeline = timeline;
     }
 
@@ -32,12 +50,12 @@ public class LogFieldDTO {
         this.path = path;
     }
 
-    public Date getTimeline() {
-        return timeline;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setTimeline(Date timeline) {
-        this.timeline = timeline;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public Integer getStatus() {
