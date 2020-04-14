@@ -1,22 +1,23 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>index</title>
     <script src="http://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="/css/bootstrap-nav.css">
     <link rel="stylesheet" href="/css/anaimed.css">
     <link rel="stylesheet" href="/css/index.css">
+    <link rel="shortcut icon" href="/img/favicon.ico" />
+    <link rel="bookmark"href="/img/favicon.ico" />
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
+    <script src="/js/tlg.js"></script>
 </head>
 <body>
 <div class="d-flex" id="wrapper">
     <module th:replace="modules/navbar :: side"></module>
     <div id="page-content-wrapper">
         <module th:replace="modules/navbar :: top"></module>
-        <module th:replace="${page}::${module}"></module>
+        <module th:replace="${'pages/'+module}::${module}"></module>
     </div>
 </div>
 <module th:replace="modules/copyright :: copyright"></module>
