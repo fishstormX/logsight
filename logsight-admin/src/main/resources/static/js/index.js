@@ -1,14 +1,4 @@
-function getQueryString(name,defaultValue)
-{
-    reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    r = window.location.search.substr(1).match(reg);
-    if (r != null) {
-        return unescape(r[2])
-    }
-    return defaultValue
-}
 window.dr=parseInt(getQueryString("dr",0))
-console.log(window.dr)
 $("#btn-sidebar").click(function(){
     if($("#sidebar-wrapper").attr("class") === "bg-dark"){
         $("#btn-sidebar").attr("class","cm-btn anim-rotate")

@@ -60,10 +60,21 @@ main{
 .btn-righticon{
     margin-right: 10px;
 }
+.btn-icon{
+    color:grey;
+    cursor: pointer;
+    margin:0 10px;
+}
+.btn-icon:hover{
+    color:#000000;
+}
 .card-text{
     display: inline;
     line-height: 40px;
 }
-#add-logpath-btn{
+#add-logfield-btn{
     float:right;
+}
+.btn-close:focus{
+    outline: none;
 }

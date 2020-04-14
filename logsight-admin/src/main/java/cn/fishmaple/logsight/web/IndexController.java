@@ -14,15 +14,20 @@ public class IndexController {
     private SettingService settingService;
 
     @RequestMapping(value={"setting","/setting/{cased}"})
-    public String setting(Model model, @PathVariable(required = false)Integer cased,@RequestParam(defaultValue = "0") int p,@RequestParam(defaultValue = "0") int dr){
+    public String setting(Model model, @PathVariable(required = false)String cased,@RequestParam(defaultValue = "0") int p,@RequestParam(defaultValue = "0") int dr){
         model.addAttribute("module","setting");
-        model.addAttribute("page","pages/setting");
+        model.addAttribute("case",cased);
         model.addAttribute("dr",dr);
         model.addAttribute("logFields",settingService.getPagesLogField(p));
         return "index";
     }
+    @RequestMapping("")
+    public String index(Model model, @RequestParam(defaultValue = "0") int dr){
+        return setting(model,"logField",0,0);
+    }
+
     @RequestMapping("/{route}")
-    public String index(Model model, @PathVariable String route,@RequestParam(defaultValue = "0") int dr){
+    public String index2(Model model, @PathVariable String route,@RequestParam(defaultValue = "0") int dr){
         model.addAttribute("module",route);
         model.addAttribute("page","pages/"+route);
         model.addAttribute("dr",dr);

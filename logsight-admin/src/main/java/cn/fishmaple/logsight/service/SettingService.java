@@ -18,17 +18,19 @@ public class SettingService {
     @Autowired
     private I18n i18n;
     public List<LogField> getPagesLogField(Integer page){
-        List<LogFieldDTO> logFieldDTOList = logFieldMapper.selectAPage(page*10,10);
+        List<LogFieldDTO> logFieldDTOList = logFieldMapper.selectAPage(page*10,10,"id");
         TimeUtil.initedFormatter();
         List<LogField> list = new ArrayList<>();
         logFieldDTOList.stream().forEach(logFieldDTO -> {
             list.add(new LogField()
                 .setId(logFieldDTO.getId())
-                .setTime( TimeUtil.formatTimeUnchecked(logFieldDTO.getTimeline()))
+                .setCreateTime(TimeUtil.formatTimeUnchecked(logFieldDTO.getCreateTime()))
                 .setPath(logFieldDTO.getPath())
-                .setStatusStr(1==logFieldDTO.getStatus()?i18n.getMessage("i18n.setting_logfield_table_status_open")
-                                :i18n.getMessage("i18n.setting_logfield_table_status_closed"))
+                .setStatusStr(0==logFieldDTO.getStatus()?i18n.getMessage("i18n.setting_logfield_table_status_open")
+                                :(1==logFieldDTO.getStatus()? i18n.getMessage("i18n.setting_logfield_table_status_invalid"):
+                        i18n.getMessage("i18n.setting_logfield_table_status_closed")))
                 .setStatus(logFieldDTO.getStatus())
+                .setFileCount(logFieldDTO.getFileCount())
             );
 
         });
