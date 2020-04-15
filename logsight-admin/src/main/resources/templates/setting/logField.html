@@ -45,6 +45,8 @@
             </tr>
             </tbody>
         </table>
+        <div class="spiritPagination"></div>
+        <div id="example" style="text-align: center"> <ul id="pageLimit"></ul> </div>
         <div class="modal fade" id="newLogField" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -75,6 +77,15 @@
                 </div>
             </div>
         </div>
+        <script>
+            function onPageClick(page) {
+                window.location.href = "/setting/logField?p="+page + (window.dr === 1 ? "&dr=1" : "")
+            }
+        </script>
+        <script src="/js/bootstrap-pagecap.min.js"></script>
+        <script>
+            initSpiritPagination([[${p}]], [[${pages}]])
+        </script>
     </div>
 </body>
 </html>

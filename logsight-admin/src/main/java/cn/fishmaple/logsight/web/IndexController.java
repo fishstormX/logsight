@@ -19,6 +19,8 @@ public class IndexController {
         model.addAttribute("case",cased);
         model.addAttribute("dr",dr);
         model.addAttribute("logFields",settingService.getPagesLogField(p));
+        model.addAttribute("p",p);
+        model.addAttribute("pages",30);
         return "index";
     }
     @RequestMapping("")

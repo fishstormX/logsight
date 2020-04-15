@@ -15,7 +15,7 @@ public class SettingController {
     private SettingService settingService;
 
     @GetMapping("logfield")
-    public Result<List> setting(@RequestParam(defaultValue = "0") int p){
-        return new Result<>(settingService.getPagesLogField(p));
+    public List setting(@RequestParam(defaultValue = "0") int p){
+        return settingService.getPagesLogField(p);
     }
 }
