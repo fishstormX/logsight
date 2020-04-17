@@ -1,8 +1,8 @@
-window.currentPage = 0
-window.pages = 0
+window.params.set("p",0)
+window.params.set("pages",0)
 function initSpiritPagination(currentPage, pages){
-    window.currentPage = currentPage;
-    window.pages = pages;
+    window.params.set("p",currentPage)
+    window.params.set("pages",pages)
     var html = '';
     var commonHead = '<div class="justify-content-center pagination">' +
         '<ul class="pagination">'
@@ -12,13 +12,13 @@ function initSpiritPagination(currentPage, pages){
             commonHead = commonHead+'<li class="page-item page-pre"><a class="page-link" href="JavaScript:void(0);">‹</a></li>'+
                 '<li class="page-item"><a class="page-link" href="JavaScript:void(0);">1</a></li>';
         }
-    if(pages <= 7&&page>1){
+    if(pages <= 7&&pages>1){
         html =  commonHead;
         for(var i=1; i< pages; i++){
-            if(i===currentPage){
+            if(i+1===currentPage){
                 html += '<li class="page-item active"><a class="page-link" href="JavaScript:void(0);">'+(i+1)+'</a></li>';
             }else {
-                html += '<li class="page-item"><a class="page-link" href="JavaScript:void(0);">' + (i + 1) + '</a></li>';
+                html += '<li class="page-item"><a class="page-link" href="JavaScript:void(0);">' + (i+1) + '</a></li>';
             }
         }
         html += '<li class="page-item page-next"><a class="page-link" href="JavaScript:void(0);">›</a></li>'+
@@ -62,13 +62,14 @@ function initSpiritPagination(currentPage, pages){
     $(".spiritPagination").html(html);
 }
 $(document).on("click",'.page-item',function () {
-    let paged=$(this).text()
-    if(!isNaN(paged)){
-        console.log(paged)
-        onPageClick(parseInt(paged));
-    }else if(paged==="‹"){
-        onPageClick(window.currentPage-1);
+    let paged=$(this).text();
+    console.log(paged)
+    if(paged==="‹"){
+        onPageClick(window.params.get("p")-1);
     }else if(paged==="›"){
-        onPageClick(window.currentPage+1);
+        onPageClick(window.params.get("p")+1);
+    }else{
+        onPageClick(parseInt(paged));
+        console.log(paged,12)
     }
 });

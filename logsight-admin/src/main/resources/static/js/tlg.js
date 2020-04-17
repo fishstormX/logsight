@@ -1,3 +1,5 @@
+window.params = new Map();
+console.log(window.params,"12")
 var util={
     loadStyles: function (url) {
         let link = document.createElement("link");
@@ -17,4 +19,22 @@ function getQueryString(name,defaultValue)
     }
     return defaultValue
 }
-window.dr=parseInt(getQueryString("dr",0))
+window.params.set("dr",parseInt(getQueryString("dr",0)))
+function hrefTo(params,path)
+{
+    let href = path
+    if(null===path){
+        href=window.location.pathname
+    }
+    if(href==="/"){
+        href=""
+    }
+   for(index in params){
+       if(index == 0 ){
+           href+= "?"+params[index]+"="+window.params.get(params[index])
+       }else if(window.params.get(params[index])!=undefined){
+           href+= "&"+params[index]+"="+window.params.get(params[index])
+       }
+   }
+    window.location.href=href
+}

@@ -16,11 +16,20 @@
         <table class="table" id="logfield-tb">
             <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col" th:text="#{i18n.setting_logfield_table_path}"></th>
-                <th scope="col" th:text="#{i18n.setting_logfield_table_timeline}"></th>
+                <th scope="col">
+                    <div class="sort-abled" id="th-id" sort-field="id">
+                        <span style="margin-left: 20px">ID</span><span style="margin-right:20px"></span></div>
+                </th>
+                <th scope="col"  th:text="#{i18n.setting_logfield_table_path}"></th>
+                <th scope="col" >
+                    <div class="sort-abled"  id="th-timeline" sort-field="timeline">
+                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span><span style="margin-right:20px"></span></div>
+                </th>
                 <th scope="col" th:text="#{i18n.setting_logfield_table_status}"></th>
-                <th scope="col" th:text="#{i18n.setting_logfield_table_count}"></th>
+                <th scope="col">
+                    <div class="sort-abled"  id="th-count" sort-field="count" >
+                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_count}"></span><span style="margin-right:20px"></span></div>
+                </th>
                 <th scope="col" th:text="#{i18n.setting_logfield_handle}"></th>
             </tr>
             </thead>
@@ -46,7 +55,7 @@
             </tbody>
         </table>
         <div class="spiritPagination"></div>
-        <div id="example" style="text-align: center"> <ul id="pageLimit"></ul> </div>
+        <div id="example" style="text-align: center"><ul id="pageLimit"></ul> </div>
         <div class="modal fade" id="newLogField" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -79,12 +88,16 @@
         </div>
         <script>
             function onPageClick(page) {
-                window.location.href = "/setting/logField?p="+page + (window.dr === 1 ? "&dr=1" : "")
+                window.params.set("p",page)
+                hrefTo(["dr","p"],"/setting/logField")
+                //window.location.href = "/setting/logField?p="+page + (window.dr === 1 ? "&dr=1" : "")
             }
         </script>
         <script src="/js/bootstrap-pagecap.min.js"></script>
+        <script src="/js/table-sort.js"></script>
         <script>
             initSpiritPagination([[${p}]], [[${pages}]])
+            updateSortStatus([[${sortd}]],'[[${sortType}]]')
         </script>
     </div>
 </body>

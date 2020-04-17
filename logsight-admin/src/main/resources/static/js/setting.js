@@ -4,6 +4,6 @@ window.onload = function(){
     $("#setting-main").attr("class",$("#setting-main").attr("class")+" show")
 }
 $(".settingbar-tab").click(function(){
-    let c = window.dr === 1
-    window.location.href = "/setting/" + $(this).attr("tab-href") + (window.dr === 1 ? "?dr=1" : "")
+    let c = window.params.get("dr") === 1
+    hrefTo(["p","dr","sortd","sortType"],"/setting/" + $(this).attr("tab-href"))
 })
