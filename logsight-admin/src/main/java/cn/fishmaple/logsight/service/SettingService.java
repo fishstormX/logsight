@@ -17,8 +17,17 @@ public class SettingService {
     private LogFieldMapper logFieldMapper;
     @Autowired
     private I18n i18n;
-    public List<LogField> getPagesLogField(Integer page){
-        List<LogFieldDTO> logFieldDTOList = logFieldMapper.selectAPage(page*10,10,"id");
+    public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType){
+        List<LogFieldDTO> logFieldDTOList = null;
+        if(page<1){
+            page=1;
+        }
+        if(sortd!=0){
+            String sortSQL = " ORDER BY `"+sortType+(sortd==1?"` ASC":"` DESC");
+            logFieldDTOList = logFieldMapper.selectSPage((page-1)*10,10,sortSQL);
+        }else {
+            logFieldDTOList = logFieldMapper.selectAPage((page - 1) * 10, 10);
+        }
         TimeUtil.initedFormatter();
         List<LogField> list = new ArrayList<>();
         logFieldDTOList.stream().forEach(logFieldDTO -> {
@@ -26,14 +35,29 @@ public class SettingService {
                 .setId(logFieldDTO.getId())
                 .setCreateTime(TimeUtil.formatTimeUnchecked(logFieldDTO.getCreateTime()))
                 .setPath(logFieldDTO.getPath())
-                .setStatusStr(0==logFieldDTO.getStatus()?i18n.getMessage("i18n.setting_logfield_table_status_open")
-                                :(1==logFieldDTO.getStatus()? i18n.getMessage("i18n.setting_logfield_table_status_invalid"):
-                        i18n.getMessage("i18n.setting_logfield_table_status_closed")))
+                .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
                 .setStatus(logFieldDTO.getStatus())
                 .setFileCount(logFieldDTO.getFileCount())
             );
-
         });
         return list;
     }
+
+    public Integer getLogfieldPages(Integer perCount){
+        Integer count =logFieldMapper.count();
+        return count/perCount+(count%perCount>0?1:0);
+    }
+
+    public String getLogStatusStr(Integer status){
+        if(0==status){
+            return i18n.getMessage("i18n.setting_logfield_table_status_scanning");
+        }else if(1==status){
+            return i18n.getMessage("i18n.setting_logfield_table_status_open");
+        }else if(2==status){
+            return i18n.getMessage("i18n.setting_logfield_table_status_closed");
+        }else{
+            return i18n.getMessage("i18n.setting_logfield_table_status_invalid");
+        }
+    }
+
 }

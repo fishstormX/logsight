@@ -1,6 +1,7 @@
 package cn.fishmaple.logsight.web;
 
 import cn.fishmaple.logsight.service.SettingService;
+import cn.fishmaple.logsight.web.setting.SettingController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,20 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class IndexController {
     @Autowired
     private SettingService settingService;
+    @Autowired
+    private SettingController settingController;
 
-    @RequestMapping(value={"setting","/setting/{cased}"})
-    public String setting(Model model, @PathVariable(required = false)String cased,@RequestParam(defaultValue = "0") int p,@RequestParam(defaultValue = "0") int dr){
-        model.addAttribute("module","setting");
-        model.addAttribute("case",cased);
-        model.addAttribute("dr",dr);
-        model.addAttribute("logFields",settingService.getPagesLogField(p));
-        model.addAttribute("p",p);
-        model.addAttribute("pages",30);
-        return "index";
-    }
     @RequestMapping("")
     public String index(Model model, @RequestParam(defaultValue = "0") int dr){
-        return setting(model,"logField",0,0);
+        return settingController.setting(model,0,0,0,"");
     }
 
     @RequestMapping("/{route}")
