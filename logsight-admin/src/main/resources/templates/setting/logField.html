@@ -22,12 +22,13 @@
                 </th>
                 <th scope="col"  th:text="#{i18n.setting_logfield_table_path}"></th>
                 <th scope="col" >
-                    <div class="sort-abled"  id="th-timeline" sort-field="timeline">
+                    <div class="sort-abled"  id="th-createTime" sort-field="createTime">
                         <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span><span style="margin-right:20px"></span></div>
                 </th>
                 <th scope="col" th:text="#{i18n.setting_logfield_table_status}"></th>
                 <th scope="col">
-                    <div class="sort-abled"  id="th-count" sort-field="count" >
+
+                    <div class="sort-abled"  id="th-fileCount" sort-field="fileCount" >
                         <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_count}"></span><span style="margin-right:20px"></span></div>
                 </th>
                 <th scope="col" th:text="#{i18n.setting_logfield_handle}"></th>
@@ -38,7 +39,7 @@
                 <th th:text="${logField.id}"></th>
                 <td th:text="${logField.path}"></td>
                 <td th:text="${logField.createTime}"></td>
-                <td th:class="${logField.status==0}?'text-success':(${logField.status==1}?'text-warning':'text-danger')"
+                <td th:class="${logField.status==1}?'text-success':(${logField.status==3}?'text-danger':'text-warning')"
                     th:text="${logField.statusStr}"></td>
                 <td th:text="${logField.fileCount}"></td>
                 <td>

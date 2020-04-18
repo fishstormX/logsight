@@ -8,19 +8,18 @@ function updateSortStatus(sortd,sortType){
     window.params.set("sortd",sortd)
     window.params.set("sortType",sortType)
     let field="<span style=\"margin-left: 20px\">"+$("#th-"+sortType).text()+"</span>"
-    console.log(field,1)
     if(sortd===0){
-        $("#th-"+sortType).html(field+sortIcon)
-    }else if(sortd===1){
-        $("#th-"+sortType).html(field+sortIcon2)
-    }else{
         $("#th-"+sortType).html(field+sortIcon3)
+    }else if(sortd===1){
+        $("#th-"+sortType).html(field+sortIcon)
+    }else{
+        $("#th-"+sortType).html(field+sortIcon2)
     }
 }
 $(".sort-abled").click(function(){
         let sortd = window.params.get("sortd")
     if(window.params.get("sortType")!=$(this).attr("sort-field")){
-        window.params.set("sortd",0)
+        window.params.set("sortd",1)
     }else {
         if (sortd === 0) {
             window.params.set("sortd", 1)
