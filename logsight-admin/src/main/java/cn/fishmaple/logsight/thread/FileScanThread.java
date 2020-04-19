@@ -22,15 +22,29 @@ public class FileScanThread extends Thread{
        new FileScanThread().start();
     }
     public void run(){
-        LogFieldMapper logFieldMapper = ApplicationContextProvider.getBean(LogFieldMapper.class);
-        FileScanHandler fileScanHandler = ApplicationContextProvider.getBean(FileScanHandler.class);
+        LogFieldMapper logFieldMapper;
+        FileScanHandler fileScanHandler;
+        while (true){
+            logFieldMapper = ApplicationContextProvider.getBean(LogFieldMapper.class);
+            fileScanHandler = ApplicationContextProvider.getBean(FileScanHandler.class);
+            if(null==logFieldMapper||null==fileScanHandler){
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else{
+                break;
+            }
+        }
         while (true) {
             List<LogFieldDTO> list = logFieldMapper.selectUnScannedField();
             for (LogFieldDTO logFieldDTO : list) {
                 int count=0;
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
                 for (String logFile : files) {
-                    if(new File(logFile).isFile()){
+                    File file = new File(logFile);
+                    if(file.isFile()&&!file.isHidden()){
                         logFieldMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(), logFile));
                         count++;
                     }
