@@ -16,10 +16,6 @@
         <table class="table" id="logfield-tb">
             <thead>
             <tr>
-                <th scope="col">
-                    <div class="sort-abled" id="th-id" sort-field="id">
-                        <span style="margin-left: 20px">ID</span><span style="margin-right:20px"></span></div>
-                </th>
                 <th scope="col"  th:text="#{i18n.setting_logfield_table_path}"></th>
                 <th scope="col" >
                     <div class="sort-abled"  id="th-createTime" sort-field="createTime">
@@ -36,12 +32,14 @@
             </thead>
             <tbody>
             <tr th:each="logField,logFieldStat : ${logFields}">
-                <th th:text="${logField.id}"></th>
                 <td th:text="${logField.path}"></td>
                 <td th:text="${logField.createTime}"></td>
-                <td th:class="${logField.status==1}?'text-success':(${logField.status==3}?'text-danger':'text-warning')"
+                <td  class="td-status" th:id="${'td-status-'+logField.id}" th:class="${logField.status==1}?'text-success':(${logField.status==3}?'text-danger':'text-warning')"
                     th:text="${logField.statusStr}"></td>
-                <td th:text="${logField.fileCount}"></td>
+                <td>
+                    <span th:id="${'td-count-'+logField.id}" th:text="${logField.fileCount}"></span>
+                    <div th:id="${'td-count-load-'+logField.id}" class="text-info" th:classappend="${logField.status==0?' spinner-border spinner-border-sm ':'hide'}" role="status">
+                </div></td>
                 <td>
                     <svg class="btn-icon" width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -70,28 +68,90 @@
                         <form>
                             <div class="form-group">
                                 <label for="fm-logfield-path" th:text="#{i18n.setting_logfield_table_path}"></label>
-                                <input type="text" class="form-control" id="fm-logfield-path">
+                                <small id="pathHelp" class="form-text text-muted" th:text="#{i18n.setting_logfield_form_path_help}"></small>
+                                <input type="text" class="form-control" name="fm-logfield-path" id="fm-logfield-path" aria-describedby="pathHelp">
+                                <div id="fm-path-feedback" style="display: block"class="invalid-feedback">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-switch">
-                                    <input type="checkbox" class="custom-control-input" id="fm-logfield-status">
-                                    <label class="custom-control-label" for="fm-logfield-status">Toggle this switch element</label>
+                                    <input checked="true" type="checkbox" class="custom-control-input"  name="fm-logfield-status" id="fm-logfield-status">
+                                    <label class="custom-control-label" for="fm-logfield-status" id="lb-logfield-status" th:text="#{i18n.setting_logfield_form_status_opened}"></label>
                                 </div>
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" th:text="#{i18n.system_cancel}" data-dismiss="modal"></button>
-                        <button type="button" class="btn btn-primary" th:text="#{i18n.system_commit}"></button>
+                        <button type="button" id="fm-subbmit" class="btn btn-primary" th:text="#{i18n.system_commit}"></button>
                     </div>
                 </div>
             </div>
         </div>
         <script>
+            let scanlogFields=[[${logFields4Scan}]]
             function onPageClick(page) {
                 window.params.set("p",page)
                 hrefTo(["dr","p"],"/setting/logField")
-                //window.location.href = "/setting/logField?p="+page + (window.dr === 1 ? "&dr=1" : "")
+            }
+            $("#fm-logfield-status").click(function () {
+                if($("#fm-logfield-status")[0].checked){
+                    $("#lb-logfield-status").text('[[#{i18n.setting_logfield_form_status_opened}]]')
+                }else{
+                    $("#lb-logfield-status").text('[[#{i18n.setting_logfield_form_status_closed}]]')
+                }
+            })
+            $("#fm-subbmit").click(function () {
+                $(this).attr('disabled',true)
+                let btnText=$(this).text()
+                $(this).html(" <span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>\n" +
+                    "  <span class=\"sr-only\">Loading...</span>")
+                let path=$("#fm-logfield-path").val()
+                let status=$("#fm-logfield-status")[0].checked
+                util.ajax("PUT","/api/setting/logField",{path:path,status:status?0:2},
+                    function(result){
+                        if(result.code===0){
+                            location.reload()
+                        }else{
+                            $("#fm-subbmit").text(btnText)
+                            $("#fm-subbmit").attr('disabled',false)
+                            $("#fm-path-feedback").text(result.msg)
+                        }
+                    },
+                    function(){
+                        $("#fm-subbmit").text(btnText)
+                        $("#fm-subbmit").attr('disabled',false)
+                    }
+                    )
+            })
+            let interval=window.setInterval("checkStatus()",1000);
+
+            function checkStatus()
+            {
+                let tmpFields = scanlogFields
+                for(index in tmpFields){
+                    util.ajax("GET","/api/setting/logField?id="+tmpFields[index],null,
+                        function(result){
+                            if(result.code===0&&result.data.status!==0){
+                                $("#td-status-"+result.data.id).text(result.data.statusStr)
+                                let classAttr='text-warning'
+                                if(result.data.status===1){
+                                    classAttr='text-success'
+                                }else if(result.data.status===3){
+                                    classAttr='text-danger'
+                                }
+                                $("#td-count-"+result.data.id).text(result.data.fileCount)
+                                $("#td-count-load-"+result.data.id).attr("class","")
+                                $("#td-status-"+result.data.id).attr("class",classAttr)
+                                scanlogFields.splice(index,1);
+                            }
+                        },
+                        function(){}
+                    )
+                }
+                if(scanlogFields.length===0){
+                    window.clearInterval(interval)
+                }
             }
         </script>
         <script src="/js/bootstrap-pagecap.min.js"></script>

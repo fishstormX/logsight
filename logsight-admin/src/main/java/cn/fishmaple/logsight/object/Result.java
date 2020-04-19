@@ -43,4 +43,9 @@ public class Result<T> {
         this.data = data;
         this.msg = "SUCCESS";
     }
+    public Result(Integer code,String msg){
+        this.code = code;
+        this.data = null;
+        this.msg = msg;
+    }
 }

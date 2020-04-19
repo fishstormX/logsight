@@ -10,8 +10,8 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 
 public interface LogFieldMapper {
-    @Select("SELECT 1")
-    public Integer checkConnect();
+    @Select("SELECT id ,status,`file_count` fileCount FROM `log_field` WHERE `id` = #{id}" )
+    public LogFieldDTO getFieldById(String id);
     @Insert("INSERT INTO `log_field` (`path`,`create_time`,`status`) VALUES(#{path},#{createTime},#{status}) ")
     public Integer addOne(LogFieldDTO logFieldDTO);
     @Update("UPDATE `log_field` SET timeline = #{timeline},file_count = #{fileCount},`status` =#{status} WHERE `id` = #{id}")

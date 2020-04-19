@@ -17,9 +17,8 @@ CREATE TABLE IF NOT EXISTS `log_field_file_list`  (
   `status` int default 1 ,
   PRIMARY KEY (`id`)
 );
-INSERT INTO `log_field`(`path`,`create_time`,`file_count`, `status`) VALUES('D:\My Java\untitled\apache-maven-3.5.4',CURRENT_TIME  ,12,0);
-INSERT INTO `log_field`(`path`,`create_time`,`file_count`, `status`) VALUES('E:\',CURRENT_TIME  ,1,0);
-INSERT INTO `log_field`(`path`,`create_time`) VALUES('F:\*maple\target\*',CURRENT_TIME  );
-INSERT INTO `log_field`(`path`,`create_time`,`file_count`, `status`) VALUES('F:\*hmaple\SQL\*',CURRENT_TIME  ,12,0);
+ALTER TABLE `log_field` ADD UNIQUE (`path`);
+INSERT INTO `log_field`(`path`,`create_time`,`file_count`, `status`) VALUES('/data/*',CURRENT_TIME  ,12,0);
+
 
 

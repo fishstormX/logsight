@@ -8,6 +8,29 @@ var util={
         link.href = url;
         let head = document.getElementsByTagName("head")[0]
         head.appendChild(link)
+    },
+    ajax: function(type,url,data,success,error){
+        let resultS=null
+        if(type==="GET"){
+            $.ajax({
+                type: type,
+                url:  url,
+                data:data,
+                success: success,
+                error:error,
+                dataType: "json"
+            });
+        }else {
+            $.ajax({
+                type: type,
+                url: url,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: success,
+                error: error,
+                dataType: "json"
+            });
+        }
     }
 }
 function getQueryString(name,defaultValue)
@@ -37,4 +60,13 @@ function hrefTo(params,path)
        }
    }
     window.location.href=href
+}
+function getQueryString(name,defaultValue)
+{
+    let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)")
+    let r = window.location.search.substr(1).match(reg)
+    if (r != null) {
+        return unescape(r[2])
+    }
+    return defaultValue
 }

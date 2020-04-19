@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Component
 public class FileScanHandler {
@@ -17,7 +15,7 @@ public class FileScanHandler {
         Queue<String> queueReturn=null;
         if(filePath.contains("*")){
             String rootPath = null;
-            if(EnvUtil.shellAbled()){
+            if(!EnvUtil.isWindows()){
                 rootPath="\\";
             }else{
                 rootPath=pathloads[0];
@@ -30,11 +28,14 @@ public class FileScanHandler {
                     int qSize = queue.size();
                     for(int i =0;i<qSize;i++){
                         String tmpPath = queue.poll();
-                        File file = new File(tmpPath);
+                        File file = new File(tmpPath+(EnvUtil.isWindows()?"\\":""));
                         if(file.isFile()||!file.exists()){
                             continue;
                         }
-                        Arrays.stream(file.listFiles(fileFilter)).forEach(
+                        file.listFiles(fileFilter);
+                        Arrays.stream(
+                                file.listFiles(fileFilter)
+                        ).forEach(
                                 s->{
                                     queue.add(s.getAbsolutePath());
                                 }); }
