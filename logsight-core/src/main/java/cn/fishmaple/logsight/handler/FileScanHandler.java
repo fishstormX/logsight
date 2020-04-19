@@ -11,12 +11,19 @@ import java.util.*;
 @Component
 public class FileScanHandler {
     public Collection<String> scanFile(String filePath){
-        String pathloads[] = filePath.split("\\\\");
+        String splitStr ="\\";
+        String pathloads[]=null;
+        if(!EnvUtil.isWindows()){
+            pathloads = filePath.split("/");
+            splitStr = "/";
+        }else{
+            pathloads = filePath.split("\\\\");
+        }
         Queue<String> queueReturn=null;
         if(filePath.contains("*")){
             String rootPath = null;
             if(!EnvUtil.isWindows()){
-                rootPath="\\";
+                rootPath="/";
             }else{
                 rootPath=pathloads[0];
             }
@@ -42,7 +49,7 @@ public class FileScanHandler {
                 }else if(!pathload.isEmpty()&&!pathload.contains(":")){
                     int qSize = queue.size();
                     for(int i =0;i<qSize;i++){
-                        String file = queue.poll()+"\\"+pathload;
+                        String file = queue.poll()+splitStr+pathload;
                         File file1 = new File(file);
                         if(!file1.exists()){
                             continue;
