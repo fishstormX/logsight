@@ -1,19 +1,20 @@
 DROP TABLE IF EXISTS `log_field`;
-DROP TABLE IF EXISTS `log_field_file_list`;
+DROP TABLE IF EXISTS `log_field_file`;
 CREATE TABLE IF NOT EXISTS `log_field`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(255) DEFAULT NULL COMMENT 'Log files path',
-  `timeline` timestamp COMMENT 'Last update createTime',
+  `timeline` timestamp COMMENT 'Last update time',
   `file_count` int COMMENT 'File count',
   `create_time` timestamp,
   `status` int default 0,
   PRIMARY KEY (`id`)
 );
-CREATE TABLE IF NOT EXISTS `log_field_file_list`  (
+CREATE TABLE IF NOT EXISTS `log_field_file`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `field_id` int(11),
   `path_name` varchar(255) DEFAULT NULL,
-  `timeline` timestamp COMMENT 'Last update createTime',
+  `file_size` bigint DEFAULT 0,
+  `timeline` timestamp COMMENT 'Last update time',
   `status` int default 1 ,
   PRIMARY KEY (`id`)
 );
