@@ -8,6 +8,7 @@ public class LogFieldFileDTO {
     private String pathName;
     private Integer fieldId;
     private Integer status;
+    private Long fileSize;
 
     public LogFieldFileDTO() {
     }
@@ -56,5 +57,13 @@ public class LogFieldFileDTO {
 
     public void setFieldId(Integer fieldId) {
         this.fieldId = fieldId;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 }

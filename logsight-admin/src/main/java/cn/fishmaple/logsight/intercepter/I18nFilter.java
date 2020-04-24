@@ -26,16 +26,17 @@ public class I18nFilter implements Filter {
             HttpServletRequest httpServletRequest = (HttpServletRequest)request;
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             Cookie [] cookies= httpServletRequest.getCookies();
-            for(Cookie cookie:cookies){
-                if(cookie.getName().equals("i18n")){
-                    if(cookie.getValue().equals("en_US")){
-                        localeResolver.setLocale((HttpServletRequest)request,(HttpServletResponse) response,Locale.ENGLISH);
-                    }else{
-                        localeResolver.setLocale((HttpServletRequest)request,(HttpServletResponse) response,Locale.CHINESE);
+            if(null!=cookies){
+                for(Cookie cookie:cookies){
+                    if(cookie.getName().equals("i18n")){
+                        if(cookie.getValue().equals("en_US")){
+                            localeResolver.setLocale((HttpServletRequest)request,(HttpServletResponse) response,Locale.ENGLISH);
+                        }else{
+                            localeResolver.setLocale((HttpServletRequest)request,(HttpServletResponse) response,Locale.CHINESE);
+                        }
                     }
                 }
             }
-
             filterChain.doFilter(request, response);
     }
 }
