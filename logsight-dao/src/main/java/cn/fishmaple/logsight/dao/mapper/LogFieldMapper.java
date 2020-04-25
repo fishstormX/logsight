@@ -19,6 +19,8 @@ public interface LogFieldMapper {
     public List<LogFieldDTO> selectUnClosedField();
     @Select("SELECT COUNT(*) FROM `log_field`")
     public Integer count();
+    @Select("SELECT COUNT(*) FROM `log_field` WHERE  `status` = 1")
+    public Integer availableCount();
     @Select("SELECT `id`,`path`,`timeline`,`status`,`create_time` createTime,`file_count` fileCount FROM `log_field` LIMIT #{start},#{count}")
     public List<LogFieldDTO> selectAPage(@Param("start") int start, @Param("count")int count);
     @Select("SELECT `id`,`path`,`timeline`,`status`,`create_time` createTime,`file_count` fileCount FROM `log_field` " +

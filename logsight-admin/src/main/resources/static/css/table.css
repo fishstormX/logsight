@@ -1,3 +1,9 @@
 .sort-abled{
     cursor: pointer;
 }
+.tb-break{
+    word-break: break-all;
+}
+.tb-nowrap{
+    white-space:nowrap;
+}

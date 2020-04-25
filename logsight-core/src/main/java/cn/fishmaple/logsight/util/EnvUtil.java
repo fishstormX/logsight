@@ -9,7 +9,6 @@ public class EnvUtil {
         isWindows = getOs().contains(OsEnum.Windows.getSystemName());
     }
     public static String getOs(){
-        System.out.println(System.getProperty("os.name")+"  ****");
         return System.getProperty("os.name").toLowerCase();
 
     }

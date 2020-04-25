@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component;
 public class IdPagedProvider {
     public String fieldDistinctFilePaged(IdPagedStat idPagedStat){
         SQL sql =new SQL();
-        sql.SELECT_DISTINCT("path_name pathName").FROM("log_field_file");
+        sql.SELECT_DISTINCT("path_name pathName ")
+                .SELECT("last_scan lastScan ","prev_size prevSize")
+                .FROM("log_field_file");
         sql.WHERE("id > "+ idPagedStat.getStartId());
         if(null!= idPagedStat.getEndId()){
             sql.WHERE("id < "+ idPagedStat.getEndId());

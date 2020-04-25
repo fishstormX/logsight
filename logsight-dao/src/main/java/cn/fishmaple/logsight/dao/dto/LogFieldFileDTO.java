@@ -9,6 +9,8 @@ public class LogFieldFileDTO {
     private Integer fieldId;
     private Integer status;
     private Long fileSize;
+    private Date lastScan;
+    private Long prevSize;
 
     public LogFieldFileDTO() {
     }
@@ -17,6 +19,13 @@ public class LogFieldFileDTO {
         this.timeline = timeline;
         this.pathName = pathName;
         this.fieldId = fieldId;
+    }
+
+    public LogFieldFileDTO(Integer fieldId,Date timeline, String pathName, Date lastScan) {
+        this.timeline = timeline;
+        this.pathName = pathName;
+        this.fieldId = fieldId;
+        this.lastScan = lastScan;
     }
 
     public Integer getStatus() {
@@ -65,5 +74,21 @@ public class LogFieldFileDTO {
 
     public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public Date getLastScan() {
+        return lastScan;
+    }
+
+    public void setLastScan(Date lastScan) {
+        this.lastScan = lastScan;
+    }
+
+    public Long getPrevSize() {
+        return prevSize;
+    }
+
+    public void setPrevSize(Long prevSize) {
+        this.prevSize = prevSize;
     }
 }
