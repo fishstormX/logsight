@@ -1,5 +1,6 @@
 package cn.fishmaple.logsight.thread;
 
+import cn.fishmaple.logsight.dao.consts.LogFileStatus;
 import cn.fishmaple.logsight.dao.dto.LogFieldDTO;
 import cn.fishmaple.logsight.dao.dto.LogFieldFileDTO;
 import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @DependsOn(value = {"logFieldMapper","logFieldFileMapper","fileScanHandler"})
@@ -55,16 +58,30 @@ public class FileLoadThread extends Thread{
             for (LogFieldDTO logFieldDTO : list) {
                 int count=0;
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
+                Set<LogFieldFileDTO> nowaFiles = logFieldFileMapper.getFilesById(logFieldDTO.getId());
                 if(overallScan){
                     logFieldDTO.setFileCount(0);
                     logFieldDTO.setTimeline(new Date());
                     logFieldDTO.setStatus(0);
                     logFieldMapper.update(logFieldDTO);
                 }
+                for (LogFieldFileDTO logFieldFileDTO : nowaFiles) {
+                    File file = new File(logFieldFileDTO.getPathName());
+                    if(file.isFile()&&!file.isHidden()){
+                        files.remove(logFieldFileDTO.getPathName());
+                        logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
+                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),logFieldFileDTO.getFileSize(), LogFileStatus.NORMAL));
+                        count++;
+                    }else{
+                        logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
+                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.DELETED));
+                    }
+                }
                 for (String logFile : files) {
                     File file = new File(logFile);
                     if(file.isFile()&&!file.isHidden()){
-                        logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(), logFile,TimeUtil.getEarlyHour(-1,0)));
+                        logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
+                                logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL));
                         count++;
                     }
                 }

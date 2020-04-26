@@ -43,8 +43,8 @@ public class ReportService {
     }
 
     public String getTotalFileSize(){
-        Double result = logFieldFileMapper.getTotalSize();
-        return String.format("%.2f", result/1024)+"M";
+        Double result = logFieldFileMapper.getTotalSize()/1024;
+        return String.format("%.2f", result)+"M";
     }
 
     public Long getTotalFileCount(){

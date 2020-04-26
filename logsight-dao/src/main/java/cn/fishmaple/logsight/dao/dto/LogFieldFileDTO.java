@@ -28,6 +28,15 @@ public class LogFieldFileDTO {
         this.lastScan = lastScan;
     }
 
+    public LogFieldFileDTO(Integer fieldId,Date timeline, String pathName, Date lastScan,Long fileSize,Integer status) {
+        this.timeline = timeline;
+        this.pathName = pathName;
+        this.fieldId = fieldId;
+        this.lastScan = lastScan;
+        this.fileSize = fileSize;
+        this.status = status;
+    }
+
     public Integer getStatus() {
         return status;
     }
