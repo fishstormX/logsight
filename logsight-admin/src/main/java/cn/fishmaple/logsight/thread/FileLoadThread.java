@@ -58,7 +58,7 @@ public class FileLoadThread extends Thread{
             for (LogFieldDTO logFieldDTO : list) {
                 int count=0;
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
-                Set<LogFieldFileDTO> nowaFiles = logFieldFileMapper.getFilesById(logFieldDTO.getId());
+                Set<LogFieldFileDTO> nowaFiles = logFieldFileMapper.getFilesByFieldId(logFieldDTO.getId());
                 if(overallScan){
                     logFieldDTO.setFileCount(0);
                     logFieldDTO.setTimeline(new Date());

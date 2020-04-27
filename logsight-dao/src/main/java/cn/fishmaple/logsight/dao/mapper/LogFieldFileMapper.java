@@ -15,8 +15,8 @@ public interface LogFieldFileMapper {
             "VALUES(#{fieldId},#{pathName},#{timeline},#{status},#{lastScan}) ON DUPLICATE KEY UPDATE " +
             "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`status` = #{status},`file_size` = #{fileSize}")
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
-    @Select("SELECT `id`,path_name pathName,file_size fileSize,status  FROM `log_field_file` WHERE `id` = #{id}" )
-    public Set<LogFieldFileDTO> getFilesById(Integer id);
+    @Select("SELECT `id`,path_name pathName,file_size fileSize,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
+    public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
     @Select("SELECT DISTINCT path_name pathName , last_scan lastScan , prev_size prevSize " +
             "FROM log_field_file ORDER BY `id` LIMIT #{start},#{count}")
     public List<LogFieldFileDTO> getDistinctFilesByPaged(PagedStat PagedStat);
