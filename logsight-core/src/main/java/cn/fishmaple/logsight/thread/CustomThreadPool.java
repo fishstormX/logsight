@@ -20,7 +20,6 @@ public class CustomThreadPool {
         taskExecutor=new ThreadPoolTaskExecutor();
         taskExecutor.setCorePoolSize(10);
         taskExecutor.setMaxPoolSize(100);
-        //任务队列最大长度
         taskExecutor.setQueueCapacity(200);
         taskExecutor.setAllowCoreThreadTimeOut(true);
         taskExecutor.setKeepAliveSeconds(2000);
@@ -31,8 +30,7 @@ public class CustomThreadPool {
     public void addTask(Runnable task) {
         taskExecutor.execute(task);
     }
-    //Callable任务
-    public Future addReturnedTask(Callable task){
+    public <T> Future<T> addReturnedTask(Callable<T> task){
         return taskExecutor.submit(task);
     }
 
