@@ -46,6 +46,9 @@ public class ApplicationContextProvider
      * @return
      */
     public static <T> T getBean(Class<T> clazz) {
+        if(null==getApplicationContext()){
+                return null;
+        }
         return getApplicationContext().getBean(clazz);
     }
 

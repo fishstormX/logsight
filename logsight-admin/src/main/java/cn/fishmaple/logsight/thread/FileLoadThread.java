@@ -47,7 +47,7 @@ public class FileLoadThread extends Thread{
     public void run(){
         initThread();
         while (true) {
-            Boolean overallScan = (scanTimes>>4)>0;
+            Boolean overallScan = (scanTimes>>2)>0;
             List<LogFieldDTO> list;
             if(overallScan){
                 list = logFieldMapper.selectUnClosedField();
