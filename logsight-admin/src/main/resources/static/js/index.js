@@ -17,7 +17,6 @@ $(".navbar-tab").click(function(){
     let tClassName = $(this).find("a").attr("class")
     let tId = $(this).attr("id")
     if(tClassName.indexOf("cm-ac")===-1) {
-        let c = dr === 1
         hrefTo("dr","/" + $(this).attr("route"))
     }else {
         $(".navbar-tab").each(function (index, element) {

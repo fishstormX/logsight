@@ -52,14 +52,19 @@ function hrefTo(params,path)
     if(href==="/"){
         href=""
     }
-   for(index in params){
-       if(index == 0 ){
-           href+= "?"+params[index]+"="+window.params.get(params[index])
-       }else if(window.params.get(params[index])!=undefined){
-           href+= "&"+params[index]+"="+window.params.get(params[index])
-       }
-   }
-    window.location.href=href
+
+    if((typeof params=='string')&&params.constructor==String){
+        href += "?" + params + "=" +  window.params.get(params)
+    }else {
+        for (index in params) {
+            if (index == 0) {
+                href += "?" + params[index] + "=" + window.params.get(params[index])
+            } else if (window.params.get(params[index]) != undefined) {
+                href += "&" + params[index] + "=" + window.params.get(params[index])
+            }
+        }
+    }
+   window.location.href=href
 }
 function getQueryString(name,defaultValue)
 {
