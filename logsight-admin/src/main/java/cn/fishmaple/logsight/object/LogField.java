@@ -8,6 +8,7 @@ public class LogField {
     private Integer status;
     private String updateTime;
     private Integer fileCount;
+    private String size;
 
     public LogField() {
     }
@@ -17,6 +18,15 @@ public class LogField {
         this.path = path;
         this.createTime = createTime;
         this.statusStr = statusStr;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public LogField setSize(String size) {
+        this.size = size;
+        return this;
     }
 
     public String getUpdateTime() {

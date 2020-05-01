@@ -18,7 +18,7 @@ public class SettingController {
     private SettingService settingService;
 
     @RequestMapping("logField")
-    public String setting(Model model, @RequestParam(defaultValue = "1") int p,@RequestParam(defaultValue = "0") int dr,
+    public String logField(Model model, @RequestParam(defaultValue = "1") int p,@RequestParam(defaultValue = "0") int dr,
                         @RequestParam(defaultValue = "0") int sortd,@RequestParam(defaultValue = "")String sortType) {
         model.addAttribute("module","setting");
         model.addAttribute("case","logField");
@@ -30,6 +30,12 @@ public class SettingController {
         model.addAttribute("sortd",sortd);
         model.addAttribute("sortType",sortType);
         return "index";
+    }
+
+    @RequestMapping("")
+    public String setting(Model model, @RequestParam(defaultValue = "1") int p,@RequestParam(defaultValue = "0") int dr,
+                          @RequestParam(defaultValue = "0") int sortd,@RequestParam(defaultValue = "")String sortType) {
+        return logField(model, p, dr, sortd, sortType);
     }
 
 }

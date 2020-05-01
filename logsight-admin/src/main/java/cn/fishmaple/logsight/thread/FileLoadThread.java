@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -63,8 +62,9 @@ public class FileLoadThread extends Thread{
                     logFieldDTO.setFileCount(0);
                     logFieldDTO.setTimeline(new Date());
                     logFieldDTO.setStatus(0);
-                    logFieldMapper.update(logFieldDTO);
+                    logFieldMapper.scanUpdate(logFieldDTO);
                 }
+                double size = 0L;
                 for (LogFieldFileDTO logFieldFileDTO : nowaFiles) {
                     File file = new File(logFieldFileDTO.getPathName());
                     if(file.isFile()&&!file.isHidden()){
@@ -72,6 +72,7 @@ public class FileLoadThread extends Thread{
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
                                 logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),logFieldFileDTO.getFileSize(), LogFileStatus.NORMAL));
                         count++;
+                        size += ((double)file.length())/1024/1024;
                     }else{
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
                                 logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.DELETED));
@@ -83,6 +84,7 @@ public class FileLoadThread extends Thread{
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
                                 logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL));
                         count++;
+                        size += ((double)file.length())/1024/1024;
                     }
                 }
                 if(count<1){
@@ -93,8 +95,9 @@ public class FileLoadThread extends Thread{
                     logFieldDTO.setFileCount(count);
                     logFieldDTO.setTimeline(new Date());
                     logFieldDTO.setStatus(1);
+                    logFieldDTO.setTotalSize(size);
                 }
-                logFieldMapper.update(logFieldDTO);
+                logFieldMapper.scanUpdate(logFieldDTO);
             }
             scanTimes++;
             try {

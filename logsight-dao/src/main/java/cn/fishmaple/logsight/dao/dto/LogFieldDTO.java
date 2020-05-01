@@ -9,6 +9,15 @@ public class LogFieldDTO {
     private Integer status;
     private Integer fileCount;
     private Date timeline;
+    private Double size;
+
+    public Double getSize() {
+        return size;
+    }
+
+    public void setTotalSize(Double size) {
+        this.size = size;
+    }
 
     public LogFieldDTO() {
     }

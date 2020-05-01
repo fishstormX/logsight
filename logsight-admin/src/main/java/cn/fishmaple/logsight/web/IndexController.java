@@ -25,16 +25,8 @@ public class IndexController {
 
     @RequestMapping("")
     public String index(Model model, @RequestParam(defaultValue = "0") int dr){
-        return settingController.setting(model,0,dr,0,"");
+        return dashboard(model, dr);
     }
-
-   /* @RequestMapping("/{route}")
-    public String index2(Model model, @PathVariable String route,@RequestParam(defaultValue = "0") int dr){
-        model.addAttribute("module",route);
-        model.addAttribute("page","pages/"+route);
-        model.addAttribute("dr",dr);
-        return "index";
-    }*/
 
     @RequestMapping("dashboard")
     public String dashboard(Model model, @RequestParam(defaultValue = "0") int dr){
@@ -46,9 +38,5 @@ public class IndexController {
         model.addAttribute("fieldCount",reportService.getTotalFieldCount());
         model.addAttribute("fileSize",reportService.getTotalFileSize());
         return "index";
-    }
-    @RequestMapping("setting")
-    public String setting(Model model, @RequestParam(defaultValue = "0") int dr){
-        return settingController.setting(model,0,dr,0,"");
     }
 }

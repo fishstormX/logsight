@@ -35,5 +35,5 @@ public interface LogFieldFileMapper {
             " WHERE path_name = #{pathName}")
     public Integer updateFileSizeWithPrev(LogFieldFileDTO logFieldFileDTO);
     @Delete("DELETE FROM `log_field_file` ff WHERE ff.`field_id` = #{fieldId} ")
-    public Integer deleteByFieldId(String fieldId);
+    public Integer deleteByFieldId(Integer fieldId);
 }

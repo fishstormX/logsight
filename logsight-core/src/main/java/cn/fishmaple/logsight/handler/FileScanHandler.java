@@ -12,12 +12,15 @@ import java.util.*;
 public class FileScanHandler {
     public Collection<String> scanFile(String filePath){
         String splitStr ="\\";
-        String pathloads[]=null;
+        String pathloads[] = null;
         if(!EnvUtil.isWindows()){
             pathloads = filePath.split("/");
             splitStr = "/";
         }else{
             pathloads = filePath.split("\\\\");
+        }
+        if(splitStr.equals(String.valueOf(filePath.charAt(filePath.length()-1)))){
+            return new LinkedList<>();
         }
         Queue<String> queueReturn=null;
         if(filePath.contains("*")){
@@ -33,20 +36,21 @@ public class FileScanHandler {
                 if(pathload.contains("*")){
                     FileFilter fileFilter = new WildcardFileFilter(pathload);
                     int qSize = queue.size();
-                    for(int i =0;i<qSize;i++){
+                    for(int i =0;i<qSize;i++) {
                         String tmpPath = queue.poll();
-                        File file = new File(tmpPath+(EnvUtil.isWindows()?"\\":""));
-                        if(file.isFile()||!file.exists()){
+                        File file = new File(tmpPath + (splitStr));
+                        if (file.isFile() || !file.exists()) {
                             continue;
                         }
-                        file.listFiles(fileFilter);
-                        Arrays.stream(
-                                file.listFiles(fileFilter)
-                        ).forEach(
-                                s->{
-                                    queue.add(s.getAbsolutePath());
-                                }); }
-                }else if(!pathload.isEmpty()&&!pathload.contains(":")){
+                        File[] files = file.listFiles(fileFilter);
+                        if (null != files&&files.length>0) {
+                            Arrays.stream(files).forEach(
+                                    s -> {
+                                        queue.add(s.getAbsolutePath());
+                                    });
+                        }
+                    }
+                }else if(null!=pathload&&!pathload.contains(":")){
                     int qSize = queue.size();
                     for(int i =0;i<qSize;i++){
                         String file = queue.poll()+splitStr+pathload;

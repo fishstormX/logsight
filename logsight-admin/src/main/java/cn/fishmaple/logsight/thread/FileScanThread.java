@@ -50,6 +50,7 @@ public class FileScanThread extends Thread{
                 for(LogFieldFileDTO logFieldFileDTO:logFieldFileDTOList){
                     logFieldFileDTO.setFileSize(FileUtil.getFileLength(logFieldFileDTO.getPathName()));
                     Date earlyHour = TimeUtil.getEarlyHour();
+                    //add a filerecord pre hour
                     if(!logFieldFileDTO.getLastScan().equals(earlyHour)){
                         logFieldFileDTO.setLastScan(earlyHour);
                         logFieldFileDTO.setPrevSize(logFieldFileDTO.getFileSize());
@@ -66,6 +67,7 @@ public class FileScanThread extends Thread{
                 start+=100;
                 pagedStat.setStart(start);
                 logFieldFileDTOList = logFieldFileMapper.getDistinctFilesByPaged(pagedStat);
+
             }
             try {
                 Thread.sleep(10000);

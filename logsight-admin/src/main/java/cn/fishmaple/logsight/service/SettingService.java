@@ -2,6 +2,7 @@ package cn.fishmaple.logsight.service;
 
 import cn.fishmaple.logsight.config.I18n;
 import cn.fishmaple.logsight.dao.dto.LogFieldDTO;
+import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
 import cn.fishmaple.logsight.dao.mapper.LogFieldMapper;
 import cn.fishmaple.logsight.exception.DefaultException;
 import cn.fishmaple.logsight.object.LogField;
@@ -20,6 +21,8 @@ import java.util.List;
 public class SettingService {
     @Autowired
     private LogFieldMapper logFieldMapper;
+    @Autowired
+    private LogFieldFileMapper logFieldFileMapper;
     @Autowired
     private I18n i18n;
     public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType){
@@ -47,6 +50,7 @@ public class SettingService {
                 .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
                 .setStatus(logFieldDTO.getStatus())
                 .setFileCount(logFieldDTO.getFileCount())
+                .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"))
             );
         });
         ThreadLocalUtil.set("logFields4Scan",field4scan);
@@ -55,10 +59,9 @@ public class SettingService {
 
     public Boolean saveField(LogField logField) throws DefaultException {
         Assert.notNull(logField.getPath(),"null path");
-        Assert.notNull(logField.getStatus(),"null path");
+        Assert.notNull(logField.getStatus(),"null status");
         LogFieldDTO logFieldDTO = new LogFieldDTO(logField.getPath(),new Date());
         logFieldDTO.setStatus(logField.getStatus());
-        new LogFieldDTO().setCreateTime(new Date());
         boolean flag=false;
         try{
             flag = logFieldMapper.addOne(logFieldDTO)>0;
@@ -68,13 +71,35 @@ public class SettingService {
         return flag;
     }
 
+    public void updateField(LogField logField) throws DefaultException {
+        Assert.notNull(logField.getPath(),"null path");
+        Assert.notNull(logField.getStatus(),"null status");
+        LogFieldDTO logFieldDTO = new LogFieldDTO(logField.getPath(),new Date());
+        logFieldDTO.setStatus(logField.getStatus());
+        logFieldDTO.setId(logField.getId());
+        boolean flag=false;
+        try{
+            flag = logFieldMapper.update(logFieldDTO)>0;
+        }catch (Exception e){
+            throw new DefaultException(-1,i18n.getMessage("i18n.helper_duplicate_path"));
+        }
+        logFieldFileMapper.deleteByFieldId(logField.getId());
+    }
+
+    public void deleteField(Integer id) throws DefaultException {
+        logFieldMapper.delete(id);
+        logFieldFileMapper.deleteByFieldId(id);
+    }
+
     public LogField getFieldInfo(String id){
         Assert.notNull(id,"null id");
         LogFieldDTO logFieldDTO = logFieldMapper.getFieldById(id);
         return new LogField().setId(logFieldDTO.getId())
                 .setStatus(logFieldDTO.getStatus())
                 .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
-                .setFileCount(logFieldDTO.getFileCount());
+                .setFileCount(logFieldDTO.getFileCount())
+                .setPath(logFieldDTO.getPath())
+                .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"));
     }
 
     public Integer getLogfieldPages(Integer perCount){

@@ -28,8 +28,23 @@ public class SettingAPI {
         return new Result(flag);
     }
 
+    @PostMapping("logField")
+    public Result<Boolean> updateField(@RequestBody LogField logField) throws DefaultException {
+        if(logField.getPath().replace(" ","").isEmpty()){
+            return new Result(-1,i18n.getMessage("i18n.setting_logfield_table_path")+i18n.getMessage("i18n.helper_notNull"));
+        }
+        settingService.updateField(logField);
+        return new Result(true);
+    }
+
+    @DeleteMapping("logField")
+    public Result<Boolean> deleteField(@RequestBody LogField logField) throws DefaultException {
+        settingService.deleteField(logField.getId());
+        return new Result(true);
+    }
+
     @GetMapping("logField")
-    public Result<LogField> getFiles(@RequestParam String id) {
+    public Result<LogField> getField(@RequestParam String id) {
         LogField logField = settingService.getFieldInfo(id);
         return new Result(logField);
     }
