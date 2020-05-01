@@ -1,12 +1,20 @@
 package cn.fishmaple.logsight.analyser;
 
-import cn.fishmaple.logsight.analyser.object.SearchAction;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+
 @Component
-public class DefaultCommandAnalyser extends AbstractCommandAnalyser{
+public class DefaultTimeAnalyser extends AbstractTimeAnalyser {
+    private String formatter = "yyyy-mm-dd HH:mm:ss.SSS";
+
     @Override
-    public String baseSearchTemplate() {
-        return "cat {file}|grep {target}";
+    public Integer getTimeStringLength() {
+        return 23;
+    }
+
+    @Override
+    public SimpleDateFormat getDateFormat() {
+        return new SimpleDateFormat(formatter);
     }
 }
