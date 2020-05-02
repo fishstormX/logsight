@@ -10,6 +10,19 @@ public class LogFieldDTO {
     private Integer fileCount;
     private Date timeline;
     private Double size;
+    private String remarks;
+
+    public void setSize(Double size) {
+        this.size = size;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
 
     public Double getSize() {
         return size;

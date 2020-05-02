@@ -50,6 +50,7 @@ public class SettingService {
                 .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
                 .setStatus(logFieldDTO.getStatus())
                 .setFileCount(logFieldDTO.getFileCount())
+                .setRemarks(logFieldDTO.getRemarks())
                 .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"))
             );
         });
@@ -62,6 +63,7 @@ public class SettingService {
         Assert.notNull(logField.getStatus(),"null status");
         LogFieldDTO logFieldDTO = new LogFieldDTO(logField.getPath(),new Date());
         logFieldDTO.setStatus(logField.getStatus());
+        logFieldDTO.setRemarks(logField.getRemarks());
         boolean flag=false;
         try{
             flag = logFieldMapper.addOne(logFieldDTO)>0;
@@ -76,6 +78,7 @@ public class SettingService {
         Assert.notNull(logField.getStatus(),"null status");
         LogFieldDTO logFieldDTO = new LogFieldDTO(logField.getPath(),new Date());
         logFieldDTO.setStatus(logField.getStatus());
+        logFieldDTO.setRemarks(logField.getRemarks());
         logFieldDTO.setId(logField.getId());
         boolean flag=false;
         try{
@@ -99,6 +102,7 @@ public class SettingService {
                 .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
                 .setFileCount(logFieldDTO.getFileCount())
                 .setPath(logFieldDTO.getPath())
+                .setRemarks(logFieldDTO.getRemarks())
                 .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"));
     }
 

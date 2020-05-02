@@ -23,6 +23,8 @@ public class SettingAPI {
     public Result<Boolean> putField(@RequestBody LogField logField) throws DefaultException {
         if(logField.getPath().replace(" ","").isEmpty()){
             return new Result(-1,i18n.getMessage("i18n.setting_logfield_table_path")+i18n.getMessage("i18n.helper_notNull"));
+        }else if(logField.getPath().length()>500){
+            return new Result(-1,i18n.getMessage("i18n.setting_logfield_table_path")+i18n.getMessage("i18n.helper_notNull"));
         }
         Boolean flag = settingService.saveField(logField);
         return new Result(flag);
@@ -31,6 +33,8 @@ public class SettingAPI {
     @PostMapping("logField")
     public Result<Boolean> updateField(@RequestBody LogField logField) throws DefaultException {
         if(logField.getPath().replace(" ","").isEmpty()){
+            return new Result(-1,i18n.getMessage("i18n.setting_logfield_table_path")+i18n.getMessage("i18n.helper_notNull"));
+        }else if(logField.getPath().length()>500){
             return new Result(-1,i18n.getMessage("i18n.setting_logfield_table_path")+i18n.getMessage("i18n.helper_notNull"));
         }
         settingService.updateField(logField);

@@ -42,11 +42,12 @@ public class FileLoadThread extends Thread{
                 e.printStackTrace();
             }
         }
+
     }
     public void run(){
         initThread();
         while (true) {
-            Boolean overallScan = (scanTimes>>2)>0;
+            boolean overallScan = (scanTimes>>2)>0;
             List<LogFieldDTO> list;
             if(overallScan){
                 list = logFieldMapper.selectUnClosedField();
@@ -59,7 +60,7 @@ public class FileLoadThread extends Thread{
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
                 Set<LogFieldFileDTO> nowaFiles = logFieldFileMapper.getFilesByFieldId(logFieldDTO.getId());
                 if(overallScan){
-                    logFieldDTO.setFileCount(0);
+                    logFieldDTO.setFileCount(null);
                     logFieldDTO.setTimeline(new Date());
                     logFieldDTO.setStatus(0);
                     logFieldMapper.scanUpdate(logFieldDTO);

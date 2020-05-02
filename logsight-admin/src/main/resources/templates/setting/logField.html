@@ -16,7 +16,10 @@
         <table class="table" id="logfield-tb">
             <thead>
             <tr>
-                <th scope="col"  th:text="#{i18n.setting_logfield_table_path}"></th>
+                <th scope="col">
+                    <div class="sort-abled"  id="th-path" sort-field="path">
+                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_path}"></span><span style="margin-right:20px"></span></div>
+                </th>
                 <th scope="col" >
                     <div class="sort-abled"  id="th-createTime" sort-field="createTime">
                         <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span><span style="margin-right:20px"></span></div>
@@ -30,6 +33,7 @@
                     <div class="sort-abled"  id="th-size" sort-field="size" >
                         <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_size}"></span><span style="margin-right:20px"></span></div>
                 </th>
+                <th scope="col" th:text="#{i18n.setting_logfield_table_remarks}"></th>
                 <th scope="col" th:text="#{i18n.setting_logfield_handle}"></th>
             </tr>
             </thead>
@@ -42,11 +46,14 @@
                 <td>
                     <span th:id="${'td-count-'+logField.id}" th:text="${logField.fileCount}"></span>
                     <div th:id="${'td-count-load-'+logField.id}" class="text-info" th:classappend="${logField.status==0?' spinner-border spinner-border-sm ':'hide'}" role="status">
-                </div></td>
+                    </div>
+                </td>
                 <td>
                     <span th:id="${'td-size-'+logField.id}" th:text="${logField.size}"></span>
                     <div th:id="${'td-size-load-'+logField.id}" class="text-info" th:classappend="${logField.status==0?' spinner-border spinner-border-sm ':'hide'}" role="status">
-                    </div></td>
+                    </div>
+                </td>
+                <td th:text="${logField.remarks}"></td>
                 <td>
                     <svg th:attr="data-id=${logField.id}" class="btn-icon change-btn" width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -81,6 +88,10 @@
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label for="fm-remarks" th:text="#{i18n.setting_logfield_table_remarks}"></label>
+                                <input type="text" class="form-control" name="fm-remarks" id="fm-remarks">
+                            </div>
+                            <div class="form-group">
                                 <div class="custom-control custom-switch">
                                     <input checked="true" type="checkbox" class="custom-control-input"  name="fm-logfield-status" id="fm-logfield-status">
                                     <label class="custom-control-label" for="fm-logfield-status" id="lb-logfield-status" th:text="#{i18n.setting_logfield_form_status_opened}"></label>
@@ -96,7 +107,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="deleteSure" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" style="margin-top:15%" id="deleteSure" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
@@ -104,7 +115,7 @@
                         <div class="float-right" style="margin-top:20px">
                             <button type="button" class="btn btn-secondary" th:text="#{i18n.system_cancel}" data-dismiss="modal"></button>
                             <button id="fm-submit-delete" class="btn btn-primary" type="submit" th:text="#{i18n.system_ok}"></button>
-                        </divclass>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -147,12 +158,13 @@
                 $(this).html(" <span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
                 let path=$("#fm-logfield-path").val()
                 let status=$("#fm-logfield-status")[0].checked
+                let remarks=$("#fm-remarks").val()
                 if(window.formUpdate){
-                    util.ajax("POST","/api/setting/logField",{id:window.updateId,path:path,status:status?0:2},
+                    util.ajax("POST","/api/setting/logField",{id:window.updateId,path:path,status:status?0:2,remarks:remarks},
                        function (result){formCallBack(result,true,btnText)}, function (){formCallBack(result,false,btnText)}
                     )
                 }else{
-                    util.ajax("PUT","/api/setting/logField",{path:path,status:status?0:2},
+                    util.ajax("PUT","/api/setting/logField",{path:path,status:status?0:2,remarks:remarks},
                         function (result){formCallBack(result,true,btnText)}, function (){formCallBack(result,false,btnText)}
                     )
                 }
@@ -162,6 +174,7 @@
                 window.updateId=null
                 $("#fm-logfield-path").val(null)
                 $("#fm-logfield-status")[0].checked = true
+                $("#fm-remarks").val(null)
                 changeFormStatusStr()
             })
             $("#newLogField").keydown(function(e){
@@ -169,7 +182,7 @@
                     $("#fm-submit").click()
                     event.preventDefault();
                 }
-            });
+            })
             /* change */
             $(".change-btn").click(function () {
                 let id = $(this).attr("data-id")
@@ -178,6 +191,7 @@
                         if(result.code===0){
                             $("#fm-logfield-path").val(result.data.path)
                             $("#fm-logfield-status")[0].checked = (result.data.status!==2)
+                            $("#fm-remarks").val(result.data.remarks)
                             window.formUpdate=true
                             window.updateId=id
                             changeFormStatusStr()
@@ -185,10 +199,16 @@
                     }, function(){}
                 )
                 $('#newLogField').modal('show')
+                $("#fm-logfield-path").focus().val($("#fm-logfield-path").val())
             })
             $(".delete-btn").click(function () {
                 let id = $(this).attr("data-id")
                 $('#deleteSure').modal('show')
+                $("*").keydown(function(e){
+                    if(e.keyCode==13){
+                        $("#fm-submit-delete").click()
+                    }
+                });
                 $("#fm-submit-delete").click(function () {
                     util.ajax("DELETE","/api/setting/logField",{id:parseInt(id)},
                         function(result){

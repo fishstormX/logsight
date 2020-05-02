@@ -9,6 +9,16 @@ public class LogField {
     private String updateTime;
     private Integer fileCount;
     private String size;
+    private String remarks;
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public LogField setRemarks(String remarks) {
+        this.remarks = remarks;
+        return this;
+    }
 
     public LogField() {
     }
