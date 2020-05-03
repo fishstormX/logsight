@@ -1,0 +1,242 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="card-body" th:fragment="logGroup">
+
+        <h3 th:text="#{i18n.setting_loggroup}" class="card-title text-center"></h3>
+        <button data-toggle="modal" data-target="#newLogGroup" class="btn btn-primary" id="add-loggroup-btn">
+            <svg class="btn-righticon" width="16px" height="16px" viewBox="0 0 18 18" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" clip-rule="evenodd"/>
+            </svg>
+            <span th:text="#{i18n.setting_loggroup_add}"></span>
+        </button>
+        <div style="height:30px"></div>
+        <table class="table table-striped" id="loggroup-tb">
+            <thead class="text-center">
+                <tr>
+                    <th scope="col">
+                        <div class="sort-abled"  id="th-name" sort-field="name">
+                            <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_name}"></span><span style="margin-right:20px"></span></div>
+                    </th>
+                    <th scope="col" >
+                        <div class="sort-abled"  id="th-createTime" sort-field="createTime">
+                            <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_timeline}"></span><span style="margin-right:20px"></span></div>
+                    </th>
+                    <th scope="col" th:text="#{i18n.setting_loggroup_table_status}"></th>
+                    <th scope="col">
+                        <div class="sort-abled"  id="th-fieldCount" sort-field="fieldCount" >
+                            <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_count}"></span><span style="margin-right:20px"></span></div>
+                    </th>
+                    <th scope="col" th:text="#{i18n.setting_loggroup_table_remarks}"></th>
+                    <th scope="col" th:text="#{i18n.setting_loggroup_handle}"></th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <tr th:each="logGroup,logGroupStat : ${logGroups}">
+                    <td th:text="${logGroup.name}"></td>
+                    <td th:text="${logGroup.createTime}"></td>
+                    <td  class="td-status" th:id="${'td-status-'+logGroup.id}" th:class="${logGroup.status==1}?'text-success':'text-danger'"
+                        th:text="${logGroup.statusStr}"></td>
+                    <td>
+                        <span th:id="${'td-count-'+logGroup.fieldCount}" th:text="${logGroup.fieldCount}"></span>
+                    </td>
+                    <td th:text="${logGroup.remarks}"></td>
+                    <td>
+                        <svg th:attr="data-id=${logGroup.id}" class="btn-icon change-btn" width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" clip-rule="evenodd"/>
+                        </svg>
+                        <svg  th:attr="data-id=${logGroup.id}" class="btn-icon delete-btn" width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" clip-rule="evenodd"/>
+                        </svg>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="spiritPagination"></div>
+        <div style="text-align: center"><ul id="pageLimit"></ul> </div>
+        <div class="modal fade" id="newLogGroup" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" style="max-width:900px" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" th:text="#{i18n.setting_logfield_add}" id="staticBackdropLabel"></h6>
+                        <button type="button" class="close btn-close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline">
+                            <div class="form-row" style="padding-left: 10px;width: 80%;">
+                                <div class="form-group col-md-4 mb-2">
+                                    <label for="fm-loggroup-name" th:text="#{i18n.setting_loggroup_table_name}"></label>
+                                    <input type="text" class="form-control" name="fm-loggroup-name" id="fm-loggroup-name" aria-describedby="pathHelp">
+                                </div>
+                                <div class="form-group col-md-4 mb-2">
+                                    <label for="fm-remarks" th:text="#{i18n.setting_loggroup_table_remarks}"></label>
+                                    <input type="text" class="form-control" name="fm-remarks" id="fm-remarks">
+                                </div>
+                                <div id="fm-feedback" style="display: block;line-height: 66px;" class="form-group col-md-4 invalid-feedback"></div>
+                            </div>
+                            <button style="float:right;" id="fm-submit" class="btn btn-primary" th:text="#{i18n.system_commit}"></button>
+                            <div id="transferContainer" class="row" style="padding-left:25px;height: 580px;width: 950px;"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" style="margin-top:15%" id="deleteSure" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <span th:text="#{i18n.setting_logfield_makeSureDelete}"></span>
+                        <div class="float-right" style="margin-top:20px">
+                            <button type="button" class="btn btn-secondary" th:text="#{i18n.system_cancel}" data-dismiss="modal"></button>
+                            <button id="fm-submit-delete" class="btn btn-primary" type="submit" th:text="#{i18n.system_ok}"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/transfer.min.js"></script>
+        <script src="/js/bootstrap-table.min.js"></script>
+        <script>
+            util.loadStyles("/css/transfer.css")
+            util.loadStyles("/css/bootstrap-table.min.css")
+            sdata=[]
+            util.ajax("GET","/api/setting/logField/a",null,
+                function(result){
+                    if(result.code===0){
+                        sdata=result.data
+                        initTransfer(result.data)
+                    }
+                }, function(){}
+            )
+            function initTransfer(data){
+                $('#transferContainer').transfer({
+                    titles: ['[[#{i18n.setting_loggroup_form_beforeTran}]]', '[[#{i18n.setting_loggroup_form_afterTran}]]'],
+                    search: true,
+                    uniqueId: "id", //唯一id
+                    dataSource: data,
+                    diffKey: 'flag',
+                    unselectColumns: [{
+                        field: 'flag',
+                        checkbox: true
+                    }, {
+                        field: 'path',
+                        title: '[[#{i18n.setting_logfield_table_path}]]'
+                    }]
+                });
+            }
+        </script>
+        <script>
+            function onPageClick(page) {
+                window.params.set("p",page)
+                hrefTo(["dr","p"],"/setting/logGroup")
+            }
+            function formCallBack(result,success,btnText){
+                if(success){
+                    if(result.code===0){
+                        location.reload()
+                    }else{
+                        $("#fm-submit").text(btnText)
+                        $("#fm-submit").attr('disabled',false)
+                        $("#fm-feedback").text(result.msg)
+                    }
+                }else{
+                    $("#fm-submit").text(btnText)
+                    $("#fm-submit").attr('disabled',false)
+                }
+            }
+            /* fm-commit */
+            $("#fm-submit").click(function () {
+                console.log($("#transferContainer .form-control").is(":focus"))
+                if(!$("#transferContainer .form-control").is(":focus")) {
+                    $(this).attr('disabled', true)
+                    let btnText = $(this).text()
+                    $(this).html(" <span class=\"spinner-border spinner-border-sm\" role=\"status\" aria-hidden=\"true\"></span>")
+                    let name = $("#fm-loggroup-name").val()
+                    let remarks = $("#fm-remarks").val()
+                    let selectData = $('#transferContainer').transfer('getData', 'selectData', 'id')
+                    if (window.formUpdate) {
+                        util.ajax("POST", "/api/setting/logGroup", {
+                                id: window.updateId,
+                                fieldIds: selectData,
+                                name: name,
+                                remarks: remarks
+                            },
+                            function (result) {
+                                formCallBack(result, true, btnText)
+                            }, function () {
+                                formCallBack(result, false, btnText)
+                            }
+                        )
+                    } else {
+                        util.ajax("PUT", "/api/setting/logGroup", {
+                                fieldIds: selectData,
+                                name: name,
+                                remarks: remarks
+                            },
+                            function (result) {
+                                formCallBack(result, true, btnText)
+                            }, function () {
+                                formCallBack(result, false, btnText)
+                            }
+                        )
+                    }
+                }
+            })
+            $('#newLogGroup').on('hidden.bs.modal', function (e) {
+                window.formUpdate=false
+                window.updateId=null
+                $("#fm-loggroup-name").val(null)
+                $("#fm-remarks").val(null)
+                $('#transferContainer').transfer('refresh', sdata)
+            })
+            /* change */
+            $(".change-btn").click(function () {
+                let id = $(this).attr("data-id")
+                util.ajax("GET","/api/setting/logGroup/"+id,null,
+                    function(result){
+                        if(result.code===0){
+                            $("#fm-loggroup-name").val(result.data.name)
+                            $("#fm-remarks").val(result.data.remarks)
+                            window.formUpdate=true
+                            window.updateId=id
+                            $('#transferContainer').transfer('refresh', result.data.logFields)
+                            $('#newLogGroup').modal('show')
+                        }
+                    }, function(){}
+                )
+            })
+            $(".delete-btn").click(function () {
+                let id = $(this).attr("data-id")
+                $('#deleteSure').modal('show')
+                $("*").keydown(function(e){
+                    if(e.keyCode==13){
+                        $("#fm-submit-delete").click()
+                    }
+                });
+                $("#fm-submit-delete").click(function () {
+                    util.ajax("DELETE","/api/setting/logGroup/"+id,null,
+                        function(result){
+                            if(result.code===0){
+                                location.reload()
+                            }
+                        }, function(){}
+                    )
+                })
+            })
+        </script>
+        <script src="/js/bootstrap-pagecap.min.js"></script>
+        <script src="/js/table-sort.js"></script>
+        <script>
+            initSpiritPagination([[${p}]], [[${pages}]])
+            updateSortStatus([[${sortd}]],'[[${sortType}]]')
+        </script>
+    </div>
+</body>
+</html>

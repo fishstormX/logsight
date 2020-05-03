@@ -1,23 +1,18 @@
 package cn.fishmaple.logsight.web;
 
-import cn.fishmaple.logsight.api.ReportAPI;
 import cn.fishmaple.logsight.service.ReportService;
-import cn.fishmaple.logsight.service.SettingService;
+import cn.fishmaple.logsight.service.setting.SettingFieldFileService;
 import cn.fishmaple.logsight.web.setting.SettingController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class IndexController {
     @Autowired
-    private SettingService settingService;
+    private SettingFieldFileService settingFieldFileService;
     @Autowired
     private SettingController settingController;
     @Autowired

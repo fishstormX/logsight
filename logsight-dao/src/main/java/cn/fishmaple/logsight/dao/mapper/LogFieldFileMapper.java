@@ -28,6 +28,7 @@ public interface LogFieldFileMapper {
     public Double getTotalSize();
     @Select("SELECT COUNT(DISTINCT path_name) FROM `log_field_file`  WHERE status = 1")
     public Long getTotalCount();
+
     @Update("UPDATE `log_field_file` SET file_size = #{fileSize} WHERE path_name = #{pathName}")
     public Integer updateFileSize(LogFieldFileDTO logFieldFileDTO);
     @Update("UPDATE `log_field_file` SET file_size = #{fileSize}," +

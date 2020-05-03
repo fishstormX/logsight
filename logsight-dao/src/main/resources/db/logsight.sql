@@ -1,4 +1,14 @@
-
+CREATE TABLE IF NOT EXISTS `log_group`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `timeline` timestamp COMMENT 'Last update time',
+  `name` varchar(255) DEFAULT NULL,
+  `create_time` timestamp,
+  `status` int default 0,
+  `fieldIds` varchar(1500),
+  `field_count` int,
+  `remarks` varchar(500) DEFAULT NULL COMMENT 'remarks',
+  PRIMARY KEY (`id`)
+);
 CREATE TABLE IF NOT EXISTS `log_field`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path` varchar(255) DEFAULT NULL COMMENT 'Log files path',
@@ -7,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `log_field`  (
   `create_time` timestamp,
   `size` double,
   `status` int default 0,
-  `remarks` varchar(500) DEFAULT NULL COMMENT 'Remarks',
+  `remarks` varchar(500) DEFAULT NULL COMMENT 'remarks',
   PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `log_field_file`  (
@@ -32,3 +42,4 @@ CREATE TABLE IF NOT EXISTS `report_file`  (
 );
 ALTER TABLE `log_field` ADD UNIQUE (`path`);
 ALTER TABLE `log_field_file` ADD UNIQUE (`field_id`,`path_name`);
+ALTER TABLE `log_group` ADD UNIQUE (`name`);

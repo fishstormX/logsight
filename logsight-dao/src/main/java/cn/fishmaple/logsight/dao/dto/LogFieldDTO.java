@@ -11,6 +11,15 @@ public class LogFieldDTO {
     private Date timeline;
     private Double size;
     private String remarks;
+    private Boolean flag;
+
+    public Boolean getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Boolean flag) {
+        this.flag = flag;
+    }
 
     public void setSize(Double size) {
         this.size = size;

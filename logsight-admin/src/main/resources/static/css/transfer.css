@@ -1,0 +1,35 @@
+.transferBox {
+    height: 100%;
+    border: 1px solid #beb8b8;
+    border-radius: 6px;
+}
+#transferContainer .form-control{
+    width: 330px;
+}
+.shuttleBtn {
+    height: 100%;
+}
+
+.transferBtn .btn {
+    display: block;
+}
+
+.transferBtn .btn:first-child {
+    margin-bottom: 20px;
+}
+
+.transferBtn .btnList {
+    position: absolute;
+    width: 80%;
+    top: 50%;
+    margin-top: -40px;
+}
+
+.transferBox .search {
+    width: 100%;
+}
+
+.transferBtn .btn-default {
+    background: #ccc;
+    cursor: no-drop;
+}

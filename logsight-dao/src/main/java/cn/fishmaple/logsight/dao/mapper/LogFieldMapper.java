@@ -19,6 +19,10 @@ public interface LogFieldMapper {
     public List<LogFieldDTO> selectUnScannedField();
     @Select("SELECT `id`,`path`,`status` FROM `log_field` WHERE `status` != 2")
     public List<LogFieldDTO> selectUnClosedField();
+    @Select("SELECT `id`,`path` FROM `log_field`")
+    public List<LogFieldDTO> selectAll();
+    @Select("SELECT `id`,`path`,`id` in (${inState}) flag FROM `log_field` ")
+    public List<LogFieldDTO> getByInIdList(String inState);
     @Select("SELECT COUNT(*) FROM `log_field`")
     public Integer count();
     @Select("SELECT COUNT(*) FROM `log_field` WHERE  `status` = 1")
