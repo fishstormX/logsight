@@ -32,6 +32,15 @@ CREATE TABLE IF NOT EXISTS `log_field_file`  (
   PRIMARY KEY (`id`),
   INDEX field_id_idx ( `field_id` )
 );
+CREATE TABLE IF NOT EXISTS `log_field_tree`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `field_id` int(11),
+  `level` int(11),
+  `parent_id` bigint DEFAULT 0,
+  `last_scan` timestamp ,
+  `name` varchar(600),
+  PRIMARY KEY (`id`)
+);
 CREATE TABLE IF NOT EXISTS `report_file`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `path_name` varchar(255) DEFAULT NULL,

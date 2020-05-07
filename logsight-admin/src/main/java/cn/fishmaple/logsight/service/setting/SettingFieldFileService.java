@@ -30,16 +30,16 @@ public class SettingFieldFileService {
         return list;
     }
 
-    public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType){
+    public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType,int count){
         List<LogFieldDTO> logFieldDTOList = null;
         if(page<1){
             page=1;
         }
         if(sortd!=0){
             String sortSQL = " ORDER BY `"+sortType+(sortd==1?"` ASC":"` DESC");
-            logFieldDTOList = logFieldMapper.selectSPage((page-1)*10,10,sortSQL);
+            logFieldDTOList = logFieldMapper.selectSPage((page-1)*count,count,sortSQL);
         }else {
-            logFieldDTOList = logFieldMapper.selectAPage((page - 1) * 10, 10);
+            logFieldDTOList = logFieldMapper.selectAPage((page - 1) * count, count);
         }
         TimeUtil.initedFormatter();
         List<LogField> list = new ArrayList<>();
@@ -49,18 +49,22 @@ public class SettingFieldFileService {
                 field4scan.add(logFieldDTO.getId());
             }
             list.add(new LogField()
-                .setId(logFieldDTO.getId())
-                .setCreateTime(TimeUtil.formatTimeUnchecked(logFieldDTO.getCreateTime()))
-                .setPath(logFieldDTO.getPath())
-                .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
-                .setStatus(logFieldDTO.getStatus())
-                .setFileCount(logFieldDTO.getFileCount())
-                .setRemarks(logFieldDTO.getRemarks())
-                .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"))
+                    .setId(logFieldDTO.getId())
+                    .setCreateTime(TimeUtil.formatTimeUnchecked(logFieldDTO.getCreateTime()))
+                    .setPath(logFieldDTO.getPath())
+                    .setStatusStr(getLogStatusStr(logFieldDTO.getStatus()))
+                    .setStatus(logFieldDTO.getStatus())
+                    .setFileCount(logFieldDTO.getFileCount())
+                    .setRemarks(logFieldDTO.getRemarks())
+                    .setSize(logFieldDTO.getSize()==null?"":(String.format("%.2f", logFieldDTO.getSize())+" M"))
             );
         });
         ThreadLocalUtil.set("logFields4Scan",field4scan);
         return list;
+    }
+
+    public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType){
+        return getPagesLogField(page, sortd, sortType,10);
     }
 
     public Boolean saveField(LogField logField) throws DefaultException {
