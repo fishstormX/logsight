@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `log_field_file`  (
   `status` int DEFAULT 0,
   `last_scan` timestamp ,
   `prev_size` bigint DEFAULT 0,
+  `tree_scanned_flag` int DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX field_id_idx ( `field_id` )
 );
@@ -39,6 +40,7 @@ CREATE TABLE IF NOT EXISTS `log_field_tree`  (
   `parent_id` bigint DEFAULT 0,
   `last_scan` timestamp ,
   `name` varchar(600),
+  `path` varchar(2200),
   PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `report_file`  (
@@ -51,4 +53,5 @@ CREATE TABLE IF NOT EXISTS `report_file`  (
 );
 ALTER TABLE `log_field` ADD UNIQUE (`path`);
 ALTER TABLE `log_field_file` ADD UNIQUE (`field_id`,`path_name`);
+ALTER TABLE `log_field_tree` ADD UNIQUE (`field_id`,`path`);
 ALTER TABLE `log_group` ADD UNIQUE (`name`);

@@ -11,6 +11,7 @@ public class LogFieldFileDTO {
     private Long fileSize;
     private Date lastScan;
     private Long prevSize;
+    private Integer treeScannedFlag;
 
     public LogFieldFileDTO() {
     }
@@ -35,6 +36,14 @@ public class LogFieldFileDTO {
         this.lastScan = lastScan;
         this.fileSize = fileSize;
         this.status = status;
+    }
+
+    public Integer getTreeScannedFlag() {
+        return treeScannedFlag;
+    }
+
+    public void setTreeScannedFlag(Integer treeScannedFlag) {
+        this.treeScannedFlag = treeScannedFlag;
     }
 
     public Integer getStatus() {

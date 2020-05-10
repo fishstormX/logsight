@@ -3,26 +3,27 @@ package cn.fishmaple.logsight.thread;
 import cn.fishmaple.logsight.dao.consts.LogFileStatus;
 import cn.fishmaple.logsight.dao.dto.LogFieldDTO;
 import cn.fishmaple.logsight.dao.dto.LogFieldFileDTO;
+import cn.fishmaple.logsight.dao.dto.LogFieldTreeDTO;
 import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
 import cn.fishmaple.logsight.dao.mapper.LogFieldMapper;
+import cn.fishmaple.logsight.dao.mapper.LogFieldTreeMapper;
 import cn.fishmaple.logsight.handler.FileScanHandler;
 import cn.fishmaple.logsight.service.ApplicationContextProvider;
 import cn.fishmaple.logsight.util.TimeUtil;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @DependsOn(value = {"logFieldMapper","logFieldFileMapper","fileScanHandler"})
 public class FileLoadThread extends Thread{
     LogFieldMapper logFieldMapper;
     LogFieldFileMapper logFieldFileMapper;
+    LogFieldTreeMapper logFieldTreeMapper;
     FileScanHandler fileScanHandler;
     Integer scanTimes;
     @PostConstruct
@@ -32,10 +33,11 @@ public class FileLoadThread extends Thread{
 
     private void initThread(){
         scanTimes = 0;
-        while (null==logFieldMapper||null==fileScanHandler||null==logFieldFileMapper){
+        while (null==logFieldMapper||null==fileScanHandler||null==logFieldFileMapper||null==logFieldTreeMapper){
             logFieldMapper = ApplicationContextProvider.getBean(LogFieldMapper.class);
             logFieldFileMapper = ApplicationContextProvider.getBean(LogFieldFileMapper.class);
             fileScanHandler = ApplicationContextProvider.getBean(FileScanHandler.class);
+            logFieldTreeMapper = ApplicationContextProvider.getBean(LogFieldTreeMapper.class);
             try {
                 Thread.sleep(10000);
             } catch (InterruptedException e) {
@@ -44,17 +46,20 @@ public class FileLoadThread extends Thread{
         }
 
     }
+
     public void run(){
         initThread();
         while (true) {
             boolean overallScan = (scanTimes>>2)>0;
             List<LogFieldDTO> list;
+            List<LogFieldTreeDTO> treeList;
             if(overallScan){
                 list = logFieldMapper.selectUnClosedField();
                 scanTimes = 0;
             }else{
                 list = logFieldMapper.selectUnScannedField();
             }
+            treeList = new ArrayList<>();
             for (LogFieldDTO logFieldDTO : list) {
                 int count=0;
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
@@ -69,6 +74,9 @@ public class FileLoadThread extends Thread{
                 for (LogFieldFileDTO logFieldFileDTO : nowaFiles) {
                     File file = new File(logFieldFileDTO.getPathName());
                     if(file.isFile()&&!file.isHidden()){
+                        if(0==logFieldFileDTO.getTreeScannedFlag()){
+                            buildFileTree(logFieldDTO.getId(),logFieldFileDTO.getPathName(),logFieldFileDTO.getId());
+                        }
                         files.remove(logFieldFileDTO.getPathName());
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
                                 logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),logFieldFileDTO.getFileSize(), LogFileStatus.NORMAL));
@@ -77,6 +85,7 @@ public class FileLoadThread extends Thread{
                     }else{
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
                                 logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.DELETED));
+
                     }
                 }
                 for (String logFile : files) {
@@ -108,11 +117,37 @@ public class FileLoadThread extends Thread{
             }
         }
     }
-
-    public static void main(String args[]){
-        for(int i =0;i<2000;i++){
-            System.out.println((i>>10)+"*****"+i);
+    @Transactional(rollbackFor = Exception.class)
+    void buildFileTree(Integer fieldId, String filePath, Integer fileId){
+        String splitor = filePath.indexOf("/")>0?"/":"\\\\";
+        String paths[] = filePath.split(splitor);
+        boolean savedFlag = true;
+        StringBuilder nowaPath = new StringBuilder();
+        Long parentId=0L;
+        Long preId=0L;
+        for(int i =0;i<paths.length;i++){
+            nowaPath.append(paths[i]);
+            if(savedFlag) {
+                //查询本层
+                preId = logFieldTreeMapper.selectId(fieldId,nowaPath.toString());
+                // 查询是否存在subPath
+                if(null == preId||preId==-1){
+                    savedFlag = false;
+                }
+                //存在 savedFlag变为false
+            }
+            if(!savedFlag){
+                //if not absent
+                LogFieldTreeDTO logFieldTreeDTO = new LogFieldTreeDTO(fieldId,i,parentId,new Date(),paths[i],nowaPath.toString());
+                logFieldTreeMapper.add(logFieldTreeDTO);
+                preId = logFieldTreeDTO.getId();
+            }
+            parentId = preId;
+            if(i<paths.length-1){
+                nowaPath.append("/");
+            }
         }
-
+        logFieldFileMapper.updateTreeScannedFlag(1,fileId);
     }
+
 }

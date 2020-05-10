@@ -15,7 +15,7 @@ public interface LogFieldFileMapper {
             "VALUES(#{fieldId},#{pathName},#{timeline},#{status},#{lastScan}) ON DUPLICATE KEY UPDATE " +
             "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`status` = #{status},`file_size` = #{fileSize}")
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
-    @Select("SELECT `id`,path_name pathName,file_size fileSize,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
+    @Select("SELECT `id`,path_name pathName,file_size fileSize,`tree_scanned_flag` treeScannedFlag,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
     public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
     @Select("SELECT DISTINCT path_name pathName , last_scan lastScan , prev_size prevSize " +
             "FROM log_field_file ORDER BY `id` LIMIT #{start},#{count}")
@@ -28,9 +28,10 @@ public interface LogFieldFileMapper {
     public Double getTotalSize();
     @Select("SELECT COUNT(DISTINCT path_name) FROM `log_field_file`  WHERE status = 1")
     public Long getTotalCount();
-
     @Update("UPDATE `log_field_file` SET file_size = #{fileSize} WHERE path_name = #{pathName}")
     public Integer updateFileSize(LogFieldFileDTO logFieldFileDTO);
+    @Update("UPDATE `log_field_file` SET `tree_scanned_flag` = #{treeScannedFlag} WHERE id = #{id}")
+    public Integer updateTreeScannedFlag(@Param("treeScannedFlag")Integer treeScannedFlag,@Param("id") Integer id);
     @Update("UPDATE `log_field_file` SET file_size = #{fileSize}," +
             "`last_scan` = #{lastScan},`prev_size` = #{prevSize}" +
             " WHERE path_name = #{pathName}")
