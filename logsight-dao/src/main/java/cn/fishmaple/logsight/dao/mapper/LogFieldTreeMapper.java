@@ -16,11 +16,19 @@ public interface LogFieldTreeMapper {
             "#{logfieldTree.lastScan},#{logfieldTree.name})</foreach></script>")
     int batchAdd(@Param("list") List<LogFieldTreeDTO> list);
 
-    @Insert("INSERT INTO log_field_tree(field_id,level,parent_id,last_scan,name,path) "
-            + "VALUES (#{fieldId},#{level},#{parentId},#{lastScan},#{name},#{path})")
+    @Insert("INSERT INTO log_field_tree(field_id,level,parent_id,last_scan,name,path,last_flag) "
+            + "VALUES (#{fieldId},#{level},#{parentId},#{lastScan},#{name},#{path},#{lastFlag})")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     Integer add(LogFieldTreeDTO logFieldTreeDTO);
 
     @Select("SELECT `id` FROM log_field_tree where field_id = #{fieldId} and `path` = #{path}")
     Long selectId(@Param("fieldId")Integer fieldId,@Param("path")String path);
+
+    @Select("SELECT `id` FROM log_field_tree where field_id = #{fieldId} and `path` = #{path}")
+    Long select(@Param("fieldId")Integer fieldId, @Param("path")String path);
+
+    @Select("SELECT id,field_id fieldId,level,parent_id parentId,name,path FROM log_field_tree where field_id = #{fieldId} and `parent_id` = #{parentId}")
+    List<LogFieldTreeDTO> selectDetail(@Param("fieldId")Integer fieldId, @Param("parentId")Long parentId);
+    @Select("SELECT id,field_id fieldId,level,parent_id parentId,name,path FROM log_field_tree where field_id = #{fieldId} and `parent_id` = #{parentId} order by id limit ${limit}")
+    List<LogFieldTreeDTO> selectDetailLimit(@Param("fieldId")Integer fieldId, @Param("parentId")Long parentId,@Param("limit")Integer limit);
 }

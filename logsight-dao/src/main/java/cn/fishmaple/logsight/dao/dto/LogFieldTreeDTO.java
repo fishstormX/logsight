@@ -10,6 +10,7 @@ public class LogFieldTreeDTO {
     private Date lastScan;
     private String name;
     private String path;
+    private Integer lastFlag;
 
     public LogFieldTreeDTO() {
     }
@@ -21,6 +22,14 @@ public class LogFieldTreeDTO {
         this.lastScan = lastScan;
         this.name = name;
         this.path = path;
+    }
+
+    public Integer getLastFlag() {
+        return lastFlag;
+    }
+
+    public void setLastFlag(Integer lastFlag) {
+        this.lastFlag = lastFlag;
     }
 
     public String getPath() {

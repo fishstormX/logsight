@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `log_field_tree`  (
   `last_scan` timestamp ,
   `name` varchar(600),
   `path` varchar(2200),
+  `last_flag` int DEFAULT 0,
   PRIMARY KEY (`id`)
 );
 CREATE TABLE IF NOT EXISTS `report_file`  (

@@ -12,6 +12,7 @@ public interface LogFieldMapper {
     public Integer addOne(LogFieldDTO logFieldDTO);
     @Update("UPDATE `log_field` SET timeline = #{timeline},file_count = #{fileCount},`status` = #{status},`size` = #{size} WHERE `id` = #{id}")
     public Integer scanUpdate(LogFieldDTO logFieldDTO);
+
     @Update("UPDATE `log_field` SET create_time = #{createTime},path = #{path},`status` =#{status},file_count = null" +
             ",`remarks` = #{remarks} ,size = null WHERE `id` = #{id}")
     public Integer update(LogFieldDTO logFieldDTO);

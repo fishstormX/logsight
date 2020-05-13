@@ -4,10 +4,7 @@ import cn.fishmaple.logsight.dao.dto.FileReportDTO;
 import cn.fishmaple.logsight.dao.dto.LogFieldFileDTO;
 import cn.fishmaple.logsight.dao.mapper.FileReportMapper;
 import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
-import cn.fishmaple.logsight.dao.mapper.LogFieldMapper;
-import cn.fishmaple.logsight.dao.object.IdPagedStat;
 import cn.fishmaple.logsight.dao.object.PagedStat;
-import cn.fishmaple.logsight.handler.FileScanHandler;
 import cn.fishmaple.logsight.service.ApplicationContextProvider;
 import cn.fishmaple.logsight.util.FileUtil;
 import cn.fishmaple.logsight.util.TimeUtil;
@@ -50,7 +47,7 @@ public class FileScanThread extends Thread{
                 for(LogFieldFileDTO logFieldFileDTO:logFieldFileDTOList){
                     logFieldFileDTO.setFileSize(FileUtil.getFileLength(logFieldFileDTO.getPathName()));
                     Date earlyHour = TimeUtil.getEarlyHour();
-                    //add a filerecord pre hour
+                    //add a file record pre hour
                     if(!logFieldFileDTO.getLastScan().equals(earlyHour)){
                         logFieldFileDTO.setLastScan(earlyHour);
                         logFieldFileDTO.setPrevSize(logFieldFileDTO.getFileSize());
@@ -67,7 +64,6 @@ public class FileScanThread extends Thread{
                 start+=100;
                 pagedStat.setStart(start);
                 logFieldFileDTOList = logFieldFileMapper.getDistinctFilesByPaged(pagedStat);
-
             }
             try {
                 Thread.sleep(10000);
