@@ -1,5 +1,6 @@
 package cn.fishmaple.logsight.service;
 
+import cn.fishmaple.logsight.core.ReportCache;
 import cn.fishmaple.logsight.dao.dto.LogFieldFileDTO;
 import cn.fishmaple.logsight.dao.mapper.FileReportMapper;
 import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
@@ -9,6 +10,7 @@ import cn.fishmaple.logsight.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,9 +23,20 @@ public class ReportService {
     LogFieldFileMapper logFieldFileMapper;
     @Autowired
     LogFieldMapper logFieldMapper;
+    @Autowired
+    ReportCache reportCache;
+
+    @PostConstruct
+    private void init(){
+        reportCache.setDailyFileReport(getDailyFileReport());
+    }
+
+    public List<String> getCachedDailyFileReport(){
+        return  reportCache.getDailyFileReport();
+    }
+
     public List<String> getDailyFileReport(){
         Integer nowaHour = TimeUtil.getHours();
-        Calendar calendar=Calendar.getInstance();
         List<String> result = new ArrayList<>();
         for(int i=0;i<24+nowaHour+1;i++){
             Double size=fileReportMapper.getFileSize(TimeUtil.getEarlyHour(i-24-nowaHour,0))/1024;

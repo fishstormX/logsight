@@ -25,13 +25,25 @@ public class IndexController {
 
     @RequestMapping("dashboard")
     public String dashboard(Model model, @RequestParam(defaultValue = "0") int dr){
-        model.addAttribute("module","dashboard");
-        model.addAttribute("dr",dr);
-        model.addAttribute("fileSizeData",reportService.getDailyFileReport());
-        model.addAttribute("maxFileData",reportService.getMax());
-        model.addAttribute("fileCount",reportService.getTotalFileCount());
-        model.addAttribute("fieldCount",reportService.getTotalFieldCount());
-        model.addAttribute("fileSize",reportService.getTotalFileSize());
+        model.addAttribute("module", "dashboard");
+        model.addAttribute("dr", dr);
+        model.addAttribute("fileSizeData", reportService.getCachedDailyFileReport());
+        model.addAttribute("maxFileData", reportService.getMax());
+        model.addAttribute("fileCount", reportService.getTotalFileCount());
+        model.addAttribute("fieldCount", reportService.getTotalFieldCount());
+        model.addAttribute("fileSize", reportService.getTotalFileSize());
+        return "index";
+    }
+
+    @RequestMapping("filed")
+    public String filedown(Model model, @RequestParam(defaultValue = "0") int dr){
+        model.addAttribute("module", "filed");
+        model.addAttribute("dr", dr);
+        model.addAttribute("fileSizeData", reportService.getDailyFileReport());
+        model.addAttribute("maxFileData", reportService.getMax());
+        model.addAttribute("fileCount", reportService.getTotalFileCount());
+        model.addAttribute("fieldCount", reportService.getTotalFieldCount());
+        model.addAttribute("fileSize", reportService.getTotalFileSize());
         return "index";
     }
 }
