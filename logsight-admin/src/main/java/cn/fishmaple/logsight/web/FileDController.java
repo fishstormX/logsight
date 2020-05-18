@@ -19,11 +19,10 @@ public class FileDController {
     public String filezone(Model model, @RequestParam(defaultValue = "1") int p,@RequestParam(defaultValue = "0") int dr,
                           @RequestParam(defaultValue = "0") int sortd,@RequestParam(defaultValue = "")String sortType) {
         model.addAttribute("module","filezone");
-        //model.addAttribute("case","filezone");
         model.addAttribute("dr",dr);
-        model.addAttribute("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType));
+        model.addAttribute("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType,8));
         model.addAttribute("p",p);
-        model.addAttribute("pages", settingFieldFileService.getLogfieldPages(10));
+        model.addAttribute("pages", settingFieldFileService.getLogfieldPages(8));
         model.addAttribute("sortd",sortd);
         model.addAttribute("sortType",sortType);
         return "index";

@@ -29,6 +29,10 @@ public interface LogFieldTreeMapper {
 
     @Select("SELECT id,field_id fieldId,level,parent_id parentId,name,path FROM log_field_tree where field_id = #{fieldId} and `parent_id` = #{parentId}")
     List<LogFieldTreeDTO> selectDetail(@Param("fieldId")Integer fieldId, @Param("parentId")Long parentId);
+    @Select("SELECT MAX(level) FROM log_field_tree where field_id = #{fieldId}")
+    Integer getDepth(@Param("fieldId")Integer fieldId);
+    @Select("SELECT COUNT(*) count,level FROM log_field_tree where field_id = #{fieldId} group by `parent_id` order by level DESC ")
+    List<LogFieldTreeDTO> getWidth(@Param("fieldId")Integer fieldId);
     @Select("SELECT id,field_id fieldId,level,parent_id parentId,name,path FROM log_field_tree where field_id = #{fieldId} and `parent_id` = #{parentId} order by id limit ${limit}")
     List<LogFieldTreeDTO> selectDetailLimit(@Param("fieldId")Integer fieldId, @Param("parentId")Long parentId,@Param("limit")Integer limit);
 }

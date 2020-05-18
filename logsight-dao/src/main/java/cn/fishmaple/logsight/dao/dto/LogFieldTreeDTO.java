@@ -11,6 +11,7 @@ public class LogFieldTreeDTO {
     private String name;
     private String path;
     private Integer lastFlag;
+    private Integer count;
 
     public LogFieldTreeDTO() {
     }
@@ -22,6 +23,14 @@ public class LogFieldTreeDTO {
         this.lastScan = lastScan;
         this.name = name;
         this.path = path;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 
     public Integer getLastFlag() {

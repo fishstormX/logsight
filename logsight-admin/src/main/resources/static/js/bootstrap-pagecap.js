@@ -21,8 +21,10 @@ function initSpiritPagination(currentPage, pages){
                 html += '<li class="page-item"><a class="page-link" href="JavaScript:void(0);">' + (i+1) + '</a></li>';
             }
         }
-        html += '<li class="page-item page-next"><a class="page-link" href="JavaScript:void(0);">›</a></li>'+
-            '</ul></div>';
+        if(currentPage<pages) {
+            html += '<li class="page-item page-next"><a class="page-link" href="JavaScript:void(0);">›</a></li>' +
+                '</ul></div>';
+        }
     }else if(pages > 7){
         html =  commonHead;
         if(currentPage<5){

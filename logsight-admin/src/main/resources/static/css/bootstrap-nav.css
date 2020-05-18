@@ -10,6 +10,9 @@
 .list-group .active-border-red:hover,.list-group .active-border-red.cm-ac{
     border-left: 3px #ff0000 solid;
 }
+.list-group .active-border-lightpurple:hover,.list-group .active-border-lightpurple.cm-ac{
+    border-left: 3px #cdc3ff solid;
+}
 .list-group .active-border-purple:hover,.list-group .active-border-purple.cm-ac {
     border-left: 3px #a900ff solid;
 }
