@@ -9,6 +9,9 @@
         .node {
             cursor: pointer;
         }
+        .clicked{
+            cursor: pointer;
+        }
         .node circle {
             fill: #fff;
             stroke: steelblue;
@@ -29,8 +32,8 @@
     </style>
     <div th:fragment="logField" class="row">
         <div class="col-4">
-            <div class="spinner-grow text-warning" role="status">
-            </div>
+            <div id="table-loading" class="spinner-grow text-warning cm-none" style="position: absolute;top: 40%;left: 43%;"></div>
+            <div id="table-shade">
                 <table class="table" id="logfield-tb">
                     <thead>
                     <tr>
@@ -48,15 +51,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:attr="data-id=${logField.id}" style="cursor:pointer"  class="clicked" th:each="logField,logFieldStat : ${logFields}">
+                    <tr th:attr="data-id=${logField.id}" class="clicked" th:each="logField,logFieldStat : ${logFields}">
                         <td th:text="${logField.path}"></td>
                         <td th:text="${logField.createTime}"></td>
                         <td th:text="${logField.remarks}"></td>
                     </tr>
                     </tbody>
                 </table>
-        <div class="spiritPagination"></div>
-        <div style="text-align: center"><ul id="pageLimit"></ul></div>
+                <div class="spiritPagination"></div>
+            </div>
         </div>
         <div class="col-8" id="d3" style="height:700px;overflow: auto"></div>
     </div>
@@ -65,25 +68,32 @@
     <script src="http://svg.dabbles.info/Snap.svg.FreeTransform/snap.svg-min.js"></script>
     <script src="http://svg.dabbles.info/Snap.svg.FreeTransform/snap.svg.free_transform.js"></script>
     <script>
-
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
         $(".clicked").click(function () {
+            if($(this).attr("class")==="unclicked"){
+                return 
+            }
+            $("#table-shade").attr("class","shade")
+            $("#table-loading").attr("class","spinner-grow text-warning")
+            $(".clicked").attr("class","unclicked")
             d3.select("#d3").select("svg").remove()
             util.ajax("GET","/api/filezone/fileNodes?fieldId="+$(this).attr("data-id"),null,
                 function(result){
                     d3Tree(result.root,"#d3",result.maxWidth,result.depth);
-
-                }, function(){}
+                    $("#table-shade").attr("class","")
+                    $("#table-loading").attr("class","spinner-grow text-warning cm-none")
+                    $(".unclicked").attr("class","clicked")
+                }, function(){
+                $("#table-shade").attr("class","")
+                    $("#table-loading").attr("class","spinner-grow text-warning cm-none")
+                    $(".unclicked").attr("class","clicked")}
             )
         })
         function onPageClick(page) {
             window.params.set("p",page)
             hrefTo(["dr","p"],"/filezone")
         }
-
-        //svg拖动和缩放
-
     </script>
 </main>
 </body>

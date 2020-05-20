@@ -78,3 +78,6 @@ main{
 .btn-close:focus{
     outline: none;
 }
+.shade{
+    -moz-opacity: 0.3;  opacity:.30;  filter: alpha(opacity=30);
+}
