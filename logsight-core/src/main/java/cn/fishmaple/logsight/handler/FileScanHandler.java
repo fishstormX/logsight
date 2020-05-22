@@ -1,4 +1,4 @@
-package cn.fishmaple.logsight.service;
+package cn.fishmaple.logsight.handler;
 
 import cn.fishmaple.logsight.util.EnvUtil;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
