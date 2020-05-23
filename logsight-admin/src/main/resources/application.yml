@@ -10,7 +10,10 @@ thymeleaf:
   mode: HTML
   prefix: classpath:/templates/
   suffix: .html
+
 logsight:
   #config-path: /home/ubuntu/
   #input:
   #  log-path: ppp
+server:
+  port: 8558
