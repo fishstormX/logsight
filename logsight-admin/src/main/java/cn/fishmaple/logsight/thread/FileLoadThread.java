@@ -119,7 +119,7 @@ public class FileLoadThread extends Thread{
     }
     @Transactional(rollbackFor = Exception.class)
     void buildFileTree(Integer fieldId, String filePath, Integer fileId){
-        String splitor = filePath.indexOf("/")>0?"/":"\\\\";
+        String splitor = filePath.indexOf("/")>-1?"/":"\\\\";
         String paths[] = filePath.split(splitor);
         boolean savedFlag = true;
         StringBuilder nowaPath = new StringBuilder();
