@@ -56,6 +56,9 @@ public class ReportService {
     }
 
     public String getTotalFileSize(){
+        if(null==logFieldFileMapper.getTotalSize()){
+            return "0M";
+        }
         Double result = logFieldFileMapper.getTotalSize()/1024;
         return String.format("%.2f", result)+"M";
     }
