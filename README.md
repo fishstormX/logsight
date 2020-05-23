@@ -1,5 +1,6 @@
 # Logsight
 
+
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d7ce82f09f214cdc9a83dbc5764fb1df)](https://www.codacy.com/manual/fishstormX/logsight?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fishstormX/logsight&amp;utm_campaign=Badge_Grade)
 [![Build Status](https://travis-ci.org/fishstormX/logsight.svg?branch=master)](https://travis-ci.org/fishstormX/logsight) 
 [![GitHub last commit](https://img.shields.io/github/last-commit/fishstormX/logsight)](https://github.com/fishstormX/logsight/commit)
