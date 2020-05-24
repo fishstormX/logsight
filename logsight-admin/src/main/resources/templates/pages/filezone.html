@@ -4,7 +4,10 @@
 <main th:fragment="filezone">
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="/js/d3tree.js"></script>
-
+    <script src="/js/moment.js"></script>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
     <style type="text/css">
         .node {
             cursor: pointer;
@@ -28,7 +31,20 @@
         #d3 path{
             cursor: grab;
         }
-
+        #d3::-webkit-scrollbar {
+            width: 9px;
+            height: 5px;
+        }
+        #d3::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        #d3::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            background: #EDEDED;
+        }
     </style>
     <div th:fragment="logField" class="row">
         <div class="col-4">
@@ -63,10 +79,58 @@
         </div>
         <div class="col-8" id="d3" style="height:700px;overflow: auto"></div>
     </div>
+    <div class="modal fade" style="margin-top:15%" id="fileOptions" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:600px">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div>
+                        <h4 th:text="#{i18n.timezone_download_filter}"></h4>
+                        <div>
+                            <button type="button" class="btn btn-secondary" style="float:right;margin:10px" th:text="#{i18n.system_cancel}" data-dismiss="modal"></button>
+                            <button id="fm-submit-delete" class="btn btn-primary" style="float:right;margin:10px" type="submit" th:text="#{i18n.system_ok}"></button>
+                        </div>
+                        <div class="row" style="float:right;margin-top:10px">
+                            <div class='col-5'>
+                                <div class="form-group">
+                                    <div class="input-group date" id="datetimepickers" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepickers"/>
+                                        <div class="input-group-append" data-target="#datetimepickers" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='col-1' style="line-height:35px;margin-left: 15px;">
+                                -
+                            </div>
+                            <div class='col-5'>
+                                <div class="form-group">
+                                    <div class="input-group date" id="datetimepickere" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepickere"/>
+                                        <div class="input-group-append" data-target="#datetimepickere" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeAnalyser" th:text="#{i18n.timezone_download_timeAnalyser}"></label>
+                            <select class="form-control" id="timeAnalyser">
+                                <option value="默认选择器">默认的</option>
+                                <option value="自定义的选择器">自定义的</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a id='down' href=''  download='q.txt' style='display:none'></a>
+    </div>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
-    <script src="http://svg.dabbles.info/Snap.svg.FreeTransform/snap.svg-min.js"></script>
-    <script src="http://svg.dabbles.info/Snap.svg.FreeTransform/snap.svg.free_transform.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
     <script>
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
@@ -90,6 +154,27 @@
                     $(".unclicked").attr("class","clicked")}
             )
         })
+            $('#datetimepickers').datetimepicker({
+                format:'YYYY-MM-DD H:mm:ss',
+                sideBySide:true
+            });
+            $('#datetimepickere').datetimepicker({
+                format:'YYYY-MM-DD H:mm:ss',
+                showToday: false,
+                useCurrent: false,
+                sideBySide:true
+            });
+            $("#datetimepickers").on("change.datetimepicker", function (e) {
+                $('#datetimepickere').datetimepicker('minDate', e.date);
+            });
+            $("#datetimepickere").on("change.datetimepicker", function (e) {
+                $('#datetimepickers').datetimepicker('maxDate', e.date);
+            });
+        function nodeClicked(id){
+            $('#fileOptions').modal('show')
+            $("#down").attr("href","/api/filezone/file/"+id)
+            $("#down")[0].click();
+        }
         function onPageClick(page) {
             window.params.set("p",page)
             hrefTo(["dr","p"],"/filezone")

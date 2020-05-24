@@ -185,9 +185,13 @@ function d3Tree(root,tag,count,depth){
             if (d.children) {
                 d._children = d.children;
                 d.children = null;
-            } else {
+            } else if(d._children){
                 d.children = d._children;
                 d._children = null;
+            } else {
+                if(typeof(nodeClicked) != "undefined"){
+                    nodeClicked(d.id)
+                }
             }
             update(d);
         }
