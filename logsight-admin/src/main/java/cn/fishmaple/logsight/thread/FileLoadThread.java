@@ -50,7 +50,7 @@ public class FileLoadThread extends Thread{
     public void run(){
         initThread();
         while (true) {
-            boolean overallScan = (scanTimes>>2)>0;
+            boolean overallScan = (scanTimes>>3)>0;
             List<LogFieldDTO> list;
             List<LogFieldTreeDTO> treeList;
             if(overallScan){
@@ -59,7 +59,7 @@ public class FileLoadThread extends Thread{
             }else{
                 list = logFieldMapper.selectUnScannedField();
             }
-            treeList = new ArrayList<>();
+
             for (LogFieldDTO logFieldDTO : list) {
                 int count=0;
                 Collection<String> files = fileScanHandler.scanFile(logFieldDTO.getPath());
@@ -91,8 +91,10 @@ public class FileLoadThread extends Thread{
                 for (String logFile : files) {
                     File file = new File(logFile);
                     if(file.isFile()&&!file.isHidden()){
-                        logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
-                                logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL));
+                        LogFieldFileDTO logFieldFileDTO = new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
+                                logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL);
+                        logFieldFileMapper.addOneFile(logFieldFileDTO);
+                        buildFileTree(logFieldDTO.getId(),logFile,logFieldFileDTO.getId());
                         count++;
                         size += ((double)file.length())/1024/1024;
                     }
@@ -147,6 +149,7 @@ public class FileLoadThread extends Thread{
                 nowaPath.append("/");
             }
         }
+
         logFieldFileMapper.updateTreeScannedFlag(1,fileId);
     }
 

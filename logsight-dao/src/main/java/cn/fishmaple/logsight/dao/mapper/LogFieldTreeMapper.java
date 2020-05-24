@@ -27,6 +27,9 @@ public interface LogFieldTreeMapper {
     @Select("SELECT `id` FROM log_field_tree where field_id = #{fieldId} and `path` = #{path}")
     Long select(@Param("fieldId")Integer fieldId, @Param("path")String path);
 
+    @Select("SELECT `path` FROM log_field_tree where id=#{id}")
+    String selectPathById(@Param("id")Integer id);
+
     @Select("SELECT id,field_id fieldId,level,parent_id parentId,name,path FROM log_field_tree where field_id = #{fieldId} and `parent_id` = #{parentId}")
     List<LogFieldTreeDTO> selectDetail(@Param("fieldId")Integer fieldId, @Param("parentId")Long parentId);
     @Select("SELECT MAX(level) FROM log_field_tree where field_id = #{fieldId}")

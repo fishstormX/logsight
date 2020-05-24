@@ -14,6 +14,7 @@ public interface LogFieldFileMapper {
     @Insert("INSERT INTO `log_field_file` (`field_id`,`path_name`,`timeline`,`status`,`last_scan`) " +
             "VALUES(#{fieldId},#{pathName},#{timeline},#{status},#{lastScan}) ON DUPLICATE KEY UPDATE " +
             "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`status` = #{status},`file_size` = #{fileSize}")
+    @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
     @Select("SELECT `id`,path_name pathName,file_size fileSize,`tree_scanned_flag` treeScannedFlag,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
     public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
