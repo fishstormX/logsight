@@ -43,7 +43,24 @@ function d3Tree(root,tag,count,depth){
     // });
 
     d3.select(self.frameElement).style("height", "800px");
-
+    function click(d) {
+        if(window.params.get("dragged")){
+            window.params.set("dragged",false)
+        }else{
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else if(d._children){
+                d.children = d._children;
+                d._children = null;
+            } else {
+                if(typeof(nodeClicked) != "undefined"){
+                    nodeClicked(d.id)
+                }
+            }
+            update(d);
+        }
+    }
     function update(source) {
 
         // Compute the new tree layout.
@@ -149,7 +166,6 @@ function d3Tree(root,tag,count,depth){
 
     function dragDrag () {
         if(window.params.get("d3-start")) {
-            console.log(event, d3.event.x, d3.event.y,window.params.get("d3-start"),window.params.get("d3x"),window.params.get("d3y"),window.params.get("trx"),window.params.get("try"))
             let transform = svg.attr("transform")
             let trX= window.params.get("trx") + d3.event.x - window.params.get("d3x")
             let trY= window.params.get("try") + d3.event.y - window.params.get("d3y")
@@ -167,6 +183,10 @@ function d3Tree(root,tag,count,depth){
         }
     }
     function dragEnd () {
+        setTimeout(function(){
+            window.params.set("dragged",false)
+        },300)
+
         window.params.set("d3-start",false)
         let transform = svg.attr("transform")
         let trX = transform.substring(10,transform.indexOf(","))
@@ -178,23 +198,5 @@ function d3Tree(root,tag,count,depth){
         .on('dragend', dragEnd)
         .on('drag', dragDrag))
 
-        function click(d) {
-        if(window.params.get("dragged")){
-            window.params.set("dragged",false)
-        }else{
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else if(d._children){
-                d.children = d._children;
-                d._children = null;
-            } else {
-                if(typeof(nodeClicked) != "undefined"){
-                    nodeClicked(d.id)
-                }
-            }
-            update(d);
-        }
-    }
     return svg
 }
