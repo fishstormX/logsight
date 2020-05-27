@@ -23,25 +23,6 @@ function d3Tree(root,tag,count,depth){
     root.y0 = 0;
     update(root);
 
-    // d3.json(q, function(error, flare) {
-    //     if (error) throw error;
-    //
-    //     root = flare;
-    //     root.x0 = height / 2;
-    //     root.y0 = 0;
-    //
-    //     /* function collapse(d) {
-    //          if (d.children) {
-    //              d._children = d.children;
-    //              d._children.forEach(collapse);
-    //              d.children = null;
-    //          }
-    //      }
-    //
-    //      root.children.forEach(collapse);*/
-    //     update(root);
-    // });
-
     d3.select(self.frameElement).style("height", "800px");
     function click(d) {
         if(window.params.get("dragged")){
@@ -197,6 +178,5 @@ function d3Tree(root,tag,count,depth){
     svg.call(d3.behavior.drag()
         .on('dragend', dragEnd)
         .on('drag', dragDrag))
-
     return svg
 }

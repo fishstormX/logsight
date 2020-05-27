@@ -4,7 +4,7 @@
 <main th:fragment="filezone">
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="/js/d3tree.js"></script>
-    <script src="/js/moment.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
@@ -130,11 +130,11 @@
                 </div>
             </div>
         </div>
-        <a id='down' href=''  download='q.txt' style='display:none'></a>
+        <a id='down' href=''  download='' style='display:none'></a>
     </div>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <script>
         initSpiritPagination([[${p}]], [[${pages}]])
@@ -175,10 +175,11 @@
                 sideBySide:true
             });
             $("#datetimepickers").on("change.datetimepicker", function (e) {
-                $('#datetimepickere').datetimepicker('minDate', e.date);
+                $('#datetimepickere').datetimepicker('minDate', e.date)
             });
             $("#datetimepickere").on("change.datetimepicker", function (e) {
-                $('#datetimepickers').datetimepicker('maxDate', e.date); q});
+                $('#datetimepickers').datetimepicker('maxDate', e.date)
+            });
         $('#fm-timeAnalyser').change(function(e){
              if($('#fm-timeAnalyser')[0].value==="1"){
                  $("#fm-timeFormater-group").attr("class","form-group row")
