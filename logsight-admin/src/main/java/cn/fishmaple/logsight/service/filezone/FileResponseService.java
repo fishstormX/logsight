@@ -14,8 +14,6 @@ import java.util.Date;
 
 @Service
 public class FileResponseService {
-    @Autowired
-    TimeAnalyser defaultTimeAnalyser;
 
     public void file2Response(String path, HttpServletResponse response){
         File file = new File(path);

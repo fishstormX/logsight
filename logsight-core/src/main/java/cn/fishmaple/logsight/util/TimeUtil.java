@@ -1,6 +1,8 @@
 package cn.fishmaple.logsight.util;
 
 import org.springframework.util.Assert;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +22,18 @@ public class TimeUtil {
     public static String formatTimeUnchecked(Date date){
         Assert.notNull(simpleDateFormatThreadLocal.get(),"simpleDateFormatThreadLocal not Init Error");
         return simpleDateFormatThreadLocal.get().format(date);
+    }
+
+    public static Date parseTimeUnchecked(String date){
+        System.out.println(date);
+        Assert.notNull(simpleDateFormatThreadLocal.get(),"simpleDateFormatThreadLocal not Init Error");
+        try {
+            System.out.println(simpleDateFormatThreadLocal.get().parse(date));
+            return simpleDateFormatThreadLocal.get().parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Date getEarlyHour(){

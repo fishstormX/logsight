@@ -1,5 +1,4 @@
 window.params = new Map();
-console.log(window.params,"12")
 var util={
     loadStyles: function (url) {
         let link = document.createElement("link");

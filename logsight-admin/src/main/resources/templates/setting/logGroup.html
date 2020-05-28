@@ -153,7 +153,6 @@
             }
             /* fm-commit */
             $("#fm-submit").click(function () {
-                console.log($("#transferContainer .form-control").is(":focus"))
                 if(!$("#transferContainer .form-control").is(":focus")) {
                     $(this).attr('disabled', true)
                     let btnText = $(this).text()

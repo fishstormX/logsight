@@ -85,15 +85,16 @@
                 <div class="modal-body">
                     <div>
                         <h4 th:text="#{i18n.timezone_download_filter}"></h4>
+                        <span id="fm-fileName" data-id=""></span>
                         <div>
                             <button type="button" class="btn btn-secondary" style="float:right;margin:10px" th:text="#{i18n.system_cancel}" data-dismiss="modal"></button>
-                            <button id="fm-submit-delete" class="btn btn-primary" style="float:right;margin:10px" type="submit" th:text="#{i18n.system_ok}"></button>
+                            <button id="fm-submit-download" class="btn btn-primary" style="float:right;margin:10px" type="submit" th:text="#{i18n.system_ok}"></button>
                         </div>
                         <div class="row" style="float:right;margin-top:10px">
                             <div class='col-5'>
                                 <div class="form-group">
                                     <div class="input-group date" id="datetimepickers" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepickers"/>
+                                        <input type="text" id="fm-startTime" class="form-control datetimepicker-input" data-target="#datetimepickers"/>
                                         <div class="input-group-append" data-target="#datetimepickers" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -106,7 +107,7 @@
                             <div class='col-5'>
                                 <div class="form-group">
                                     <div class="input-group date" id="datetimepickere" data-target-input="nearest">
-                                        <input type="text" class="form-control datetimepicker-input" data-target="#datetimepickere"/>
+                                        <input type="text" id="fm-endTime" class="form-control datetimepicker-input" data-target="#datetimepickere"/>
                                         <div class="input-group-append" data-target="#datetimepickere" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
@@ -122,9 +123,9 @@
                             </select>
                         </div>
                         <div class="form-group row cm-none" id="fm-timeFormater-group">
-                            <label for="fm-timeFormater" class="col-sm-3 col-form-label" th:text="#{formatter格式}"></label>
+                            <label for="fm-timeFormater" class="col-sm-3 col-form-label" th:text="#{i18n.timezone_table_timeFormater}"></label>
                             <input type="text" class="form-control col-sm-5" id="fm-timeFormater">
-                            <small class="form-text text-muted col-sm-12">例如"YYYY-MM-DD hh:mm:ss"</small>
+                            <small class="form-text text-muted col-sm-12" th:text="#{i18n.timezone_table_timeFormater_example}"></small>
                         </div>
                     </div>
                 </div>
@@ -139,10 +140,13 @@
     <script>
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
-        function nodeClicked(id){
-            $('#fileOptions').modal('show')
-            $("#down").attr("href","/api/filezone/file/"+id)
+        $("#fm-submit-download").click(function () {
+            $("#down").attr("href","/api/filezone/file/"+$('#fm-fileName').attr("data-id")+"/split?startTime="+$('#fm-startTime')[0].value+"&endTime="+$('#fm-endTime')[0].value)
             $("#down")[0].click();
+        })
+        function nodeClicked(id){
+            $('#fm-fileName').attr("data-id",id)
+            $('#fileOptions').modal('show')
         }
         $(".clicked").click(function () {
             if($(this).attr("class")==="unclicked"){

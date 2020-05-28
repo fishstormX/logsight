@@ -4,8 +4,9 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 
-public class DefaultTimeAnalyser extends AbstractTimeAnalyser {
-    private String formatter = "yyyy-MM-dd HH:mm:ss.SSS";
+
+public class CustomizeTimeAnalyser extends AbstractTimeAnalyser {
+    private String formatter = "yyyy-mm-dd HH:mm:ss.SSS";
 
     @Override
     public Integer getTimeStringLength() {

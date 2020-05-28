@@ -1,22 +1,24 @@
 package cn.fishmaple.logsight.service.filezone;
 
+import cn.fishmaple.logsight.analyser.DefaultTimeAnalyser;
 import cn.fishmaple.logsight.analyser.TimeAnalyser;
+import cn.fishmaple.logsight.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.Date;
 @Service
-public class FileSpiltService {
-    @Autowired
-    TimeAnalyser defaultTimeAnalyser;
+public class FileSplitService {
 
-    public void timeSplitWithOutputStream(Date startTime,Date endTime,String file,OutputStream outputStream){
+    public void timeSplitWithOutputStream(Date startTime,Date endTime,String filepath,OutputStream outputStream,Integer timeAnalyserId){
         int state = -1;
-        try(RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw")) {
+        TimeAnalyser defaultTimeAnalyser = new DefaultTimeAnalyser();
+        try(RandomAccessFile randomAccessFile = new RandomAccessFile(filepath, "rw")) {
             FileChannel channel = randomAccessFile.getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
             int bytesRead = channel.read(buffer);
@@ -66,6 +68,24 @@ public class FileSpiltService {
             }
         }catch (IOException e){
 
+        }
+    }
+
+    public void timeSplitWithOutputStream(String startTime,String endTime,String filepath,OutputStream outputStream){
+        TimeUtil.initedFormatter("yyyy-MM-dd hh:mm:ss");
+        timeSplitWithOutputStream(TimeUtil.parseTimeUnchecked(startTime),TimeUtil.parseTimeUnchecked(endTime),filepath,outputStream,0);
+    }
+
+    public void timeSplitWithResponse(String startTime, String endTime, String filepath, HttpServletResponse response){
+        response.reset();
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        String fileName = new File(filepath).getName();
+        response.setHeader("Content-disposition", "attachment;filename=" + fileName);
+        try (OutputStream outputStream =  response.getOutputStream()){
+            timeSplitWithOutputStream(startTime,endTime, filepath, outputStream);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
