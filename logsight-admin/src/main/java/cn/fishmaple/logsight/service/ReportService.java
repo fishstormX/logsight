@@ -28,7 +28,9 @@ public class ReportService {
 
     @PostConstruct
     private void init(){
-        reportCache.setDailyFileReport(getDailyFileReport());
+        new Thread(()->{
+            reportCache.setDailyFileReport(getDailyFileReport());
+        }).start();
     }
 
     public List<String> getCachedDailyFileReport(){

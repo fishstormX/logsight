@@ -1,7 +1,6 @@
 package cn.fishmaple.logsight.api;
 
 import cn.fishmaple.logsight.object.FileTree;
-import cn.fishmaple.logsight.object.filezone.DownloadState;
 import cn.fishmaple.logsight.service.filezone.FileResponseService;
 import cn.fishmaple.logsight.service.filezone.FileSplitService;
 import cn.fishmaple.logsight.service.filezone.FileZoneService;
