@@ -1,6 +1,5 @@
 package cn.fishmaple.logsight.analyser;
 
-import cn.fishmaple.logsight.analyser.object.SearchAction;
 import org.springframework.stereotype.Component;
 
 @Component

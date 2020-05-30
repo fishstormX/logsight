@@ -1,6 +1,9 @@
 package cn.fishmaple.logsight.api;
 
+import cn.fishmaple.logsight.object.FileDownloadStatus;
 import cn.fishmaple.logsight.object.FileTree;
+import cn.fishmaple.logsight.object.LogAnalyseState;
+import cn.fishmaple.logsight.service.filezone.FileAnalyseService;
 import cn.fishmaple.logsight.service.filezone.FileResponseService;
 import cn.fishmaple.logsight.service.filezone.FileSplitService;
 import cn.fishmaple.logsight.service.filezone.FileZoneService;
@@ -19,6 +22,8 @@ public class FileZoneAPI {
     FileResponseService fileResponseService;
     @Autowired
     FileSplitService fileSplitService;
+    @Autowired
+    FileAnalyseService fileAnalyseService;
     @RequestMapping("/fileNodes")
     public FileTree getNodes(@RequestParam Integer fieldId){
         return fileZoneService.getLocalFileTree(fieldId);
@@ -35,5 +40,15 @@ public class FileZoneAPI {
                                  @PathVariable Integer id) {
         String path = fileZoneService.getNodePath(id);
         fileSplitService.timeSplitWithResponse(startTime,endTime, path, response);
+    }
+
+    @GetMapping("/rfile/{id}")
+    public void splitAndDownload(HttpServletResponse response,@PathVariable String id) {
+        fileSplitService.uuidWithResponse(id,response);
+    }
+
+    @PostMapping("/files/status")
+    public FileDownloadStatus splitAndDownload(@RequestBody LogAnalyseState logAnalyseState, @RequestParam String   id) {
+        return fileAnalyseService.getStatus(logAnalyseState);
     }
 }
