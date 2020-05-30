@@ -4,7 +4,6 @@ import cn.fishmaple.logsight.analyser.fileAnalyser.FileAnalyser;
 import cn.fishmaple.logsight.core.FileDownLoadStorage;
 import cn.fishmaple.logsight.object.FileDownloadStatus;
 import cn.fishmaple.logsight.object.LogAnalyseState;
-import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
