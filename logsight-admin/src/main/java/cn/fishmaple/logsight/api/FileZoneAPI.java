@@ -30,7 +30,7 @@ public class FileZoneAPI {
     }
 
     @RequestMapping("/file/{id}")
-    public void dowinload(HttpServletResponse response,@PathVariable Integer id){
+    public void download(HttpServletResponse response, @PathVariable Integer id){
         String path = fileZoneService.getNodePath(id);
         fileResponseService.file2Response(path,response);
     }
