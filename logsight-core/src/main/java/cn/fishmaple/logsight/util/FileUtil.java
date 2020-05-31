@@ -8,6 +8,7 @@ import java.net.URL;
 public class FileUtil {
     public static File getByClassPath(String path){
         URL resource = LogsightCoreApplication.class.getClassLoader().getResource("db/logsight.sql");
+
         File file = new File(resource.getFile());
         return file;
     }
@@ -18,6 +19,14 @@ public class FileUtil {
             return file.length();
         }else{
             return 0L;
+        }
+    }
+
+    public static String getFileMLength(File file){
+        if(file.exists()&&file.isFile()){
+            return String.format("%.2f", (double)file.length()/1024/1024);
+        }else{
+            return "0";
         }
     }
 

@@ -1,5 +1,14 @@
 function d3Tree(root,tag,count,depth){
-    var margin = {top: 0, right: 120, bottom: 0, left: 120},
+    let rootLength=0
+    for (let i=0; i<root.name.length; i++) {
+        if (root.name.charCodeAt(i)>127 || root.name.charCodeAt(i)==94) {
+            rootLength += 2;
+        } else {
+            rootLength ++;
+        }
+    }
+
+    var margin = {top: 0, right: 120, bottom: 0, left: rootLength<13? 100:rootLength*8},
         width = (depth+1)*180+600 + margin.right,
         height = (count-1)*18+40;
 

@@ -5,6 +5,7 @@ import cn.fishmaple.logsight.util.FileUtil;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,20 +15,39 @@ public abstract class AbstractFileAnalyser implements FileAnalyser {
 
     Map<String,Integer> map=null;
 
+    String fileTypes[] = {"out","log","","gz"};
     @Override
     public Map<String, Integer> getFileTypeMap() {
         if(null==map){
             map = new HashMap<String,Integer>();
             map.put("out",TEXT_FILE);
             map.put("log",TEXT_FILE);
+            map.put("",TEXT_FILE);
             map.put("gz",GZIP_FILE);
         }
         return map;
     }
 
-    public Integer getFileType(String filePathName){
-        return getFileTypeMap().get(FileUtil.ext(filePathName));
+    @Override
+    public String getFileExt(String fileName) {
+        Integer index = fileName.indexOf(".",fileName.indexOf(".")+1);
+        if(index>0){
+            fileName = fileName.substring(0,index);
+        }
+        return FileUtil.ext(fileName);
     }
 
+    public Integer getFileType(String filePathName){
+        Integer i = getFileTypeMap().get(getFileExt(filePathName));
+        return null==i?TEXT_FILE:i;
+    }
 
+    @Override
+    public boolean needHandle(String fileName) {
+        String fileExts[] = {"out","log","","gz"};
+        if (Arrays.asList(fileExts).contains(getFileExt(fileName))){
+            return true;
+        }
+        return false;
+    }
 }

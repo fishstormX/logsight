@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 
 public class CustomizeTimeAnalyser extends AbstractTimeAnalyser {
-    private String formatter = "yyyy-mm-dd HH:mm:ss.SSS";
+    private String formatter = "yyyy-MM-dd HH:mm:ss.SSS";
 
     @Override
     public Integer getTimeStringLength() {

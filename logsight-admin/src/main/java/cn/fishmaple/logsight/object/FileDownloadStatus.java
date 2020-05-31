@@ -1,13 +1,25 @@
 package cn.fishmaple.logsight.object;
 
+import cn.fishmaple.logsight.object.fileAnalyse.BaseFile;
+
 import java.util.List;
 import java.util.Map;
 
 public class FileDownloadStatus {
     private Map<String,Integer> fileRate;
-    private List<String> files;
+    private List<BaseFile> files;
+    private List<BaseFile> unSelectFiles;
     private LogAnalyseState logAnalyseState;
     private String id;
+
+
+    public List<BaseFile> getUnSelectFiles() {
+        return unSelectFiles;
+    }
+
+    public void setUnSelectFiles(List<BaseFile> unSelectFiles) {
+        this.unSelectFiles = unSelectFiles;
+    }
 
     public LogAnalyseState getLogAnalyseState() {
         return logAnalyseState;
@@ -25,11 +37,11 @@ public class FileDownloadStatus {
         this.fileRate = fileRate;
     }
 
-    public List<String> getFiles() {
+    public List<BaseFile> getFiles() {
         return files;
     }
 
-    public void setFiles(List<String> files) {
+    public void setFiles(List<BaseFile> files) {
         this.files = files;
     }
 

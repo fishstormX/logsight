@@ -12,6 +12,8 @@ public interface FileAnalyser {
     final int BINARY_FILE = 2;
 
     public Integer getFileType(String fileName);
+    public String getFileExt(String fileName);
     public InputStream convertFile(String fileName);
     public Map<String,Integer> getFileTypeMap();
+    public boolean needHandle(String fileName);
 }

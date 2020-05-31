@@ -38,6 +38,20 @@ public class FileZoneService {
             fileNode.setChildren(nodes);
             fileTree.setRoot(fileNode);
         }
+        FileNode fileNode1=fileTree.getRoot();
+        Integer depth = fileTree.getDepth();
+        for(int i =0;i<depth;i++){
+            if(fileNode1.getChildren().size()==1){
+                String name = fileNode1.getName();
+                fileNode1=fileNode1.getChildren().get(0);
+                fileNode1.setName(name+"/"+fileNode1.getName());
+                fileTree.setDepth(fileTree.getDepth()-1);
+            }else {
+                break;
+            }
+        }
+        fileTree.setDepth(fileTree.getDepth()+1);
+        fileTree.setRoot(fileNode1);
         return fileTree;
     }
 

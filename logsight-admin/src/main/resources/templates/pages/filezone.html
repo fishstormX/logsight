@@ -46,12 +46,33 @@
             border-radius: 10px;
             background: #EDEDED;
         }
+        .dragged-table::-webkit-scrollbar {
+            width: 9px;
+            height: 0;
+        }
+        .dragged-table::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        .dragged-table::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            background: #EDEDED;
+        }
+        .dragged-table{
+            max-height: 372px;
+            overflow: auto;
+        }
+        .dragged-table .list-group-item{
+            font-weight: 500;
+        }
     </style>
     <div th:fragment="logField" class="row">
         <div class="col-4">
             <div id="table-loading" class="spinner-grow text-warning cm-none" style="position: absolute;top: 40%;left: 43%;"></div>
             <div id="table-shade">
-                <table class="table" id="logfield-tb">
+                <table class="table" id="filezone-tb">
                     <thead>
                     <tr>
                         <th scope="col">
@@ -80,8 +101,8 @@
         </div>
         <div class="col-8" id="d3" style="height:700px;overflow: auto"></div>
     </div>
-    <div class="modal fade" style="margin-top:15%" id="fileOptions" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width:600px">
+    <div class="modal fade" style="margin-top:5%" id="fileOptions" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:860px">
             <div class="modal-content">
                 <div class="modal-body">
                     <div>
@@ -101,7 +122,7 @@
                             </label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="fm-mergeFile">
+                            <input class="form-check-input" type="checkbox" id="fm-mergeFile" checked="true">
                             <label class="form-check-label" for="fm-mergeFile">
                                 <span th:text="#{i18n.timezone_form_mergeFile}"></span>
                                 <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title
@@ -113,47 +134,48 @@
                             <label class="form-check-label" for="fm-filter" th:text="#{i18n.timezone_form_filter}"></label>
                         </div>
                         <div id="fm-append-timeAnalyser" class="cm-none">
-                            <div class="row" style="float:right;margin-top:10px">
-                                <div class='col-5'>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="datetimepickers" data-target-input="nearest">
-                                            <input type="text" id="fm-startTime" class="form-control datetimepicker-input" data-target="#datetimepickers"/>
-                                            <div class="input-group-append" data-target="#datetimepickers" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
+                            <div class="row" style="margin-top:24px">
+                                <div class='col-2' style="line-height:35px;" th:text="#{i18n.timezone_form_time}">
+                                </div>
+                                <div class='col-4 form-group'>
+                                    <div class="input-group date" id="datetimepickers" data-target-input="nearest">
+                                        <input type="text" id="fm-startTime" class="form-control datetimepicker-input" data-target="#datetimepickers"/>
+                                        <div class="input-group-append" data-target="#datetimepickers" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class='col-1' style="line-height:35px;margin-left: 15px;">
                                     -
                                 </div>
-                                <div class='col-5'>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="datetimepickere" data-target-input="nearest">
-                                            <input type="text" id="fm-endTime" class="form-control datetimepicker-input" data-target="#datetimepickere"/>
-                                            <div class="input-group-append" data-target="#datetimepickere" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
+                                <div class='col-4 form-group'>
+                                    <div class="input-group date" id="datetimepickere" data-target-input="nearest">
+                                        <input type="text" id="fm-endTime" class="form-control datetimepicker-input" data-target="#datetimepickere"/>
+                                        <div class="input-group-append" data-target="#datetimepickere" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="fm-timeAnalyser" class="col-sm-3 col-form-label" th:text="#{i18n.timezone_download_timeAnalyser}"></label>
-                                <select class="form-control col-sm-5" id="fm-timeAnalyser">
-                                    <option value="0" th:text="#{i18n.timezone_timeAnalyser_default}"></option>
-                                    <option value="1" th:text="#{i18n.timezone_timeAnalyser_customize}"></option>
-                                </select>
+                            <div class="row">
+                                <div class="form-group col-6 row">
+                                    <label for="fm-timeAnalyser" class="col-4 col-form-label" th:text="#{i18n.timezone_download_timeAnalyser}"></label>
+                                    <select class="form-control col-6" id="fm-timeAnalyser">
+                                        <option value="0" th:text="#{i18n.timezone_timeAnalyser_default}"></option>
+                                        <option value="1" th:text="#{i18n.timezone_timeAnalyser_customize}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-6 row cm-none" id="fm-timeFormater-group">
+                                    <label for="fm-timeFormater" class="col-5 col-form-label" th:text="#{i18n.timezone_form_timeFormater}"></label>
+                                    <input type="text" class="form-control col-7" value="yyyy-MM-dd HH:mm:ss.SSS" id="fm-timeFormater">
+                                    <small class="form-text text-muted col-sm-12" th:text="#{i18n.timezone_form_timeFormater_example}"></small>
+                                </div>
                             </div>
-                            <div class="form-group row cm-none" id="fm-timeFormater-group">
-                                <label for="fm-timeFormater" class="col-sm-3 col-form-label" th:text="#{i18n.timezone_form_timeFormater}"></label>
-                                <input type="text" class="form-control col-sm-5" id="fm-timeFormater">
-                                <small class="form-text text-muted col-sm-12" th:text="#{i18n.timezone_form_timeFormater_example}"></small>
-                            </div>
+
                         </div>
                         <div id="fm-append-fileAnalyser" class="cm-none">
                             <div class="form-group row">
-                                <label for="fm-timeAnalyser" class="col-sm-3 col-form-label" th:text="#{i18n.timezone_download_fileAnalyser}"></label>
+                                <label for="fm-fileAnalyser" class="col-sm-3 col-form-label" th:text="#{i18n.timezone_download_fileAnalyser}"></label>
                                 <select class="form-control col-sm-5" id="fm-fileAnalyser">
                                     <option value="0" th:text="#{i18n.timezone_form_fileAnalyser_default}"></option>
                                     <option value="1" th:text="#{i18n.timezone_form_fileAnalyser_time_auto}"></option>
@@ -166,6 +188,25 @@
                                 <small class="form-text text-muted col-sm-12" th:text="#{i18n.timezone_form_timeFormater_example}"></small>
                             </div>
                         </div>
+                        <script src="https://cdn.bootcdn.net/ajax/libs/Sortable/1.10.2/Sortable.js"></script>
+                        <div id="draggedTable" class="row m-0" style="width:830px">
+                            <div class="list-group col-12 text-center">
+                                <span th:text="#{i18n.timezone_form_fileList_describe}"></span></div>
+                            <div class="divider col-12 text-center" style="margin:10px;border: 1px solid grey;"></div>
+                            <div id="draggedTable-head" class="row m-0" style="width:830px">
+                                <div class="dragged-table col-6 text-center">
+                                    <span id="draggedTable-head-l" class="h5" th:text="#{i18n.timezone_form_unSelectFile}"></span>
+                                </div>
+                                <div class="dragged-table col-6 text-center">
+                                    <span id="draggedTable-head-r" class="h5" th:text="#{i18n.timezone_form_selectFile}"></span>
+                                    <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title
+                                       th:attr="data-original-title=#{i18n.timezone_form_selectFile_describe}"></i>
+                                </div>
+                            </div>
+                            <div id="draggedTable-l" class="dragged-table list-group col-6"></div>
+                            <div id="draggedTable-r" class="dragged-table list-group col-6"></div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -177,11 +218,22 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <script>
+
+
+
+
         $("#fm-splitTime").bind("input propertychange change",function(){
             if($(this)[0].checked){
                 $("#fm-append-timeAnalyser").attr("class","")
             }else{
                 $("#fm-append-timeAnalyser").attr("class","cm-none")
+            }
+        });
+        $("#fm-mergeFile").bind("input propertychange change",function(){
+            if($(this)[0].checked){
+                $("#draggedTable").attr("class","row m-0")
+            }else{
+                $("#draggedTable").attr("class","row m-0 cm-none")
             }
         });
         $('[data-toggle="tooltip"]').tooltip()
@@ -190,6 +242,7 @@
         $("#fm-submit-download").click(function () {
             //if more than one file
             let upfiles = false
+            let timer = null
             util.ajax("POST","/api/filezone/files/status",{
                 fileId:parseInt($('#fm-fileName').attr("data-id")),startTime:$('#fm-startTime')[0].value,endTime:$('#fm-endTime')[0].value,
                 timeAnalyse:$("#fm-splitTime")[0].checked,fileAnalyse:true},
@@ -200,18 +253,53 @@
                     $("#down")[0].click();
                 }else{
                     upfiles = true
-                    $("#down").attr("href","/api/filezone/file/"+$('#fm-fileName').attr("data-id")+"/split?startTime="+$('#fm-startTime')[0].value+
-                        "&endTime="+$('#fm-endTime')[0].value)
+                    timer = setInterval(function(){
+                        util.ajax("GET","/api/filezone/files/status/"+result.id,null,function (status) {
+                            if(status.fileRate[Object.keys(status.fileRate)[Object.keys(status.fileRate).length-1]]!=0){
+                                clearInterval(timer)
+                            }
+                        },function(){})
+                    },2000)
+                    $("#down").attr("href","/api/filezone/rfile/"+result.id)
                     $("#down")[0].click();
                 }
-            })
-
-
-
+            },function () {})
         })
         function nodeClicked(id){
             $('#fm-fileName').attr("data-id",id)
             $('#fileOptions').modal('show')
+            util.ajax("POST","/api/filezone/files/status",{fileId:id},
+                function(result){
+                    let tableRight=""
+                    let tableLeft=""
+                    for(index in result.files){
+                        tableRight+="<div class='list-group-item'>"+result.files[index].name+
+                            " <span style='float:right;color:forestgreen'>"+result.files[index].size+"</span></div>"
+                    }
+                    for(index in result.unSelectFiles){
+                        tableLeft+="<div class='list-group-item'>"+result.unSelectFiles[index].name+
+                            " <span style='float:right;color:forestgreen'>"+result.unSelectFiles[index].size+"</span></div>"
+                    }
+                    $("#draggedTable-l").html(tableLeft)
+                    $("#draggedTable-r").html(tableRight)
+                    let draggedTableLeft = document.getElementById('draggedTable-l')
+                    let draggedTableRight = document.getElementById('draggedTable-r')
+                    new Sortable(draggedTableLeft, {
+                        group: 'shared', // set both lists to same group
+                        animation: 150
+                    });
+
+                    new Sortable(draggedTableRight, {
+                        group: 'shared',
+                        animation: 150
+                    });
+
+                }, function(){
+                    $("#table-shade").attr("class","")
+                    $("#table-loading").attr("class","spinner-grow text-warning cm-none")
+                    $(".unclicked").attr("class","clicked")}
+            )
+
         }
         $(".clicked").click(function () {
             if($(this).attr("class")==="unclicked"){
@@ -239,8 +327,8 @@
             });
             $('#datetimepickere').datetimepicker({
                 format:'YYYY-MM-DD HH:mm:ss',
-                showToday: false,
-                useCurrent: false,
+                showToday: true,
+                useCurrent: true,
                 sideBySide:true
             });
             $("#datetimepickers").on("change.datetimepicker", function (e) {
@@ -251,9 +339,9 @@
             });
         $('#fm-timeAnalyser').change(function(e){
              if($('#fm-timeAnalyser')[0].value==="1"){
-                 $("#fm-timeFormater-group").attr("class","form-group row")
+                 $("#fm-timeFormater-group").attr("class","form-group col-6 row")
              }else{
-                 $("#fm-timeFormater-group").attr("class","form-group row cm-none")
+                 $("#fm-timeFormater-group").attr("class","form-group col-6 row cm-none")
              }
         });
         function onPageClick(page) {

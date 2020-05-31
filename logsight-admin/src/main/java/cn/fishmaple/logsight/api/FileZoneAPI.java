@@ -48,7 +48,13 @@ public class FileZoneAPI {
     }
 
     @PostMapping("/files/status")
-    public FileDownloadStatus splitAndDownload(@RequestBody LogAnalyseState logAnalyseState, @RequestParam String   id) {
-        return fileAnalyseService.getStatus(logAnalyseState);
+    public FileDownloadStatus splitAndDownload(@RequestBody LogAnalyseState logAnalyseState,@RequestParam(defaultValue = "false") boolean init) {
+        return fileAnalyseService.getStatus(logAnalyseState,init);
+    }
+
+
+    @GetMapping("/files/status/{id}")
+    public FileDownloadStatus splitAndDownload(@PathVariable String id) {
+        return fileAnalyseService.getStatus(id);
     }
 }

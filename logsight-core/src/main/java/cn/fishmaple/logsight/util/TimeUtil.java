@@ -25,10 +25,8 @@ public class TimeUtil {
     }
 
     public static Date parseTimeUnchecked(String date){
-        System.out.println(date);
         Assert.notNull(simpleDateFormatThreadLocal.get(),"simpleDateFormatThreadLocal not Init Error");
         try {
-            System.out.println(simpleDateFormatThreadLocal.get().parse(date));
             return simpleDateFormatThreadLocal.get().parse(date);
         } catch (ParseException e) {
             e.printStackTrace();

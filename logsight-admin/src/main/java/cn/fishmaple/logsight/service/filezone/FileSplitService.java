@@ -138,7 +138,7 @@ public class FileSplitService {
     }
 
     public void timeHandledFileWithNiOutputStream(String startTime, String endTime, String filepath, OutputStream outputStream){
-        TimeUtil.initedFormatter("yyyy-MM-dd hh:mm:ss");
+        TimeUtil.initedFormatter("yyyy-MM-dd HH:mm:ss");
         timeHandledFileWithNiOutputStream(TimeUtil.parseTimeUnchecked(startTime),TimeUtil.parseTimeUnchecked(endTime),filepath,outputStream,0);
     }
 
@@ -162,7 +162,7 @@ public class FileSplitService {
         FileDownloadStatus fileDownloadStatus = fileDownLoadStorage.getFileDownloadStatus(uuid);
         FileAnalyser fileAnalyser = new DefaultFileAnalyser();
         TimeAnalyser defaultTimeAnalyser = new DefaultTimeAnalyser();
-        TimeUtil.initedFormatter("yyyy-MM-dd hh:mm:ss");
+        TimeUtil.initedFormatter("yyyy-MM-dd HH:mm:ss");
         String fileName = uuid+".log";
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         try (OutputStream outputStream =  response.getOutputStream()){
@@ -189,22 +189,25 @@ public class FileSplitService {
                                     }else{
                                         state = 0;
                                     }
-                                } else if (state == 0) {
+                                }
+                                if (state == 0) {
                                     Date date = defaultTimeAnalyser.timeFormat(line);
                                     if (date != null && date.after(TimeUtil.parseTimeUnchecked(
                                             fileDownloadStatus.getLogAnalyseState().getEndTime()))) {
                                         state = 1;
                                     }
-                                } else {
-                                    break;
                                 }
                             }
                             if (state == 0||state==-2) {
+                                line+="\r\n";
                                 outputStream.write(line.getBytes());
+                            }
+                            if(state==1){
+                                break;
                             }
                         }
                     }catch (IOException e){
-
+                        e.printStackTrace();
                     }finally {
                         entry.setValue(100);
                     }
