@@ -196,9 +196,11 @@
                             <div id="draggedTable-head" class="row m-0" style="width:830px">
                                 <div class="dragged-table col-6 text-center">
                                     <span id="draggedTable-head-l" class="h5" th:text="#{i18n.timezone_form_unSelectFile}"></span>
+                                    <span id="draggedTable-count-l"></span>
                                 </div>
                                 <div class="dragged-table col-6 text-center">
                                     <span id="draggedTable-head-r" class="h5" th:text="#{i18n.timezone_form_selectFile}"></span>
+                                    <span id="draggedTable-count-r"></span>
                                     <i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title
                                        th:attr="data-original-title=#{i18n.timezone_form_selectFile_describe}"></i>
                                 </div>
@@ -218,10 +220,6 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <script>
-
-
-
-
         $("#fm-splitTime").bind("input propertychange change",function(){
             if($(this)[0].checked){
                 $("#fm-append-timeAnalyser").attr("class","")
@@ -243,8 +241,15 @@
             //if more than one file
             let upfiles = false
             let timer = null
-            util.ajax("POST","/api/filezone/files/status",{
-                fileId:parseInt($('#fm-fileName').attr("data-id")),startTime:$('#fm-startTime')[0].value,endTime:$('#fm-endTime')[0].value,
+            let fileTags=$("#draggedTable-r .file")
+            let file = new Array()
+            for(i = 0; i < fileTags.length; i++){
+                file[i] = fileTags[i].textContent
+                console.log(file[i])
+            }
+
+            util.ajax("POST","/api/filezone/files/status?init=true",{path:window.params.get("path"),
+                files:file,startTime:$('#fm-startTime')[0].value,endTime:$('#fm-endTime')[0].value,
                 timeAnalyse:$("#fm-splitTime")[0].checked,fileAnalyse:true},
             function(result){
                 if(result.files.length < 2){
@@ -270,15 +275,18 @@
             $('#fileOptions').modal('show')
             util.ajax("POST","/api/filezone/files/status",{fileId:id},
                 function(result){
+                    window.params.set("path",result.logAnalyseState.path)
                     let tableRight=""
                     let tableLeft=""
+                    $("#draggedTable-count-r").text("("+result.files.length+")")
+                    $("#draggedTable-count-l").text("("+result.unSelectFiles.length+")")
                     for(index in result.files){
-                        tableRight+="<div class='list-group-item'>"+result.files[index].name+
-                            " <span style='float:right;color:forestgreen'>"+result.files[index].size+"</span></div>"
+                        tableRight+="<div class='list-group-item'><span class='file'>"+result.files[index].name+
+                            "</span><span style='float:right;color:forestgreen'>"+result.files[index].size+"</span></div>"
                     }
                     for(index in result.unSelectFiles){
-                        tableLeft+="<div class='list-group-item'>"+result.unSelectFiles[index].name+
-                            " <span style='float:right;color:forestgreen'>"+result.unSelectFiles[index].size+"</span></div>"
+                        tableLeft+="<div class='list-group-item'><span class='file'>"+result.unSelectFiles[index].name+
+                            " </span><span style='float:right;color:forestgreen'>"+result.unSelectFiles[index].size+"</span></div>"
                     }
                     $("#draggedTable-l").html(tableLeft)
                     $("#draggedTable-r").html(tableRight)
@@ -286,12 +294,20 @@
                     let draggedTableRight = document.getElementById('draggedTable-r')
                     new Sortable(draggedTableLeft, {
                         group: 'shared', // set both lists to same group
-                        animation: 150
+                        animation: 150,
+                        onEnd: function (evt) {
+                            $("#draggedTable-count-r").text("("+$("#draggedTable-r .file").length+")")
+                            $("#draggedTable-count-l").text("("+$("#draggedTable-l .file").length+")")
+                        }
                     });
 
                     new Sortable(draggedTableRight, {
                         group: 'shared',
-                        animation: 150
+                        animation: 150,
+                        onEnd: function (evt) {
+                            $("#draggedTable-count-r").text("("+$("#draggedTable-r .file").length+")")
+                            $("#draggedTable-count-l").text("("+$("#draggedTable-l .file").length+")")
+                        }
                     });
 
                 }, function(){
@@ -303,7 +319,7 @@
         }
         $(".clicked").click(function () {
             if($(this).attr("class")==="unclicked"){
-                return 
+                return
             }
             $("#table-shade").attr("class","shade")
             $("#table-loading").attr("class","spinner-grow text-warning")

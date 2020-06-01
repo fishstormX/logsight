@@ -1,5 +1,7 @@
 package cn.fishmaple.logsight.object;
 
+import java.util.List;
+
 public class LogAnalyseState {
     private Long id;
     private Integer fileId;
@@ -7,6 +9,24 @@ public class LogAnalyseState {
     private String endTime;
     private Boolean timeAnalyse;
     private Boolean fileAnalyse;
+    private List<String> files;
+    private String path;
+
+    public List<String> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<String> files) {
+        this.files = files;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public Long getId() {
         return id;

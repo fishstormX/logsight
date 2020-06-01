@@ -155,6 +155,74 @@ public class FileSplitService {
         }
     }
 
+    public void writeStream(InputStream inputStream ,Date start,Date end,TimeAnalyser timeAnalyser,OutputStream outputStream){
+        InputStreamReader inputReader = new InputStreamReader(inputStream);
+        BufferedReader bf = new BufferedReader(inputReader);
+        String line;
+        int state = -2;
+        try{
+            while ((line = bf.readLine()) != null) {
+                if (line.length() > 23) {
+                    if (state <0) {
+                        Date date = timeAnalyser.timeFormat(line);
+                        if(null==date){
+
+                        }else if (date.before(start)) {
+                            state = -1;
+                        }else{
+                            state = 0;
+                        }
+                    }
+                    if (state == 0) {
+                        Date date = timeAnalyser.timeFormat(line);
+                        if (date != null && date.after(end)) {
+                            state = 1;
+                        }
+                    }
+                }
+                if (state == 0||state==-2) {
+                    line+="\r\n";
+                    outputStream.write(line.getBytes());
+                }
+                if(state==-1){
+
+                }
+                if(state==1){
+                    break;
+                }
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean needHandle(InputStream inputStream ,Date start,TimeAnalyser timeAnalyser){
+        InputStreamReader inputReader = new InputStreamReader(inputStream);
+        BufferedReader bf = new BufferedReader(inputReader);
+        String line;
+        Boolean tailFlag=false;
+        int i = 0;
+        try{
+            while ((line = bf.readLine()) != null) {
+                if (line.length() > 23) {
+                    Date date = timeAnalyser.timeFormat(line);
+                    if(null!=date&&date.before(start)){
+                        return false;
+                    }else if(null!=date&&date.after(start)){
+                        return true;
+                    }
+                }
+                i++;
+                if(i>1000){
+                    return true;
+                }
+            }
+            return true;
+        }catch (IOException e){
+            e.printStackTrace();
+            return true;
+        }
+    }
 
     public void uuidWithResponse(String uuid, HttpServletResponse response) {
         response.reset();
@@ -166,53 +234,35 @@ public class FileSplitService {
         String fileName = uuid+".log";
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         try (OutputStream outputStream =  response.getOutputStream()){
+            outputStream.write(new byte[0]);
+            outputStream.flush();
+            boolean tailFlag=false;
+            InputStream lastStream = null;
+            Map.Entry lastEntry = null;
             for(Map.Entry<String,Integer> entry :fileDownloadStatus.getFileRate().entrySet()){
                 InputStream inputStream = fileAnalyseService.getInputStream(fileAnalyser,entry.getKey());
                 if(inputStream==null){
                     entry.setValue(-1);
                     continue;
                 }else{
-                    InputStreamReader inputReader = new InputStreamReader(inputStream);
-                    BufferedReader bf = new BufferedReader(inputReader);
-                    String line;
-                    int state = -2;
-                    try{
-                        while ((line = bf.readLine()) != null) {
-                            if (line.length() > 23) {
-                                if (state <0) {
-                                    Date date = defaultTimeAnalyser.timeFormat(line);
-                                    if(null==date){
-
-                                    }else if (date.before(TimeUtil.parseTimeUnchecked(
-                                            fileDownloadStatus.getLogAnalyseState().getStartTime()))) {
-                                        state = -1;
-                                    }else{
-                                        state = 0;
-                                    }
-                                }
-                                if (state == 0) {
-                                    Date date = defaultTimeAnalyser.timeFormat(line);
-                                    if (date != null && date.after(TimeUtil.parseTimeUnchecked(
-                                            fileDownloadStatus.getLogAnalyseState().getEndTime()))) {
-                                        state = 1;
-                                    }
-                                }
-                            }
-                            if (state == 0||state==-2) {
-                                line+="\r\n";
-                                outputStream.write(line.getBytes());
-                            }
-                            if(state==1){
-                                break;
-                            }
+                    Date start = TimeUtil.parseTimeUnchecked(fileDownloadStatus.getLogAnalyseState().getStartTime());
+                    Date end = TimeUtil.parseTimeUnchecked(fileDownloadStatus.getLogAnalyseState().getEndTime());
+                    if(needHandle(inputStream,start,defaultTimeAnalyser)&&!tailFlag){
+                        tailFlag=true;
+                        if(null!=lastStream){
+                            writeStream(lastStream,start,end,defaultTimeAnalyser,outputStream);
+                            lastEntry.setValue(100);
                         }
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }finally {
+                        writeStream(inputStream,start,end,defaultTimeAnalyser,outputStream);
                         entry.setValue(100);
                     }
-
+                    if(tailFlag){
+                        writeStream(inputStream,start,end,defaultTimeAnalyser,outputStream);
+                        entry.setValue(100);
+                    }
                 }
+                lastStream = inputStream;
+                lastEntry = entry;
             }
             outputStream.flush();
         } catch (IOException e) {

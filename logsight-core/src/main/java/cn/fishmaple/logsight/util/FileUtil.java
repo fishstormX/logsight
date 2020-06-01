@@ -4,8 +4,16 @@ import cn.fishmaple.logsight.LogsightCoreApplication;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 public class FileUtil {
+    private  static List<String> extList;
+    static {
+        String[] exts = {"txt","log","md","gz",};
+        extList = Arrays.asList(exts);
+    }
+
     public static File getByClassPath(String path){
         URL resource = LogsightCoreApplication.class.getClassLoader().getResource("db/logsight.sql");
 
@@ -37,6 +45,12 @@ public class FileUtil {
         }
         String result = filename.substring(index + 1);
         return result;
+    }
+
+    public static Boolean isExtLegal(String ext) {
+        if(extList.contains(ext)){
+            return true;
+        }return false;
     }
 
 }

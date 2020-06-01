@@ -30,11 +30,15 @@ public abstract class AbstractFileAnalyser implements FileAnalyser {
 
     @Override
     public String getFileExt(String fileName) {
-        Integer index = fileName.indexOf(".",fileName.indexOf(".")+1);
-        if(index>0){
-            fileName = fileName.substring(0,index);
+        String ext = FileUtil.ext(fileName);
+        if(!FileUtil.isExtLegal(ext)){
+            Integer index = fileName.indexOf(".",fileName.indexOf(".")+1);
+            if(index>0){
+                fileName = fileName.substring(0,index);
+            }
+            ext = FileUtil.ext(fileName);
         }
-        return FileUtil.ext(fileName);
+        return ext;
     }
 
     public Integer getFileType(String filePathName){
