@@ -7,77 +7,86 @@
 .cm-navbar-brand{
     margin-right: 0.5rem !important;
 }
+.cm-unselect{
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 #index-logo{
-    margin-left:15rem;
+margin-left:15rem;
 }
 
 body {
-    overflow-x: hidden;
+overflow-x: hidden;
 }
 
 #sidebar-wrapper {
-    min-height: 100vh;
-    margin-left: -15rem;
-    -webkit-transition: margin .25s ease-out;
-    -moz-transition: margin .25s ease-out;
-    -o-transition: margin .25s ease-out;
-    transition: margin .25s ease-out;
+min-height: 100vh;
+margin-left: -15rem;
+-webkit-transition: margin .25s ease-out;
+-moz-transition: margin .25s ease-out;
+-o-transition: margin .25s ease-out;
+transition: margin .25s ease-out;
 }
 
 #sidebar-wrapper .sidebar-heading-dark {
-    padding: 0.5rem 0 0 0.5rem;
-    font-size: 1.2rem;
-    height: 66px;
+padding: 0.5rem 0 0 0.5rem;
+font-size: 1.2rem;
+height: 66px;
 }
-
+.clicked{
+cursor: pointer;
+}
 #sidebar-wrapper .list-group {
-    width: 13rem;
+width: 13rem;
 }
 #page-content-wrapper {
-    min-width: 100vw;
+min-width: 100vw;
 }
 #wrapper #sidebar-wrapper.toggled {
-    margin-left: 0;
+margin-left: 0;
 }
 
 @media (min-width: 768px) {
-    #sidebar-wrapper {
-        margin-left: 0;
-    }
+#sidebar-wrapper {
+    margin-left: 0;
+}
 
-    #page-content-wrapper {
-        min-width: 0;
-        width: 100%;
-    }
+#page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+}
 
-    #wrapper #sidebar-wrapper.toggled{
-        margin-left: -15rem;
-    }
+#wrapper #sidebar-wrapper.toggled{
+    margin-left: -15rem;
+}
 }
 main{
-    margin:40px;
+margin:40px;
 }
 .btn-righticon{
-    margin-right: 10px;
+margin-right: 10px;
 }
 .btn-icon{
-    color:grey;
-    cursor: pointer;
-    margin:0 10px;
+color:grey;
+cursor: pointer;
+margin:0 10px;
 }
 .btn-icon:hover{
-    color:#000000;
+color:#000000;
 }
 .card-text{
-    display: inline;
-    line-height: 40px;
+display: inline;
+line-height: 40px;
 }
 #add-logfield-btn{
-    float:right;
+float:right;
 }
 .btn-close:focus{
-    outline: none;
+outline: none;
 }
 .shade{
-    -moz-opacity: 0.3;  opacity:.30;  filter: alpha(opacity=30);
+-moz-opacity: 0.3;  opacity:.30;  filter: alpha(opacity=30);
 }

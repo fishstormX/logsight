@@ -1,0 +1,105 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<main th:fragment="sighting">
+    <div class="input-group">
+        <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
+        <input id="search-text" style="padding-left: 30px" type="text" class="form-control"   th:attr="placeholder=#{i18n.sighting_search_all}">
+        <div class="input-group-append">
+            <button  class="btn btn-outline-secondary" type="button" id="select-btn" th:text="#{i18n.sighting_main_choose_field}"></button>
+        </div>
+    </div>
+    <div class="modal fade" style="margin-top:5%" id="fieldChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:860px">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="table-shade">
+                        <table style="table-layout: fixed;word-break: break-all;overflow: hidden" class="table" id="logField-tb">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        <div class="sort-abled-ajax text-center" id="th-path" sort-field="path">
+                                            <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_path}"></span>
+                                            <span style="margin-right:20px"></span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" style="width: 174px">
+                                        <div class="sort-abled-ajax text-center"  id="th-createTime" sort-field="createTime">
+                                            <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span>
+                                            <span style="margin-right:20px"></span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" style="width: 25%">
+                                        <div class="sort-abled-ajax text-center"  id="th-remarks" sort-field="remarks">
+                                            <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_remarks}"></span>
+                                            <span style="margin-right:20px"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="fieldChoose-form-body">
+                                <tr th:attr="data-id=${logField.id}" class="field-checked clicked" th:each="logField,logFieldStat : ${logFields}">
+                                    <td th:text="${logField.path}"></td>
+                                    <td th:text="${logField.createTime}"></td>
+                                    <td th:text="${logField.remarks}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="spiritPagination"></div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+        <a id='down' href=''  download='' style='display:none'></a>
+    </div>
+    <script src="/js/bootstrap-pagecap.min.js"></script>
+    <script src="/js/table-sort.js"></script>
+    <script src="/js/table-ajax.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+        initSpiritPagination([[${p}]], [[${pages}]])
+        updateSortStatus([[${sortd}]],'[[${sortType}]]')
+        $("#select-btn").click(function () {
+            $('#fieldChoose').modal('show')
+        })
+        var c=null
+        setSearchClickAction()
+        function setSearchClickAction() {
+            $(".field-checked").click(function (event) {
+                let searchIn = "[[#{i18n.sighting_search_in}]]"
+                let remark = $(this).children()[2].innerText
+                if (remark.length > 20) {
+                    remark = remark.substring(0, 20)
+                }
+                $('#guide-word').text(remark+"…" + ">_")
+                let path = $(this).children()[0].innerText
+                $('#search-text').attr("placeholder", searchIn.replace("{}", path))
+                $('#search-text').css("padding-left", ($("#guide-word")[0].offsetWidth + 12) + "px")
+                if (path.length > 30) {
+                    $('#select-btn').text("……" + path.substring(path.length - 30, path.length))
+                } else {
+                    $('#select-btn').text(path)
+                }
+                $('#fieldChoose').modal('hide')
+            })
+        }
+
+        function sortAjax(sortd,sortType){
+            util.ajax("GET","/api/logField/page?p="+window.params.get("p")+"&sortd="+sortd+"&sortType="+sortType,null,
+            function (data) {
+                updateSortStatus(sortd,sortType)
+                buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                setSearchClickAction()
+            },function () {
+                    
+                })
+        }
+
+    </script>
+
+</main>
+</body>
+</html>

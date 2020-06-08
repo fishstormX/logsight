@@ -46,4 +46,18 @@ public class IndexController {
         model.addAttribute("fileSize", reportService.getTotalFileSize());
         return "index";
     }
+
+    @RequestMapping("sighting")
+    public String sighting(Model model, @RequestParam(defaultValue = "1") int p,@RequestParam(defaultValue = "0") int dr,
+                           @RequestParam(defaultValue = "0") int sortd,@RequestParam(defaultValue = "")String sortType){
+        model.addAttribute("module", "sighting");
+        model.addAttribute("dr", dr);
+        model.addAttribute("dr",dr);
+        model.addAttribute("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType,8));
+        model.addAttribute("p",p);
+        model.addAttribute("pages", settingFieldFileService.getLogfieldPages(8));
+        model.addAttribute("sortd",sortd);
+        model.addAttribute("sortType",sortType);
+        return "index";
+    }
 }

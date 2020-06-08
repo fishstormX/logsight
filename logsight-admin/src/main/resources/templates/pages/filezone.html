@@ -13,9 +13,6 @@
         .node {
             cursor: pointer;
         }
-        .clicked{
-            cursor: pointer;
-        }
         .node circle {
             fill: #fff;
             stroke: steelblue;
@@ -237,6 +234,7 @@
         $('[data-toggle="tooltip"]').tooltip()
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
+        //点击下载
         $("#fm-submit-download").click(function () {
             //if more than one file
             let upfiles = false
@@ -247,7 +245,6 @@
                 file[i] = fileTags[i].textContent
                 console.log(file[i])
             }
-
             util.ajax("POST","/api/filezone/files/status?init=true",{path:window.params.get("path"),
                 files:file,startTime:$('#fm-startTime')[0].value,endTime:$('#fm-endTime')[0].value,
                 timeAnalyse:$("#fm-splitTime")[0].checked,fileAnalyse:true},
@@ -266,7 +263,7 @@
                         },function(){})
                     },2000)
                     $("#down").attr("href","/api/filezone/rfile/"+result.id)
-                    $("#down")[0].click();
+                    $("#down")[0].click()
                 }
             },function () {})
         })
@@ -317,6 +314,7 @@
             )
 
         }
+        //d3tree点击事件
         $(".clicked").click(function () {
             if($(this).attr("class")==="unclicked"){
                 return
@@ -332,11 +330,12 @@
                     $("#table-loading").attr("class","spinner-grow text-warning cm-none")
                     $(".unclicked").attr("class","clicked")
                 }, function(){
-                $("#table-shade").attr("class","")
+                    $("#table-shade").attr("class","")
                     $("#table-loading").attr("class","spinner-grow text-warning cm-none")
                     $(".unclicked").attr("class","clicked")}
             )
         })
+        //时间筛选
             $('#datetimepickers').datetimepicker({
                 format:'YYYY-MM-DD HH:mm:ss',
                 sideBySide:true
@@ -347,12 +346,14 @@
                 useCurrent: true,
                 sideBySide:true
             });
+
             $("#datetimepickers").on("change.datetimepicker", function (e) {
                 $('#datetimepickere').datetimepicker('minDate', e.date)
             });
             $("#datetimepickere").on("change.datetimepicker", function (e) {
                 $('#datetimepickers').datetimepicker('maxDate', e.date)
             });
+
         $('#fm-timeAnalyser').change(function(e){
              if($('#fm-timeAnalyser')[0].value==="1"){
                  $("#fm-timeFormater-group").attr("class","form-group col-6 row")
@@ -360,6 +361,7 @@
                  $("#fm-timeFormater-group").attr("class","form-group col-6 row cm-none")
              }
         });
+        //换页
         function onPageClick(page) {
             window.params.set("p",page)
             hrefTo(["dr","p"],"/filezone")

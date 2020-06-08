@@ -31,7 +31,8 @@
                 $(".dropdown-item").click(function () {
                     $("#language-i18n").html($(this).html())
                     document.cookie="i18n="+$(this).attr("value")+"; path=/;";
-                    location.reload()
+                    dr = window.params.get("dr")
+                    window.location=window.location.href.replace("dr=1","dr="+dr).replace("dr=0","dr="+dr)
                 })
             </script>
                 &copy;2020 Copyright by <a href="https://github.com/fishstormX">Carson Xia.</a>
