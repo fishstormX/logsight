@@ -6,11 +6,14 @@
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
         <input id="search-text" style="padding-left: 30px" type="text" class="form-control"   th:attr="placeholder=#{i18n.sighting_search_all}">
         <div class="input-group-append">
-            <button  class="btn btn-outline-secondary" type="button" id="select-btn" th:text="#{i18n.sighting_main_choose_field}"></button>
+            <button  class="btn btn-outline-secondary" type="button" id="choose-field-btn" th:text="#{i18n.sighting_main_choose_field}"></button>
+            <button  class="btn btn-outline-secondary" type="button" id="select-btn">
+                <i class="fa fa-search" data-original-title="搜索"></i>
+            </button>
         </div>
     </div>
     <div class="modal fade" style="margin-top:5%" id="fieldChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width:860px">
+        <div class="modal-dialog" role="document" style="max-width:850px">
             <div class="modal-content">
                 <div class="modal-body">
                     <div id="table-shade">
@@ -29,7 +32,7 @@
                                             <span style="margin-right:20px"></span>
                                         </div>
                                     </th>
-                                    <th scope="col" style="width: 25%">
+                                    <th scope="col" style="width: 40%">
                                         <div class="sort-abled-ajax text-center"  id="th-remarks" sort-field="remarks">
                                             <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_remarks}"></span>
                                             <span style="margin-right:20px"></span>
@@ -47,23 +50,50 @@
                         </table>
                         <div class="spiritPagination"></div>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
         <a id='down' href=''  download='' style='display:none'></a>
     </div>
+    <script src="/js/part/stopExecutionOnTimeout.js"></script>
+    <link rel="stylesheet" href="/css/part/timeout.css">
+    <div class="loader cm-none" id="loading">
+        <div class="loader_overlay"></div>
+        <div class="loader_cogs">
+            <div class="loader_cogs__top">
+                <div class="top_part"></div>
+                <div class="top_part"></div>
+                <div class="top_part"></div>
+                <div class="top_hole"></div>
+            </div>
+            <div class="loader_cogs__left">
+                <div class="left_part"></div>
+                <div class="left_part"></div>
+                <div class="left_part"></div>
+                <div class="left_hole"></div>
+            </div>
+            <div class="loader_cogs__bottom">
+                <div class="bottom_part"></div>
+                <div class="bottom_part"></div>
+                <div class="bottom_part"></div>
+                <div class="bottom_hole"></div>
+            </div>
+            <p th:text="#{i18n.system_loading}"></p>
+        </div>
+    </div>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
     <script src="/js/table-ajax.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
-        $("#select-btn").click(function () {
+        $("#choose-field-btn").click(function () {
             $('#fieldChoose').modal('show')
+        })
+        $("#select-btn").click(function () {
+            $("#loading").attr("class","loader")
         })
         var c=null
         setSearchClickAction()
@@ -79,15 +109,31 @@
                 $('#search-text').attr("placeholder", searchIn.replace("{}", path))
                 $('#search-text').css("padding-left", ($("#guide-word")[0].offsetWidth + 12) + "px")
                 if (path.length > 30) {
-                    $('#select-btn').text("……" + path.substring(path.length - 30, path.length))
+                    $('#choose-field-btn').text("……" + path.substring(path.length - 30, path.length))
                 } else {
-                    $('#select-btn').text(path)
+                    $('#choose-field-btn').text(path)
                 }
                 $('#fieldChoose').modal('hide')
             })
         }
+        window.params.set("sortd",0)
+        window.params.set("sortType","")
+        //换页
+        function onPageClick(page) {
+            window.params.set("p",page)
+            util.ajax("GET","/api/logField/page?p="+page+"&sortd="+window.params.get("sortd")+"&sortType="+window.params.get("sortType"),null,
+                function (data) {
+                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                    setSearchClickAction()
+                    initSpiritPagination(page, [[${pages}]])
+                },function () {
+
+                })
+        }
 
         function sortAjax(sortd,sortType){
+            window.params.set("sortd",sortd)
+            window.params.set("sortType",sortType)
             util.ajax("GET","/api/logField/page?p="+window.params.get("p")+"&sortd="+sortd+"&sortType="+sortType,null,
             function (data) {
                 updateSortStatus(sortd,sortType)
