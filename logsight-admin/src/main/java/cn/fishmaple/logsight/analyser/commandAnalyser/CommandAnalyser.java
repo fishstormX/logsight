@@ -1,4 +1,4 @@
-package cn.fishmaple.logsight.analyser;
+package cn.fishmaple.logsight.analyser.commandAnalyser;
 
 import cn.fishmaple.logsight.analyser.object.CommandAction;
 import cn.fishmaple.logsight.analyser.object.SearchAction;

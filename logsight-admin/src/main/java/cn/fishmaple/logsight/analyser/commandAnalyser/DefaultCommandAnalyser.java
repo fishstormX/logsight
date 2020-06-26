@@ -1,4 +1,4 @@
-package cn.fishmaple.logsight.analyser;
+package cn.fishmaple.logsight.analyser.commandAnalyser;
 
 import org.springframework.stereotype.Component;
 
@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 public class DefaultCommandAnalyser extends AbstractCommandAnalyser{
     @Override
     public String baseSearchTemplate() {
-        return "cat {file}|grep {target}";
+        return "tac '{file}'|grep '{target}'";
     }
 }
