@@ -4,6 +4,8 @@ import cn.fishmaple.logsight.thread.CustomThreadPool;
 import cn.fishmaple.logsight.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -15,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-
+@Primary
 @Component
 public class DefaultProcessThread implements ProcessThread{
     private Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -1,10 +1,12 @@
 package cn.fishmaple.logsight.object;
 
+import java.util.List;
+
 public class SearchResult {
     String file;
-    String result;
+    List<String> result;
 
-    public SearchResult(String file, String result) {
+    public SearchResult(String file, List<String> result) {
         this.file = file;
         this.result = result;
     }
@@ -17,11 +19,11 @@ public class SearchResult {
         this.file = file;
     }
 
-    public String getResult() {
+    public List<String> getResult() {
         return result;
     }
 
-    public void setResult(String result) {
+    public void setResult(List<String> result) {
         this.result = result;
     }
 }

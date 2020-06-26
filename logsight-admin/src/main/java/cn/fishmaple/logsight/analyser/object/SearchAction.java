@@ -1,16 +1,21 @@
 package cn.fishmaple.logsight.analyser.object;
 
-import java.util.List;
+import java.util.Collection;
 
 public class SearchAction {
-    private List<String> files;
+    private Collection<String> files;
     private String target;
 
-    public List<String> getFiles() {
+    public SearchAction(Collection<String> files, String target) {
+        this.files = files;
+        this.target = target;
+    }
+
+    public Collection<String> getFiles() {
         return files;
     }
 
-    public void setFiles(List<String> files) {
+    public void setFiles(Collection<String> files) {
         this.files = files;
     }
 

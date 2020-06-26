@@ -79,12 +79,12 @@ public class FileLoadThread extends Thread{
                         }
                         files.remove(logFieldFileDTO.getPathName());
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
-                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),logFieldFileDTO.getFileSize(), LogFileStatus.NORMAL));
+                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),logFieldFileDTO.getFileSize(), LogFileStatus.NORMAL,file.lastModified()));
                         count++;
                         size += ((double)file.length())/1024/1024;
                     }else{
                         logFieldFileMapper.addOneFile(new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
-                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.DELETED));
+                                logFieldFileDTO.getPathName(),TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.DELETED,file.lastModified()));
 
                     }
                 }
@@ -92,7 +92,7 @@ public class FileLoadThread extends Thread{
                     File file = new File(logFile);
                     if(file.isFile()&&!file.isHidden()){
                         LogFieldFileDTO logFieldFileDTO = new LogFieldFileDTO(logFieldDTO.getId(), new Date(),
-                                logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL);
+                                logFile,TimeUtil.getEarlyHour(-1,0),0L,LogFileStatus.NORMAL,file.lastModified());
                         logFieldFileMapper.addOneFile(logFieldFileDTO);
                         buildFileTree(logFieldDTO.getId(),logFile,logFieldFileDTO.getId());
                         count++;
