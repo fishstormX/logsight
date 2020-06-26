@@ -11,6 +11,7 @@ public class LogFieldFileDTO {
     private Long fileSize;
     private Date lastScan;
     private Long prevSize;
+    private Long lastModified;
     private Integer treeScannedFlag;
 
     public LogFieldFileDTO() {
@@ -29,13 +30,22 @@ public class LogFieldFileDTO {
         this.lastScan = lastScan;
     }
 
-    public LogFieldFileDTO(Integer fieldId,Date timeline, String pathName, Date lastScan,Long fileSize,Integer status) {
+    public LogFieldFileDTO(Integer fieldId,Date timeline, String pathName, Date lastScan,Long fileSize,Integer status,Long lastModified) {
         this.timeline = timeline;
         this.pathName = pathName;
         this.fieldId = fieldId;
         this.lastScan = lastScan;
         this.fileSize = fileSize;
         this.status = status;
+        this.lastModified = lastModified;
+    }
+
+    public Long getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Long lastModified) {
+        this.lastModified = lastModified;
     }
 
     public Integer getTreeScannedFlag() {

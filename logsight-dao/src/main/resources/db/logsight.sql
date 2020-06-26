@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `log_field_file`  (
   `last_scan` timestamp ,
   `prev_size` bigint DEFAULT 0,
   `tree_scanned_flag` int DEFAULT 0,
+  `last_modified` bigint DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE (`field_id`,`path_name`),
   INDEX field_id_idx ( `field_id` )

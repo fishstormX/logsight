@@ -13,11 +13,13 @@ import java.util.Set;
 public interface LogFieldFileMapper {
     @Insert("INSERT INTO `log_field_file` (`field_id`,`path_name`,`timeline`,`status`,`last_scan`) " +
             "VALUES(#{fieldId},#{pathName},#{timeline},#{status},#{lastScan}) ON DUPLICATE KEY UPDATE " +
-            "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`status` = #{status},`file_size` = #{fileSize}")
+            "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`last_modified` = #{lastModified},`status` = #{status},`file_size` = #{fileSize}")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
     @Select("SELECT `id`,path_name pathName,file_size fileSize,`tree_scanned_flag` treeScannedFlag,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
     public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
+    @Select("SELECT path_name pathName FROM `log_field_file` WHERE `field_id`=#{fieldId} ORDER BY last_modified DESC" )
+    public Set<String> getFilesForSearchByFieldId(Integer fieldId);
     @Select("SELECT DISTINCT path_name pathName , last_scan lastScan , prev_size prevSize " +
             "FROM log_field_file ORDER BY `id` LIMIT #{start},#{count}")
     public List<LogFieldFileDTO> getDistinctFilesByPaged(PagedStat PagedStat);
