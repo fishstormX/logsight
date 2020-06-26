@@ -2,6 +2,44 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <body>
 <main th:fragment="sighting">
+    <style>
+        #searchField pre{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
+            margin: 0;
+            margin-left: 20px;
+        }
+        .divider{
+            display: inline-block;
+            border-top: 1px solid #00000030;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .divider span{
+            position: relative;
+            top: -14px;
+            background-color: #fff;
+            padding: 0 15px;
+        }
+        .logline{
+            line-height: 40px;
+            cursor: pointer;
+        }
+        .logline:hover{
+            background: aliceblue;
+        }
+        .logline:hover i{
+            color: #00000066;
+        }
+        .logline i{
+            line-height: 40px;
+            float: left;
+            color: #fff;
+            margin-left:10px;
+        }
+    </style>
     <div class="input-group">
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
         <input id="search-text" style="padding-left: 30px" type="text" class="form-control"   th:attr="placeholder=#{i18n.sighting_search_all}">
@@ -81,6 +119,9 @@
             <p th:text="#{i18n.system_loading}"></p>
         </div>
     </div>
+    <div id = "searchField">
+
+    </div>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
     <script src="/js/table-ajax.js"></script>
@@ -92,8 +133,31 @@
         $("#choose-field-btn").click(function () {
             $('#fieldChoose').modal('show')
         })
-        $("#select-btn").click(function () {
+        $("#select-btn").click(function (e) {
+            $("#searchField").html("")
             $("#loading").attr("class","loader")
+            let key = $("#search-text")[0].value
+            util.ajax("POST","/api/sighting/search",{key:key,fieldId:window.params.get("fieldId")},
+                function (json) {
+                    if(json.code===0){
+                        let data = json.data
+                        let html = ""
+                        let encodeKey = util.htmlEncode(key)
+                        for(index in data){
+                            console.log(data[index].file)
+                            html+="<div class='divider'><span>"+data[index].file+"</span></div>"
+                            for(jndex in data[index].result){
+                                console.log(data[index].result[jndex])
+                                html+="<div class='logline'><i class='fa fa-arrows-v'></i><pre>"+util.htmlEncode(data[index].result[jndex]).replace(new RegExp(encodeKey,"gm"),
+                                    "<span style='color:red'>"+encodeKey+"</span>")+"</pre></div>"
+                            }
+                        }
+                        $("#loading").attr("class","loader cm-none")
+                        $("#searchField").html(html)
+                    }
+                },function () {
+
+                })
         })
         var c=null
         setSearchClickAction()
@@ -104,7 +168,7 @@
                 if (remark.length > 20) {
                     remark = remark.substring(0, 20)
                 }
-                $('#guide-word').text(remark+"…" + ">_")
+                $('#guide-word').text(remark+"…>_")
                 let path = $(this).children()[0].innerText
                 $('#search-text').attr("placeholder", searchIn.replace("{}", path))
                 $('#search-text').css("padding-left", ($("#guide-word")[0].offsetWidth + 12) + "px")
@@ -114,6 +178,7 @@
                     $('#choose-field-btn').text(path)
                 }
                 $('#fieldChoose').modal('hide')
+                window.params.set("fieldId",$(this).attr("data-id"))
             })
         }
         window.params.set("sortd",0)

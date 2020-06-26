@@ -1,5 +1,12 @@
 window.params = new Map();
 var util={
+    htmlEncode:function (html){
+        var temp = document.createElement ("div");
+        (temp.textContent != undefined ) ? (temp.textContent = html) : (temp.innerText = html);
+        var output = temp.innerHTML;
+        temp = null;
+        return output;
+    },
     loadStyles: function (url) {
         let link = document.createElement("link");
         link.rel = "stylesheet"
