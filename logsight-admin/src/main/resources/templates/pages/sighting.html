@@ -9,6 +9,7 @@
             word-break: break-all;
             margin: 0;
             margin-left: 20px;
+            line-height: 30px;
         }
         .divider{
             display: inline-block;
@@ -24,7 +25,6 @@
             padding: 0 15px;
         }
         .logline{
-            line-height: 40px;
             cursor: pointer;
         }
         .logline:hover{
@@ -34,7 +34,7 @@
             color: #00000066;
         }
         .logline i{
-            line-height: 40px;
+            line-height: 30px;
             float: left;
             color: #fff;
             margin-left:10px;
@@ -142,14 +142,15 @@
                     if(json.code===0){
                         let data = json.data
                         let html = ""
-                        let encodeKey = util.htmlEncode(key)
                         for(index in data){
-                            console.log(data[index].file)
                             html+="<div class='divider'><span>"+data[index].file+"</span></div>"
                             for(jndex in data[index].result){
-                                console.log(data[index].result[jndex])
-                                html+="<div class='logline'><i class='fa fa-arrows-v'></i><pre>"+util.htmlEncode(data[index].result[jndex]).replace(new RegExp(encodeKey,"gm"),
-                                    "<span style='color:red'>"+encodeKey+"</span>")+"</pre></div>"
+
+                                let values = data[index].result[jndex].split(key);
+                                let preCode= values.join('<span style="color:red">' + key + '</span>')
+
+                                html+="<div class='logline'><i class='fa fa-arrows-v'></i><pre>"+
+                                    preCode+"</pre></div>"
                             }
                         }
                         $("#loading").attr("class","loader cm-none")
