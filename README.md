@@ -7,7 +7,7 @@
 [![GitHub LICENSE](https://img.shields.io/github/license/fishstormX/logsight)](https://github.com/fishstormX/logsight/blob/master/LICENSE)
 ---------
 ### version 
-[![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight?color=orange&include_prereleases)](https://github.com/fishstormX/logsight)
+[![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight?color=orange&include_prereleases)](https://github.com/fishstormX/logsight/releases/tag/1.0.2-alpha)
 ---------
 日志可视化系统(尚在开发中)  
 
