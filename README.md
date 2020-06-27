@@ -5,7 +5,10 @@
 [![Build Status](https://travis-ci.org/fishstormX/logsight.svg?branch=master)](https://travis-ci.org/fishstormX/logsight) 
 [![GitHub last commit](https://img.shields.io/github/last-commit/fishstormX/logsight)](https://github.com/fishstormX/logsight/commit) 
 [![GitHub LICENSE](https://img.shields.io/github/license/fishstormX/logsight)](https://img.shields.io/github/license/fishstormX/logsight)
-
+---------
+### version 
+[![GitHub Tag](https://img.shields.io/github/v/tag/fishstormX/logsight?color=orange&include_prereleases)](https://img.shields.io/github/v/tag/fishstormX/logsight?color=orange&include_prereleases)
+---------
 日志可视化系统(尚在开发中)  
 
 Logsight为基于文件的开源日志查询系统，具有以下应用特点
