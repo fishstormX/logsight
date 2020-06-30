@@ -10,7 +10,6 @@ import cn.fishmaple.logsight.exception.DefaultException;
 import cn.fishmaple.logsight.object.LogField;
 import cn.fishmaple.logsight.object.LogGroup;
 import cn.fishmaple.logsight.util.TimeUtil;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

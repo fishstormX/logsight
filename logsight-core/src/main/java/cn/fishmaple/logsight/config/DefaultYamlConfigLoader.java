@@ -38,7 +38,6 @@ public class DefaultYamlConfigLoader implements ConfigLoader{
             e.printStackTrace();
         }
     }
-
     private String getConfig(Map configMap,String key){
         if(null==configMap){
             return null;
@@ -53,7 +52,7 @@ public class DefaultYamlConfigLoader implements ConfigLoader{
             return propertie.toString();
         }
     }
-
+    @Override
     public String getConfig(String key,String defaultValue){
         String propertie = getConfig(properties, key);
         if(null == propertie){
@@ -61,7 +60,7 @@ public class DefaultYamlConfigLoader implements ConfigLoader{
         }
         return propertie;
     }
-
+    @Override
     public Integer getIntConfig(String key,Integer defaultValue){
         String propertie = getConfig(properties, key);
         if(null==propertie){
@@ -76,6 +75,7 @@ public class DefaultYamlConfigLoader implements ConfigLoader{
             return goal;
         }
     }
+    @Override
     public String getConfig(String key){
         return getConfig(properties,key);
     }

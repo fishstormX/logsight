@@ -1,29 +1,30 @@
-package cn.fishmaple.logsight.service;
+package cn.fishmaple.logsight.core;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.fishmaple.logsight.config.ConfigLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-
-@Service
-public class ThreadPoolService {
-
+@Component
+public class LogLineThreadPool {
+    @Autowired
+    ConfigLoader configLoader;
     private ThreadPoolTaskExecutor taskExecutor=new ThreadPoolTaskExecutor();
     @PostConstruct
     public void init(){
+        int coreThread = configLoader.getIntConfig("num.logline.thread",10);
         taskExecutor=new ThreadPoolTaskExecutor();
-        taskExecutor.setCorePoolSize(100);
-        taskExecutor.setMaxPoolSize(500);
+        taskExecutor.setThreadNamePrefix("logline");
+        taskExecutor.setCorePoolSize(coreThread);
+        taskExecutor.setMaxPoolSize(coreThread);
         //任务队列最大长度
-        taskExecutor.setQueueCapacity(200);
+        taskExecutor.setQueueCapacity(0);
         taskExecutor.setAllowCoreThreadTimeOut(true);
-        taskExecutor.setKeepAliveSeconds(2000);
-        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        taskExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
         taskExecutor.initialize();
     }
 
