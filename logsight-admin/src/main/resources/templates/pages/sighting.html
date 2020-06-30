@@ -24,16 +24,16 @@
             background-color: #fff;
             padding: 0 15px;
         }
-        .logline{
+        .logrow{
             cursor: pointer;
         }
-        .logline:hover{
+        .logrow:hover{
             background: aliceblue;
         }
-        .logline:hover i{
+        .logrow:hover i{
             color: #00000066;
         }
-        .logline i{
+        .logrow i{
             line-height: 30px;
             float: left;
             color: #fff;
@@ -149,7 +149,7 @@
                                 let values = data[index].result[jndex].split(key);
                                 let preCode= values.join('<span style="color:red">' + key + '</span>')
 
-                                html+="<div class='logline'><i class='fa fa-arrows-v'></i><pre>"+
+                                html+="<div class='logrow'><i class='fa fa-arrows-v'></i><pre>"+
                                     preCode+"</pre></div>"
                             }
                         }
