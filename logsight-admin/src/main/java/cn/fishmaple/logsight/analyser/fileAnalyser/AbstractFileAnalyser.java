@@ -41,6 +41,7 @@ public abstract class AbstractFileAnalyser implements FileAnalyser {
         return ext;
     }
 
+    @Override
     public Integer getFileType(String filePathName){
         Integer i = getFileTypeMap().get(getFileExt(filePathName));
         return null==i?TEXT_FILE:i;

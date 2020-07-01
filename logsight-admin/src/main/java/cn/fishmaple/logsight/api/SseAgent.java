@@ -1,5 +1,7 @@
 package cn.fishmaple.logsight.api;
 
+import cn.fishmaple.logsight.service.logline.LoglineService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,23 +15,11 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 public class SseAgent {
+    @Autowired
+    private LoglineService loglineService;
     @GetMapping(value = "/logLine",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter retrieve(@RequestParam String path) {
-        SseEmitter  emitter = new SseEmitter(600000L);
-        new Thread(()->{
-            for(int i =0;i<50000;i++){
-                try {
-                    emitter.send(i+"");
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    emitter.completeWithError(e);
-                    break;
-                }
-            }
-            emitter.complete();
-        }).start();
-        return emitter;
+        return loglineService.buildSseEmitter(path);
     }
 
 }

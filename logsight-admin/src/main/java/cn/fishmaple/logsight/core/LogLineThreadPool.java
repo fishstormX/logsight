@@ -1,6 +1,7 @@
 package cn.fishmaple.logsight.core;
 
 import cn.fishmaple.logsight.config.ConfigLoader;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;

@@ -15,6 +15,10 @@ public class DefaultCommandAnalyser extends AbstractCommandAnalyser{
         return "tac \"{file}\"|grep \"{target}\"";
     }
     @Override
+    public String baseLogStreamTemplate() {
+        return "tail -f \"{file}\"";
+    }
+    @Override
     public List<SearchResult> baseSearch(SearchAction searchAction){
         List<SearchResult> list = new ArrayList<>();
         for(String file:searchAction.getFiles()){
