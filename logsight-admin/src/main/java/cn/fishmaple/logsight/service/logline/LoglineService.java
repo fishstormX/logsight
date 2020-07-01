@@ -1,6 +1,7 @@
 package cn.fishmaple.logsight.service.logline;
 
 import cn.fishmaple.logsight.analyser.commandAnalyser.CommandAnalyser;
+import cn.fishmaple.logsight.analyser.fileAnalyser.FileAnalyser;
 import cn.fishmaple.logsight.analyser.object.FileStreamAction;
 import cn.fishmaple.logsight.core.LogLineStorage;
 import cn.fishmaple.logsight.core.LogLineThreadPool;
@@ -20,10 +21,12 @@ public class LoglineService {
     @Autowired
     CommandAnalyser commandAnalyser;
     @Autowired
+    FileAnalyser fileAnalyser;
+    @Autowired
     LogLineThreadPool logLineThreadPool;
 
     public SseEmitter buildSseEmitter(String path){
-        InputStream inputStream = commandAnalyser.forceLogStream(new FileStreamAction(path));
+        //InputStream inputStream = commandAnalyser.forceLogStream(new FileStreamAction(path));
         SseEmitter sseEmitter;
         try{
             synchronized(path) {
@@ -36,18 +39,7 @@ public class LoglineService {
             SseEmitter sseEmitter1 = sseEmitter;
             System.out.println("--");
             logLineThreadPool.addTask(()->{
-                try (InputStream in = new BufferedInputStream(inputStream)){
-                    byte[] b = new byte[1024];
-                    int len = 0;
-                    while (null!=logLineStorage.getLogLine(path)) {
-                        len = in.read(b);
-                        if (len > 0) {
-                            sseEmitter1.send(new String(b, StandardCharsets.UTF_8));
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    fileAnalyser.fileTail(path,sseEmitter1);
             });
         }catch (Exception e){
             e.printStackTrace();

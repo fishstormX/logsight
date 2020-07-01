@@ -1,8 +1,9 @@
 package cn.fishmaple.logsight.analyser.fileAnalyser;
 
 import cn.fishmaple.logsight.util.FileUtil;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.File;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -54,5 +55,35 @@ public abstract class AbstractFileAnalyser implements FileAnalyser {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void fileTail(String fileName, SseEmitter sseEmitter) {
+        try{
+            File file = new File(fileName);
+            if(!file.exists()){
+                return;
+            }
+            RandomAccessFile raf=new RandomAccessFile(file, "r");
+            raf.seek(raf.getFilePointer());
+            new Thread(()->{
+                try {
+                    String line =null;
+                    while(null!=sseEmitter){
+                        line = raf.readLine();
+                        if(line.equals("")){
+                            Thread.sleep(1000);
+                            continue;
+                        }
+                        line = new String(line.getBytes(),"UTF-8");
+                        sseEmitter.send(line);
+                }
+                } catch (IOException|InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }
