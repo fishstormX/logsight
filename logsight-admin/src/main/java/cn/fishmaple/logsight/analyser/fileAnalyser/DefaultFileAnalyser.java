@@ -1,13 +1,13 @@
 package cn.fishmaple.logsight.analyser.fileAnalyser;
 
+import org.springframework.stereotype.Component;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.GZIPInputStream;
-
-
+@Component
 public class DefaultFileAnalyser extends AbstractFileAnalyser {
-
 
     @Override
     public InputStream convertFile(String fileName) {

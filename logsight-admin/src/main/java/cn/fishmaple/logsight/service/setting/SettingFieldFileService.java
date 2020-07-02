@@ -30,6 +30,10 @@ public class SettingFieldFileService {
         return list;
     }
 
+    public List<String> getPagedFile(Integer fieldId,Integer page,String searchContent){
+        return logFieldFileMapper.getSearchedPagedFileByFieldId(fieldId,page,searchContent);
+    }
+
     public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType,int count){
         List<LogFieldDTO> logFieldDTOList = null;
         if(page<1){

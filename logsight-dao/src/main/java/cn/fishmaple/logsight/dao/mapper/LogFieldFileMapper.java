@@ -18,6 +18,10 @@ public interface LogFieldFileMapper {
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
     @Select("SELECT `id`,path_name pathName,file_size fileSize,`tree_scanned_flag` treeScannedFlag,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
     public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
+    @Select("SELECT path_name pathName  FROM `log_field_file` WHERE `field_id`=#{fieldId} AND status = 1 LIMIT #{start},#{count}" )
+    public List<String> getPagedFileByFieldId(@Param("fieldId")Integer fieldId,@Param("page")Integer page);
+    @Select("SELECT path_name pathName  FROM `log_field_file` WHERE `field_id`=#{fieldId} AND path_name LIKE '%${searchContent}%' AND status = 1 LIMIT #{start},#{count}" )
+    public List<String> getSearchedPagedFileByFieldId(@Param("fieldId")Integer fieldId, @Param("page")Integer page,@Param("searchContent")String searchContent);
     @Select("SELECT path_name pathName FROM `log_field_file` WHERE `field_id`=#{fieldId} ORDER BY last_modified DESC" )
     public Set<String> getFilesForSearchByFieldId(Integer fieldId);
     @Select("SELECT DISTINCT path_name pathName , last_scan lastScan , prev_size prevSize " +

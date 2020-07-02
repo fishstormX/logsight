@@ -65,17 +65,17 @@ public abstract class AbstractFileAnalyser implements FileAnalyser {
                 return;
             }
             RandomAccessFile raf=new RandomAccessFile(file, "r");
-            raf.seek(raf.getFilePointer());
+            raf.seek(raf.length());
             new Thread(()->{
                 try {
                     String line =null;
                     while(null!=sseEmitter){
                         line = raf.readLine();
-                        if(line.equals("")){
+                        if(null==line||line.equals("")){
                             Thread.sleep(1000);
                             continue;
                         }
-                        line = new String(line.getBytes(),"UTF-8");
+                        line = new String(line.getBytes("ISO-8859-1"),"UTF-8");
                         sseEmitter.send(line);
                 }
                 } catch (IOException|InterruptedException e) {
