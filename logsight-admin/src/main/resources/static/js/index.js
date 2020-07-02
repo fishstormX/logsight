@@ -5,11 +5,13 @@ $("#btn-sidebar").click(function(){
         $("#sidebar-wrapper").attr("class","bg-dark toggled")
         $("#index-logo").attr("class","cm-navbar-brand navbar-brand")
         window.params.set("dr",1)
+        $('.navbar-brand').tooltip('enable')
     }else{
         $("#btn-sidebar").attr("class","cm-btn")
         $("#sidebar-wrapper").attr("class","bg-dark")
         $("#index-logo").attr("class","cm-navbar-brand navbar-brand cm-none")
         window.params.set("dr",0)
+        $('.navbar-brand').tooltip('disable')
     }
 })
 $(".navbar-tab").click(function(){

@@ -19,6 +19,9 @@
 .list-group .active-border-orange:hover,.list-group .active-border-orange.cm-ac {
     border-left: 3px #ffb000 solid;
 }
+.list-group .active-border-highblue:hover,.list-group .active-border-highblue.cm-ac {
+    border-left: 3px #000fff solid;
+}
 .list-group .list-group-item-action{
     border-left:3px #343a40 solid ;
 }
@@ -27,7 +30,7 @@
 }
 .list-group-item .navbar-icon{
     margin-right:20px;
-
+    margin: 0px 10px 2px -3px;
 }
 .list-group-item{
     border-radius: 0!important;
@@ -42,6 +45,7 @@
 }
 #sidebar-wrapper.toggled  .list-group-item{
     width:56px;
+    line-height: 28px;
 }
 #sidebar-wrapper.toggled #index-word{
     display:none !important;

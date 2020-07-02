@@ -214,7 +214,6 @@
     </div>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
     <script>
         $("#fm-splitTime").bind("input propertychange change",function(){
@@ -231,7 +230,7 @@
                 $("#draggedTable").attr("class","row m-0 cm-none")
             }
         });
-        $('[data-toggle="tooltip"]').tooltip()
+
         initSpiritPagination([[${p}]], [[${pages}]])
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
         //点击下载
