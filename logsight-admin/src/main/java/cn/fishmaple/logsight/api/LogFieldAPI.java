@@ -2,6 +2,7 @@ package cn.fishmaple.logsight.api;
 
 import cn.fishmaple.logsight.service.setting.SettingFieldFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,10 +25,9 @@ public class LogFieldAPI {
     }
 
     @RequestMapping("{fieldId}/file")
-    public Map<String,Object> fieldFile(@RequestParam(required = false) Integer p,@RequestParam(required = false) String searchContent){
+    public Map<String,Object> fieldFile(@PathVariable Integer fieldId ,@RequestParam(required = false) Integer p, @RequestParam(required = false) String searchContent){
         Map<String,Object> map = new HashMap<>();
-        map.put("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType,8));
-        map.put("pages", settingFieldFileService.getLogfieldPages(8));
+        map.put("logFields", settingFieldFileService.getPagedFile(fieldId,p,searchContent));
         return map;
     }
 

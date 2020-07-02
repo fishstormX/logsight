@@ -37,15 +37,13 @@ public class LoglineService {
                 }
             }
             SseEmitter sseEmitter1 = sseEmitter;
-            System.out.println("--");
             logLineThreadPool.addTask(()->{
                     fileAnalyser.fileTail(path,sseEmitter1);
             });
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
             return null;
-
-        }System.out.println("---");
+        }
         return sseEmitter;
     }
 }
