@@ -23,4 +23,12 @@ public class LogFieldAPI {
         return map;
     }
 
+    @RequestMapping("{fieldId}/file")
+    public Map<String,Object> fieldFile(@RequestParam(required = false) Integer p,@RequestParam(required = false) String searchContent){
+        Map<String,Object> map = new HashMap<>();
+        map.put("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType,8));
+        map.put("pages", settingFieldFileService.getLogfieldPages(8));
+        return map;
+    }
+
 }
