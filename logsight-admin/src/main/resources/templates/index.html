@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>index</title>
-
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
     <link rel="stylesheet" href="/css/bootstrap-nav.css">
     <link rel="stylesheet" href="/css/anaimed.css">
@@ -14,6 +13,9 @@
     <script src="/js/tlg.js"></script>
 </head>
 <body>
+<div class="drawer-right cm-dr-r" th:if="${drawer} ne null">
+    <module th:replace="${'pages/'+module}::drawer"></module>
+</div>
 <div class="d-flex" id="wrapper">
     <module th:replace="modules/navbar :: side"></module>
     <div id="page-content-wrapper">

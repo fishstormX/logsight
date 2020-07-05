@@ -52,12 +52,22 @@ public class IndexController {
                            @RequestParam(defaultValue = "0") int sortd,@RequestParam(defaultValue = "")String sortType){
         model.addAttribute("module", "sighting");
         model.addAttribute("dr", dr);
-        model.addAttribute("dr",dr);
         model.addAttribute("logFields", settingFieldFileService.getPagesLogField(p,sortd,sortType,8));
         model.addAttribute("p",p);
         model.addAttribute("pages", settingFieldFileService.getLogfieldPages(8));
         model.addAttribute("sortd",sortd);
         model.addAttribute("sortType",sortType);
+        return "index";
+    }
+
+    @RequestMapping("logline")
+    public String sighting(Model model,@RequestParam(defaultValue = "0") int dr){
+        model.addAttribute("module", "logline");
+        model.addAttribute("dr", dr);
+        model.addAttribute("logFields", settingFieldFileService.getPagesLogField(1,0,"",8));
+        model.addAttribute("pages", settingFieldFileService.getLogfieldPages(8));
+        model.addAttribute("p", 1);
+        model.addAttribute("drawer", true);
         return "index";
     }
 }

@@ -53,6 +53,12 @@
     <div class="modal fade" style="margin-top:5%" id="fieldChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width:850px">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" th:text="#{i18n.sighting_choose_field}" id="staticBackdropLabel"></h6>
+                    <button type="button" class="close btn-close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
                 <div class="modal-body">
                     <div id="table-shade">
                         <table style="table-layout: fixed;word-break: break-all;overflow: hidden" class="table" id="logField-tb">
@@ -145,10 +151,8 @@
                         for(index in data){
                             html+="<div class='divider'><span>"+data[index].file+"</span></div>"
                             for(jndex in data[index].result){
-
                                 let values = data[index].result[jndex].split(key);
                                 let preCode= values.join('<span style="color:red">' + key + '</span>')
-
                                 html+="<div class='logrow'><i class='fa fa-arrows-v'></i><pre>"+
                                     preCode+"</pre></div>"
                             }
@@ -160,7 +164,6 @@
 
                 })
         })
-        var c=null
         setSearchClickAction()
         function setSearchClickAction() {
             $(".field-checked").click(function (event) {
@@ -194,6 +197,17 @@
                     initSpiritPagination(page, [[${pages}]])
                 },function () {
 
+                })
+        }
+        function sortAjax(sortd,sortType){
+            window.params.set("sortd",sortd)
+            window.params.set("sortType",sortType)
+            util.ajax("GET","/api/logField/page?p="+window.params.get("p")+"&sortd="+sortd+"&sortType="+sortType,null,
+                function (data) {
+                    updateSortStatus(sortd,sortType)
+                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                    setSearchClickAction()
+                },function () {
                 })
         }
 
