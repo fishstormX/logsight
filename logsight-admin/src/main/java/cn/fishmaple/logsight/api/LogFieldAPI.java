@@ -25,9 +25,12 @@ public class LogFieldAPI {
     }
 
     @RequestMapping("{fieldId}/file")
-    public Map<String,Object> fieldFile(@PathVariable Integer fieldId ,@RequestParam(required = false) Integer p, @RequestParam(required = false) String searchContent){
+    public Map<String,Object> fieldFile(@PathVariable Integer fieldId ,@RequestParam(required = false) Integer p,
+                                        @RequestParam(required = false) String searchContent,@RequestParam(defaultValue = "id") String sortType,@RequestParam(defaultValue = "0") int sortd){
         Map<String,Object> map = new HashMap<>();
-        map.put("logFields", settingFieldFileService.getPagedFile(fieldId,p,searchContent));
+
+        map.put("files", settingFieldFileService.getPagedFile(fieldId,p,searchContent,sortd,sortType));
+        map.put("count", settingFieldFileService.getFileCount(fieldId,searchContent));
         return map;
     }
 

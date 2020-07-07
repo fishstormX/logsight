@@ -64,7 +64,6 @@ public class IndexController {
     public String sighting(Model model,@RequestParam(defaultValue = "0") int dr){
         model.addAttribute("module", "logline");
         model.addAttribute("dr", dr);
-        model.addAttribute("logFields", settingFieldFileService.getPagesLogField(1,0,"",8));
         model.addAttribute("pages", settingFieldFileService.getLogfieldPages(8));
         model.addAttribute("p", 1);
         model.addAttribute("drawer", true);

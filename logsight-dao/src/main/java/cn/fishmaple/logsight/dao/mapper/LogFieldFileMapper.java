@@ -16,12 +16,19 @@ public interface LogFieldFileMapper {
             "`field_id`=#{fieldId},`path_name` = #{pathName} ,`timeline` = #{timeline},`last_modified` = #{lastModified},`status` = #{status},`file_size` = #{fileSize}")
     @Options(useGeneratedKeys=true, keyProperty="id", keyColumn="id")
     public Integer addOneFile(LogFieldFileDTO logFieldFileDTO);
+    @Select("SELECT path_name FROM `log_field_file` WHERE `id`=#{fileId}" )
+    public String getFilePath(Integer fileId);
     @Select("SELECT `id`,path_name pathName,file_size fileSize,`tree_scanned_flag` treeScannedFlag,status  FROM `log_field_file` WHERE `field_id`=#{fieldId}" )
     public Set<LogFieldFileDTO> getFilesByFieldId(Integer fieldId);
     @Select("SELECT path_name pathName  FROM `log_field_file` WHERE `field_id`=#{fieldId} AND status = 1 LIMIT #{start},#{count}" )
     public List<String> getPagedFileByFieldId(@Param("fieldId")Integer fieldId,@Param("page")Integer page);
-    @Select("SELECT path_name pathName  FROM `log_field_file` WHERE `field_id`=#{fieldId} AND path_name LIKE '%${searchContent}%' AND status = 1 LIMIT #{start},#{count}" )
-    public List<String> getSearchedPagedFileByFieldId(@Param("fieldId")Integer fieldId, @Param("page")Integer page,@Param("searchContent")String searchContent);
+    @Select("SELECT id,path_name pathName,last_modified lastModified,file_size fileSize FROM `log_field_file` WHERE `field_id`=#{fieldId} " +
+            "AND path_name LIKE '%${searchContent}%' AND status = 1 ${sortSQL} LIMIT #{start},#{count}" )
+    public List<LogFieldFileDTO> getSearchedPagedFileByFieldId(@Param("fieldId")Integer fieldId, @Param("start")Integer page,@Param("count")Integer count,
+                                                               @Param("searchContent")String searchContent,@Param("sortSQL")String sortSQL);
+    @Select("SELECT COUNT(*)  FROM `log_field_file` WHERE `field_id`=#{fieldId} AND path_name LIKE '%${searchContent}%' AND status = 1 " )
+    public Integer getSearchedFileCount(@Param("fieldId")Integer fieldId,@Param("searchContent")String searchContent);
+
     @Select("SELECT path_name pathName FROM `log_field_file` WHERE `field_id`=#{fieldId} ORDER BY last_modified DESC" )
     public Set<String> getFilesForSearchByFieldId(Integer fieldId);
     @Select("SELECT DISTINCT path_name pathName , last_scan lastScan , prev_size prevSize " +

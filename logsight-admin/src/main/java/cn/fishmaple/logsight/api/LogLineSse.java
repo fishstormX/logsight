@@ -1,5 +1,6 @@
 package cn.fishmaple.logsight.api;
 
+import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
 import cn.fishmaple.logsight.service.logline.LoglineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,12 +15,18 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-public class SseAgent {
+public class LogLineSse {
     @Autowired
     private LoglineService loglineService;
+    @Autowired
+    private LogFieldFileMapper logFieldFileMapper;
     @GetMapping(value = "/logLine",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter retrieve(@RequestParam String path) {
         return loglineService.buildSseEmitter(path);
+    }
+    @GetMapping(value = "/logLine/sse",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter retrieve(@RequestParam Integer fileId) {
+        return loglineService.buildSseEmitter(logFieldFileMapper.getFilePath(fileId));
     }
 
 }

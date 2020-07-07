@@ -2,10 +2,12 @@ package cn.fishmaple.logsight.service.setting;
 
 import cn.fishmaple.logsight.config.I18n;
 import cn.fishmaple.logsight.dao.dto.LogFieldDTO;
+import cn.fishmaple.logsight.dao.dto.LogFieldFileDTO;
 import cn.fishmaple.logsight.dao.mapper.LogFieldFileMapper;
 import cn.fishmaple.logsight.dao.mapper.LogFieldMapper;
 import cn.fishmaple.logsight.exception.DefaultException;
 import cn.fishmaple.logsight.object.LogField;
+import cn.fishmaple.logsight.object.LogFile;
 import cn.fishmaple.logsight.util.ThreadLocalUtil;
 import cn.fishmaple.logsight.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,24 @@ public class SettingFieldFileService {
         return list;
     }
 
-    public List<String> getPagedFile(Integer fieldId,Integer page,String searchContent){
-        return logFieldFileMapper.getSearchedPagedFileByFieldId(fieldId,page,searchContent);
+    public List<LogFile> getPagedFile(Integer fieldId,Integer page,String searchContent,Integer sortd,String sortType){
+        List<LogFile> returnList = new ArrayList<>();
+        String sortSQL = " ORDER BY `"+sortType+(sortd==1?"` ASC":"` DESC");
+
+        List<LogFieldFileDTO> list = logFieldFileMapper.getSearchedPagedFileByFieldId(fieldId,(page-1)*10,10,searchContent,sortSQL);
+        TimeUtil.initedFormatter("yyyy-MM-dd HH:mm:ss");
+        for(LogFieldFileDTO logFieldFileDTO:list){
+            Double fileSize = null==logFieldFileDTO.getFileSize()?0:logFieldFileDTO.getFileSize().doubleValue()/(1024*1024);
+            returnList.add(new LogFile().setName(logFieldFileDTO.getPathName())
+                    .setSize(String.format("%.2f", fileSize)+" M")
+                    .setLastModified(TimeUtil.formatTimeUnchecked(new Date(logFieldFileDTO.getLastModified())))
+                    .setId(logFieldFileDTO.getId()));
+        }
+        return returnList;
+    }
+
+    public Integer getFileCount(Integer fieldId,String searchContent){
+        return logFieldFileMapper.getSearchedFileCount(fieldId,searchContent);
     }
 
     public List<LogField> getPagesLogField(Integer page,Integer sortd,String sortType,int count){

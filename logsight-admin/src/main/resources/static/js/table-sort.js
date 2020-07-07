@@ -16,7 +16,20 @@ function updateSortStatus(sortd,sortType){
     }else{
         $("#th-"+sortType).html(field+sortIcon2)
     }
+}
 
+function updateSortStatusWithinSelected(sortd,sortType,cssSelector,headsuffix){
+    $(cssSelector+" .sort-abled-ajax .sort-svg").remove()
+    window.params.set("sortd",sortd)
+    window.params.set("sortType",sortType)
+    let field="<span style=\"margin-left: 20px\">"+$("#th-"+sortType+headsuffix).text()+"</span>"
+    if(sortd===0){
+        $("#th-"+sortType+headsuffix).html(field+sortIcon3)
+    }else if(sortd===1){
+        $("#th-"+sortType+headsuffix).html(field+sortIcon)
+    }else{
+        $("#th-"+sortType+headsuffix).html(field+sortIcon2)
+    }
 }
 $(".sort-abled").click(function(){
     let sortd = window.params.get("sortd")
