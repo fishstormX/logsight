@@ -1,0 +1,385 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<body>
+<main th:fragment="logline">
+    <style>
+        #searchField pre{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
+            margin: 0;
+            margin-left: 20px;
+            line-height: 30px;
+        }
+        .divider{
+            display: inline-block;
+            border-top: 1px solid #00000030;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .divider span{
+            position: relative;
+            top: -14px;
+            background-color: #fff;
+            padding: 0 15px;
+        }
+        .logrow{
+            cursor: pointer;
+        }
+        .logrow:hover{
+            background: aliceblue;
+        }
+        .logrow:hover i{
+            color: #00000066;
+        }
+        .logrow i{
+            line-height: 30px;
+            float: left;
+            color: #fff;
+            margin-left:10px;
+        }
+        .spinner {
+            width: 100px;
+        }
+        .spinner input {
+            text-align: right;
+        }
+        .input-group-btn-vertical {
+            position: relative;
+            white-space: nowrap;
+            width: 1%;
+            vertical-align: middle;
+            display: table-cell;
+        }
+        .input-group-btn-vertical > .btn {
+            display: block;
+            float: none;
+            width: 100%;
+            max-width: 100%;
+            padding: 8px;
+            margin-left: -1px;
+            position: relative;
+            border-radius: 0;
+        }
+        .input-group-btn-vertical > .btn:first-child {
+            border: 1px solid #ced4da;
+            height: 20px;
+            border-top-right-radius: 4px;
+        }
+        .input-group-btn-vertical > .btn:last-child {
+            border: 1px solid #ced4da;
+            height: 20px;
+            margin-top: -2px;
+            border-bottom-right-radius: 4px;
+        }
+        .input-group-btn-vertical i{
+            position: absolute;
+            top: 0;
+            left: 4px;
+        }
+        .drawer-click{
+            cursor: pointer;
+            line-height: 40px;
+        }
+        #logline-pre pre{
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
+            margin: 0;
+        }
+    </style>
+    <div class="input-group row">
+        <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
+        <input  id="search-text" style="padding-left: 30px" type="text" class="form-control col-6"   th:attr="placeholder=#{i18n.logline_filter}">
+        <div class="col-1"></div>
+        <div class="drawer-click" style=" margin-left: 20px;">
+            <i class="fa fa-cogs"></i>
+            <span id="line-file" th:text="#{i18n.logline_chooseFile}"></span>
+        </div>
+    </div>
+    <div id="logline-pre">
+    </div>
+    <div class="modal fade" style="margin-top:5%" id="fieldChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:850px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" th:text="#{i18n.sighting_choose_field}" id="staticBackdropLabel"></h6>
+                    <button type="button" class="close btn-close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="table-shade">
+                        <table style="table-layout: fixed;word-break: break-all;overflow: hidden" class="table" id="logField-tb">
+                            <thead>
+                            <tr>
+                                <th scope="col">
+                                    <div class="sort-abled-ajax text-center" id="th-path" sort-field="path">
+                                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_path}"></span>
+                                        <span style="margin-right:20px"></span>
+                                    </div>
+                                </th>
+                                <th scope="col" style="width: 174px">
+                                    <div class="sort-abled-ajax text-center"  id="th-createTime" sort-field="createTime">
+                                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span>
+                                        <span style="margin-right:20px"></span>
+                                    </div>
+                                </th>
+                                <th scope="col" style="width: 40%">
+                                    <div class="sort-abled-ajax text-center"  id="th-remarks" sort-field="remarks">
+                                        <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_remarks}"></span>
+                                        <span style="margin-right:20px"></span>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="fieldChoose-form-body">
+
+                            </tbody>
+                        </table>
+                        <div id="field-spiritPagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a id='down' href=''  download='' style='display:none'></a>
+    </div>
+    <div class="modal fade" style="margin-top:5%" id="fileChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="max-width:850px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" th:text="#{i18n.logline_chooseFile}" id="staticBackdropLabel2"></h6>
+                    <button type="button" class="close btn-close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="table-shade-file">
+                       <table style="table-layout: fixed;word-break: break-all;overflow: hidden" class="table" id="logFile-tb">
+                        <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="sort-abled-ajax text-center" id="th-path_name-file" sort-field="path_name">
+                                    <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_path}"></span>
+                                    <span style="margin-right:20px"></span>
+                                </div>
+                            </th>
+                            <th scope="col" style="width: 174px">
+                                <div class="sort-abled-ajax text-center"  id="th-file_size-file" sort-field="file_size">
+                                    <span style="margin-left: 20px" th:text="#{i18n.logline_tb_filesize}"></span>
+                                    <span style="margin-right:20px"></span>
+                                </div>
+                            </th>
+                            <th scope="col" style="width: 40%">
+                                <div class="sort-abled-ajax text-center"  id="th-last_modified-file" sort-field="last_modified">
+                                    <span style="margin-left: 20px" th:text="#{i18n.logline_tb_last_modified}"></span>
+                                    <span style="margin-right:20px"></span>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody id="fileChoose-form-body">
+                        </tbody>
+                    </table>
+                        <div id="file-spiritPagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a id='down' href=''  download='' style='display:none'></a>
+    </div>
+    <script>
+        window.params.set("drawer",0)
+        $(".drawer-click").click(function () {
+            if(window.params.get("drawer")===1){
+                $(".cm-dr-r").css("right","-550px")
+                window.params.set("drawer",0)
+            }else {
+                $(".cm-dr-r").css("right","0")
+                window.params.set("drawer",1)
+            }
+        })
+        $(".field-checked").click(function (event) {
+            $("#choose-field")[0].value=$(this).children()[0].innerText;
+            let fieldId=$(this).attr("data-id")
+            window.params.set("fieldId",fieldId)
+            util.ajax("GET","/api/logField/"+fieldId+"/file?p="+0,null,
+                function (data) {
+                    $('#fieldChoose').modal('hide')
+                    console.log(data.logFields)
+                },function () {})
+        })
+    </script>
+    <script src="/js/table-sort.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</main>
+<div th:fragment="drawer" style="padding: 25px">
+        <div class="form-group" >
+            <label for="choose-field" th:text="#{i18n.global_logField}"></label>
+            <input id="choose-field" readonly="readonly" style="background-color: #fff;padding-left: 10px" type="text" class="form-control clicked" th:attr="placeholder=#{i18n.sighting_main_choose_field}">
+        </div>
+        <div class="form-group">
+            <label for="choose-file" th:text="#{i18n.global_logFile}"></label>
+            <input  id="choose-file" readonly="readonly" style="background-color: #fff;padding-left: 10px" type="text" class="form-control clicked" th:attr="placeholder=#{i18n.global_logFile}">
+        </div>
+        <div id="senior" style="color:blue;float: right;cursor: pointer">
+            <i class="fa fa-caret-left"></i>
+            <span th:text="#{i18n.global_senior}"></span>
+        </div>
+        <div class="form-group senior-form cm-none">
+            <div class="input-group spinner">
+                <label for="choose-tailline" style="line-height:40px;margin-right:12px" th:text="#{i18n.logline_readTail}"></label>
+                <input id="choose-tailline" type="text" class="form-control" value="10">
+                <div class="input-group-btn-vertical">
+                    <button class="btn" type="button"><i class="fa fa-caret-up"></i></button>
+                    <button class="btn" type="button"><i class="fa fa-caret-down"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="position: fixed;bottom:50px;width: 400px">
+            <div class="drawer-click col-6">
+                <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"/>
+                    <path fill-rule="evenodd" d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"/>
+                </svg>
+                <span th:text="#{i18n.logline_close}"></span>
+            </div>
+            <div class="col-2"></div>
+            <button id="submit-file" type="submit cm-dr-r" class="btn btn-primary col-4">Submit</button>
+        </div>
+    <script src="/js/table-ajax.js"></script>
+    <script src="/js/bootstrap-pagecap.min.js"></script>
+    <script>
+        window.params.set("field-sortd",0)
+        window.params.set("field-sortType","")
+        window.params.set("file-sortd",0)
+        window.params.set("file-sortType","")
+        window.params.set("p-file", 1)
+        util.ajax("GET", "/api/logField/page?p=1&sortd=0&sortType=", null,
+            function (data) {
+                buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"})
+                setSearchClickAction()
+                initSelectedSpiritPagination(1, [[${pages}]],"#field-spiritPagination")
+            }, function () {})
+        //换页
+        function onPageClick(page) {
+            if (window.params.get("modal")==="field") {
+                window.params.set("p-field", page)
+                util.ajax("GET", "/api/logField/page?p=" + page + "&sortd=" + window.params.get("sortd") + "&sortType=" + window.params.get("sortType"), null,
+                    function (data) {
+                        buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"})
+                        setSearchClickAction()
+                        initSelectedSpiritPagination(page, [[${pages}]],"#field-spiritPagination")
+                    }, function () {})
+            }else{
+                window.params.set("p-file", page)
+                util.ajax("GET","/api/logField/"+ window.params.get("fieldId")+"/file?p="+page+ "&sortType=" + window.params.get("sortType"),null,
+                    function (data) {
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        setSearchFileClickAction()
+                        initSelectedSpiritPagination(page,Math.ceil(data.count/10),"#file-spiritPagination")
+                    },function () {})
+            }
+        }
+        function sortAjax(sortd,sortType){
+            if (window.params.get("modal")==="field") {
+                window.params.set("field-sortd",sortd)
+                window.params.set("field-sortType",sortType)
+                util.ajax("GET","/api/logField/page?p="+window.params.get("p-field")+"&sortd="+sortd+"&sortType="+sortType,null,
+                    function (data) {
+                        updateSortStatusWithinSelected(sortd,sortType,"#table-shade","")
+                        buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                        setSearchClickAction()
+                    },function () {})
+            }else{
+                window.params.set("file-sortd",sortd)
+                window.params.set("file-sortType",sortType)
+                let fieldId = window.params.get("fieldId")
+                util.ajax("GET","/api/logField/"+fieldId+"/file?p="+window.params.get("p-file")+"&sortd="+sortd+"&sortType="+sortType,null,
+                    function (data) {
+                        updateSortStatusWithinSelected(sortd,sortType,"#table-shade-file","-file")
+                        $('#fieldChoose').modal('hide')
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        setSearchFileClickAction()
+                        initSelectedSpiritPagination(1,Math.ceil(data.count/10),"#file-spiritPagination")
+                    },function () {})
+            }
+
+        }
+        function setSearchClickAction() {
+            $(".field-checked").click(function (event) {
+                fieldId = $(this).attr("data-id");
+                window.params.set("fieldId",fieldId)
+                $("#choose-field")[0].value=$(this).children()[0].innerText;
+                util.ajax("GET","/api/logField/"+fieldId+"/file?p=1",null,
+                    function (data) {
+                        $('#fieldChoose').modal('hide')
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        setSearchFileClickAction()
+                        initSelectedSpiritPagination(1,Math.ceil(data.count/10),"#file-spiritPagination")
+                    },function () {})
+                window.params.set("p-field", 1)
+            })
+        }
+        function setSearchFileClickAction() {
+            $(".file-checked").click(function (event) {
+                let file = $(this).children()[0].innerText;
+                $("#choose-file")[0].value=file;
+                window.params.set("p-file", 1)
+                window.params.set("logFile", $(this).attr("data-id"))
+                $('#fileChoose').modal('hide')
+            })
+        }
+        setSearchClickAction()
+        window.params.set("senior",0)
+        $("#choose-field").click(function () {
+            window.params.set("modal","field")
+            $('#fieldChoose').modal('show')
+        })
+        $("#choose-file").click(function () {
+            window.params.set("modal","file")
+            $('#fileChoose').modal('show')
+        })
+        $("#submit-file").click(function () {
+            $(".cm-dr-r").css("right","-550px")
+            window.params.set("drawer",0)
+            let file =$("#choose-file")[0].value
+            $("#line-file").text(file)
+            window.params.set("trueFile",window.params.get("logFile"))
+            if(file!==""){
+                if(null!=window.params.get("sseClient"))
+                    window.params.get("sseClient").close()
+                let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile"))
+                eventSource.onmessage=function (event) {
+                        console.log(event.data)
+                    $("<pre>"+event.data+"</pre>").appendTo($("#logline-pre"));
+                }
+                eventSource.onerror=function (event) {
+                    console.log('reconnected service!')
+                }
+                window.params.set("sseClient",eventSource)
+            }
+        })
+        $("#senior").click(function () {
+            if(window.params.get("senior")===1){
+                $("#senior i").attr("class","fa fa-caret-left")
+                $(".senior-form").attr("class","form-group senior-form cm-none")
+                window.params.set("senior",0)
+            }else{
+                $("#senior i").attr("class","fa fa-caret-down")
+                $(".senior-form").attr("class","form-group senior-form")
+                window.params.set("senior",1)
+            }
+        })
+        $('.spinner .btn:first-of-type').click(function() {
+            $('.spinner input').val( parseInt($('.spinner input').val(), 10) + 1);
+        })
+        $('.spinner .btn:last-of-type').click(function() {
+            $('.spinner input').val( parseInt($('.spinner input').val(), 10) - 1);
+        })
+    </script>
+</div>
+</body>
+</html>
