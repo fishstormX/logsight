@@ -16,6 +16,10 @@ public class LogLineStorage {
         logLineMap.put(id, sseEmitter);
     }
 
+    public void rmLogLine(String id){
+        logLineMap.remove(id);
+    }
+
     public SseEmitter getLogLine(String id) {
         return this.logLineMap.get(id);
     }

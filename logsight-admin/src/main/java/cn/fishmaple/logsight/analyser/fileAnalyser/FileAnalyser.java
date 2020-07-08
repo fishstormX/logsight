@@ -1,11 +1,11 @@
 package cn.fishmaple.logsight.analyser.fileAnalyser;
 
+import cn.fishmaple.logsight.analyser.logFilter.FiltedState;
+import cn.fishmaple.logsight.analyser.object.FileStreamAction;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.File;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public interface FileAnalyser {
@@ -18,5 +18,6 @@ public interface FileAnalyser {
      InputStream convertFile(String fileName);
      Map<String,Integer> getFileTypeMap();
      boolean needHandle(String fileName);
-     void fileTail(String fileName, SseEmitter sseEmitter);
+     void fileTail(SseEmitter sseEmitter, FileStreamAction fileStreamAction);
+    FiltedState filterLog(FileStreamAction fileStreamAction, List<String> log);
 }

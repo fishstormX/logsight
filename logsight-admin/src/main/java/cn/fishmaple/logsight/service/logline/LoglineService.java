@@ -28,8 +28,7 @@ public class LoglineService {
     LogLineThreadPool logLineThreadPool;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    public SseEmitter buildSseEmitter(String path){
-        //InputStream inputStream = commandAnalyser.forceLogStream(new FileStreamAction(path));
+    public SseEmitter buildSseEmitter(String path,String filteredStr){
         SseEmitter sseEmitter;
         try{
             synchronized(path) {
@@ -40,7 +39,7 @@ public class LoglineService {
                     logLineStorage.setLogLine(path,sseEmitter);
                     SseEmitter sseEmitter1 = sseEmitter;
                     logLineThreadPool.addTask(()->{
-                        fileAnalyser.fileTail(path,sseEmitter1);
+                        fileAnalyser.fileTail(sseEmitter1,new FileStreamAction(path).setFilterString(filteredStr).setStrFiltered(null==filteredStr));
                     });
                 }
             }

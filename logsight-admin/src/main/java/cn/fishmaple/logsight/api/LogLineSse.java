@@ -21,12 +21,12 @@ public class LogLineSse {
     @Autowired
     private LogFieldFileMapper logFieldFileMapper;
     @GetMapping(value = "/logLine",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter retrieve(@RequestParam String path) {
-        return loglineService.buildSseEmitter(path);
+    public SseEmitter ssePush(@RequestParam String path,@RequestParam(required = false) String searchContent) {
+        return loglineService.buildSseEmitter(path,searchContent);
     }
     @GetMapping(value = "/logLine/sse",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter retrieve(@RequestParam Integer fileId) {
-        return loglineService.buildSseEmitter(logFieldFileMapper.getFilePath(fileId));
+    public SseEmitter retrieve(@RequestParam Integer fileId,@RequestParam(required = false) String searchContent) {
+        return loglineService.buildSseEmitter(logFieldFileMapper.getFilePath(fileId),searchContent);
     }
 
 }

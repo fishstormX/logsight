@@ -93,6 +93,10 @@
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
         <input  id="search-text" style="padding-left: 30px" type="text" class="form-control col-6"   th:attr="placeholder=#{i18n.logline_filter}">
         <div class="col-1"></div>
+        <div class="start-click" style=" margin-left: 20px;">
+            <i class="fa fa-play"></i>
+            <span id="stop-start" th:text="#{i18n.logline_chooseFile}"></span>
+        </div>
         <div class="drawer-click" style=" margin-left: 20px;">
             <i class="fa fa-cogs"></i>
             <span id="line-file" th:text="#{i18n.logline_chooseFile}"></span>
@@ -342,7 +346,18 @@
             window.params.set("modal","file")
             $('#fileChoose').modal('show')
         })
-        $("#submit-file").click(function () {
+        $("#start-click").click(function () {
+            if(window.params.get("logline-status")===1){
+                $("#start-click i").attr("class","fa fa-play")
+                window.params.set("logline-status",0)
+                window.params.get("sseClient").close()
+            }else{
+                logline()
+            }
+        })
+        function logline(){
+            $("#start-click i").attr("class","fa fa-pause")
+            window.params.set("logline-status",1)
             $(".cm-dr-r").css("right","-550px")
             window.params.set("drawer",0)
             let file =$("#choose-file")[0].value
@@ -351,9 +366,14 @@
             if(file!==""){
                 if(null!=window.params.get("sseClient"))
                     window.params.get("sseClient").close()
+                let i=0;
                 let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile"))
                 eventSource.onmessage=function (event) {
-                        console.log(event.data)
+                    if(i>10000){
+                        $("#logline-pre pre")[0].remove()
+                    }else{
+                        i++;
+                    }
                     $("<pre>"+event.data+"</pre>").appendTo($("#logline-pre"));
                 }
                 eventSource.onerror=function (event) {
@@ -361,6 +381,10 @@
                 }
                 window.params.set("sseClient",eventSource)
             }
+        }
+
+        $("#submit-file").click(function () {
+           logline()
         })
         $("#senior").click(function () {
             if(window.params.get("senior")===1){
