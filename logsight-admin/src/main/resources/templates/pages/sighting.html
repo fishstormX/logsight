@@ -139,7 +139,8 @@
         $("#choose-field-btn").click(function () {
             $('#fieldChoose').modal('show')
         })
-        $("#select-btn").click(function (e) {
+        $("#select-btn").click(sighting())
+        function sighting(){
             $("#searchField").html("")
             $("#loading").attr("class","loader")
             let key = $("#search-text")[0].value
@@ -163,7 +164,7 @@
                 },function () {
 
                 })
-        })
+        }
         setSearchClickAction()
         function setSearchClickAction() {
             $(".field-checked").click(function (event) {
@@ -199,6 +200,19 @@
 
                 })
         }
+        window.addEventListener("keydown", function (event) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            switch (event.key) {
+                case "Enter":
+                    if($("#search-text").is(":focus")){
+                        sighting()
+                        event.preventDefault();
+                    }
+                    break;
+            }
+        }, true);
         function sortAjax(sortd,sortType){
             window.params.set("sortd",sortd)
             window.params.set("sortType",sortType)

@@ -1,6 +1,17 @@
 .cm-btn{
     cursor: pointer;
 }
+#alert{
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    margin: auto;
+    min-width: 380px;
+    max-width: 500px;
+    opacity: 0;
+    transition: top linear .4s,opacity linear .3s;
+}
 .alert-unanimed{
     top: 0;
     opacity: 0;

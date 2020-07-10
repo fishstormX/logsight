@@ -88,16 +88,6 @@
             word-break: break-all;
             margin: 0;
         }
-        #alert{
-            position: fixed;
-            left: 0;
-            top: 0;
-            right: 0;
-            margin: auto;
-            width: 500px;
-            opacity: 0;
-            transition: top linear 0.1s,opacity linear 0.2s;
-        }
     </style>
     <div class="input-group row">
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
@@ -205,7 +195,23 @@
 
     <script>
         window.params.set("drawer",0)
-        $("#start-click").click(function () {
+        $("#start-click").click(function(){
+            bindLogline()
+        })
+        window.addEventListener("keydown", function (event) {
+            if (event.defaultPrevented) {
+                return;
+            }
+            switch (event.key) {
+                case "Enter":
+                    if($("#search-text").is(":focus")){
+                        bindLogline()
+                        event.preventDefault();
+                    }
+                    break;
+            }
+        }, true);
+        function bindLogline() {
             if(window.params.get("logline-status")===1){
                 $("#start-click i").attr("class","fa fa-play")
                 $("#start-click").attr("class","btn btn-outline-secondary")
@@ -214,12 +220,13 @@
                 window.params.get("sseClient").close()
             }else{
                 if(window.params.get("trueFile")==null){
-                    util.alert("danger","test")
+                    util.alert("danger","[[#{i18n.logline_alert_nofile}]]",2)
                     return ;
                 }
+                window.params.set("search-content",$("#search-text")[0].value)
                 logline()
             }
-        })
+        }
         $(".drawer-click").click(function () {
             if(window.params.get("drawer")===1){
                 $(".cm-dr-r").css("right","-550px")
@@ -236,8 +243,7 @@
             util.ajax("GET","/api/logField/"+fieldId+"/file?p="+0,null,
                 function (data) {
                     $('#fieldChoose').modal('hide')
-                    console.log(data.logFields)
-                },function () {})
+                },function () {  })
         })
     </script>
     <script src="/js/table-sort.js"></script>
@@ -267,6 +273,39 @@
                 </div>
             </div>
         </div>
+        <div class="form-group senior-form cm-none">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="onlyException" value="option1">
+                <label class="form-check-label" for="onlyException" th:text="#{i18n.logline_form_onlyException}"></label>
+            </div>
+        </div>
+        <div class="form-group senior-form cm-none">
+            <div th:text="#{i18n.logline_tb_loglevel}"></div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-all" value="ALL">
+                <label class="form-check-label" for="loglevel-all" th:text="#{i18n.logline_tb_loglevel_all}"></label>
+            </div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-trace" value="TRACE">
+                <label class="form-check-label" for="loglevel-trace">TRACE</label>
+            </div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-debug" value="DEBUG">
+                <label class="form-check-label" for="loglevel-debug">DEBUG</label><br>
+            </div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-info" value="INFO">
+                <label class="form-check-label" for="loglevel-info">INFO</label>
+            </div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-warn" value="WARN">
+                <label class="form-check-label" for="loglevel-warn">WARN</label>
+            </div>
+            <div class="form-check form-check-inline loglevel-check">
+                <input class="form-check-input" type="radio" name="logLevel" id="loglevel-error" value="ERROR">
+                <label class="form-check-label" for="loglevel-error">ERROR</label>
+            </div>
+        </div>
         <div class="row" style="position: fixed;bottom:50px;width: 400px">
             <div class="drawer-click col-6">
                 <svg width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -282,6 +321,7 @@
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script>
         window.params.set("field-sortd",0)
+        window.params.set("search-content","")
         window.params.set("field-sortType","")
         window.params.set("file-sortd",0)
         window.params.set("file-sortType","")
@@ -361,6 +401,7 @@
                 $('#fileChoose').modal('hide')
             })
         }
+
         setSearchClickAction()
         window.params.set("senior",0)
         $("#choose-field").click(function () {
@@ -372,6 +413,8 @@
             $('#fileChoose').modal('show')
         })
         function logline(){
+            $("#logline-pre").text("")
+            let searchContent = window.params.get("search-content")
             $("#start-click").attr("class","btn btn-outline-primary")
             $("#start-click span").text = "[[#{i18n.logline_pause}]]"
             $("#start-click i").attr("class","fa fa-pause")
@@ -381,18 +424,31 @@
             let file =$("#choose-file")[0].value
             $("#line-file").text(file)
             window.params.set("trueFile",window.params.get("logFile"))
+            window.params.set("onlyException",$("#onlyException")[0].checked?1:0)
+            window.params.set("logLevel",$('input[name="logLevel"]:checked').val() )
             if(file!==""){
                 if(null!=window.params.get("sseClient"))
                     window.params.get("sseClient").close()
                 let i=0;
-                let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile"))
+                let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile")+
+                            "&onlyEcxception="+window.params.get("onlyException")+
+                            "&logLevel="+window.params.get("logLevel"))
                 eventSource.onmessage=function (event) {
-                    if(i>10000){
+                    if(i>2000){
                         $("#logline-pre pre")[0].remove()
                     }else{
                         i++;
                     }
-                    $("<pre>"+event.data+"</pre>").appendTo($("#logline-pre"));
+                    if(searchContent!==""){
+                        if(event.data.indexOf(searchContent)>-1){
+                            let values =event.data.split(searchContent);
+                            let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
+                            $($.parseHTML("<pre>"+preCode+"</pre>", document, true)).appendTo($("#logline-pre"));
+                        }
+                        return ;
+                    }else{
+                        $("<pre>"+event.data+"</pre>").appendTo($("#logline-pre"));
+                    }
                 }
                 eventSource.onerror=function (event) {
                     console.log('reconnected service!')
@@ -402,7 +458,8 @@
         }
 
         $("#submit-file").click(function () {
-           logline()
+            window.params.set("search-content",$("#search-text")[0].value)
+            bindLogline()
         })
         $("#senior").click(function () {
             if(window.params.get("senior")===1){
@@ -420,6 +477,14 @@
         })
         $('.spinner .btn:last-of-type').click(function() {
             $('.spinner input').val( parseInt($('.spinner input').val(), 10) - 1);
+        })
+        $("#onlyException").change(function () {
+            if($("#onlyException")[0].checked){
+                $(".loglevel-check>input").attr('disabled','disabled');
+                $("#loglevel-all")[0].checked=true
+            }else{
+                $(".loglevel-check input").removeAttr('disabled');
+            }
         })
     </script>
 </div>
