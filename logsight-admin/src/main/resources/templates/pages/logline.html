@@ -88,15 +88,25 @@
             word-break: break-all;
             margin: 0;
         }
+        #alert{
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            margin: auto;
+            width: 500px;
+            opacity: 0;
+            transition: top linear 0.1s,opacity linear 0.2s;
+        }
     </style>
     <div class="input-group row">
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
         <input  id="search-text" style="padding-left: 30px" type="text" class="form-control col-6"   th:attr="placeholder=#{i18n.logline_filter}">
         <div class="col-1"></div>
-        <div class="start-click" style=" margin-left: 20px;">
-            <i class="fa fa-play"></i>
-            <span id="stop-start" th:text="#{i18n.logline_chooseFile}"></span>
-        </div>
+        <button id="start-click" class="btn btn-outline-secondary">
+            <i class="fa fa-play" style=" font-size: 12px;"></i>
+            <span th:text="#{i18n.logline_start}"></span>
+        </button>
         <div class="drawer-click" style=" margin-left: 20px;">
             <i class="fa fa-cogs"></i>
             <span id="line-file" th:text="#{i18n.logline_chooseFile}"></span>
@@ -147,7 +157,6 @@
                 </div>
             </div>
         </div>
-        <a id='down' href=''  download='' style='display:none'></a>
     </div>
     <div class="modal fade" style="margin-top:5%" id="fileChoose" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width:850px">
@@ -193,8 +202,24 @@
         </div>
         <a id='down' href=''  download='' style='display:none'></a>
     </div>
+
     <script>
         window.params.set("drawer",0)
+        $("#start-click").click(function () {
+            if(window.params.get("logline-status")===1){
+                $("#start-click i").attr("class","fa fa-play")
+                $("#start-click").attr("class","btn btn-outline-secondary")
+                window.params.set("logline-status",0)
+                $("#start-click span").text = "[[#{i18n.logline_start}]]"
+                window.params.get("sseClient").close()
+            }else{
+                if(window.params.get("trueFile")==null){
+                    util.alert("danger","test")
+                    return ;
+                }
+                logline()
+            }
+        })
         $(".drawer-click").click(function () {
             if(window.params.get("drawer")===1){
                 $(".cm-dr-r").css("right","-550px")
@@ -346,16 +371,9 @@
             window.params.set("modal","file")
             $('#fileChoose').modal('show')
         })
-        $("#start-click").click(function () {
-            if(window.params.get("logline-status")===1){
-                $("#start-click i").attr("class","fa fa-play")
-                window.params.set("logline-status",0)
-                window.params.get("sseClient").close()
-            }else{
-                logline()
-            }
-        })
         function logline(){
+            $("#start-click").attr("class","btn btn-outline-primary")
+            $("#start-click span").text = "[[#{i18n.logline_pause}]]"
             $("#start-click i").attr("class","fa fa-pause")
             window.params.set("logline-status",1)
             $(".cm-dr-r").css("right","-550px")

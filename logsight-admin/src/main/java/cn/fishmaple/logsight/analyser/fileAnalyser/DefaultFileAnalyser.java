@@ -4,6 +4,8 @@ import cn.fishmaple.logsight.analyser.logFilter.FiltedState;
 import cn.fishmaple.logsight.analyser.logFilter.LogFilter;
 import cn.fishmaple.logsight.analyser.object.FileStreamAction;
 import cn.fishmaple.logsight.core.LogLineStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -18,6 +20,7 @@ import java.util.zip.GZIPInputStream;
 public class DefaultFileAnalyser extends AbstractFileAnalyser {
     @Autowired
     private LogLineStorage logLineStorage;
+    private Logger logger  = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public InputStream convertFile(String fileName) {
@@ -39,9 +42,9 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
     @Override
     public FiltedState filterLog(FileStreamAction fileStreamAction, List<String> logs) {
         FiltedState filtedState = null;
+        filtedState = new FiltedState();
+        filtedState.setLines(logs);
         if(null==fileStreamAction){
-            filtedState = new FiltedState();
-            filtedState.setLines(logs);
             return filtedState;
         }
         if(null!=fileStreamAction.getLogFilters()){
@@ -67,44 +70,45 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
 
     @Override
     public void fileTail(SseEmitter sseEmitter, FileStreamAction fileStreamAction) {
-        try{
-            File file = new File(fileStreamAction.getFile());
-            if(!file.exists()){
-                return;
-            }
+        File file = new File(fileStreamAction.getFile());
+        if(!file.exists()){
+            return;
+        }
+        String line =null;
+        try {
             RandomAccessFile raf=new RandomAccessFile(file, "r");
             raf.seek(raf.length());
-            new Thread(()->{
-                try {
-                    String line =null;
-                    int i=0;
-                    List<String> lines = new LinkedList<>();
-                    Queue<List<String>> lineKeeper = new LinkedList<>();
-                    while(null!=sseEmitter){
-                        line = raf.readLine();
-                        if(null==line||line.equals("")){
-                            Thread.sleep(1000);
-                            continue;
-                        }
-                        line = new String(line.getBytes("ISO-8859-1"),"UTF-8");
-                        lines.add(line);
-                        if(i==9){
-                            FiltedState filtedState = filterLog(fileStreamAction, lines);
-                            lines = filtedState.getLines();
-                            lineKeeper.offer(lines);
-                            if(filtedState.isEndFlag()){
-                                sendLogs(lineKeeper,sseEmitter);
-                            }
-                        }
-                        i++;
+            int i=0;
+            List<String> lines = new LinkedList<>();
+            Queue<List<String>> lineKeeper = new LinkedList<>();
+            while(null!=sseEmitter){
+                line = raf.readLine();
+                if(i>9){
+                    FiltedState filtedState = filterLog(fileStreamAction, lines);
+                    lines = filtedState.getLines();
+                    lineKeeper.offer(lines);
+                    if(filtedState.isEndFlag()){
+                        sendLogs(lineKeeper,sseEmitter);
                     }
-                } catch (IOException|InterruptedException e) {
-                    logLineStorage.rmLogLine(fileStreamAction.getFile());
-                    e.printStackTrace();
+                    i=0;
+                    lines = new LinkedList<>();
                 }
-            }).start();
+                if(null==line||line.equals("")){
+                    logger.info("EmptyLine{}",lines);
+                    Thread.sleep(2000);
+                    if (!lines.isEmpty()){
+                        i = 10;
+                    }
+                    continue;
+                }
+                line = new String(line.getBytes("ISO-8859-1"),"UTF-8");
+                lines.add(line);
+                i++;
+            }
         }catch(Exception e){
             e.printStackTrace();
+        }finally {
+            logLineStorage.rmLogLine(fileStreamAction.getFile());
         }
     }
 

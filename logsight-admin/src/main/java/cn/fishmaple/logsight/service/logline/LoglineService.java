@@ -11,11 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 @Service
 public class LoglineService {
     @Autowired
@@ -35,12 +30,18 @@ public class LoglineService {
                 sseEmitter = logLineStorage.getLogLine(path);
                 if(null==sseEmitter){
                     logger.info("build sseEmitter for path {}",path);
-                    sseEmitter = new SseEmitter(600000L);
+                    sseEmitter = new SseEmitter(0L);
                     logLineStorage.setLogLine(path,sseEmitter);
                     SseEmitter sseEmitter1 = sseEmitter;
                     logLineThreadPool.addTask(()->{
-                        fileAnalyser.fileTail(sseEmitter1,new FileStreamAction(path).setFilterString(filteredStr).setStrFiltered(null==filteredStr));
+                        fileAnalyser.fileTail(sseEmitter1,new FileStreamAction(path)
+                                .setFilterString(filteredStr)
+                                .setStrFiltered(null==filteredStr)
+                                .setStrFiltered(false)
+                        );
                     });
+                }else {
+                    logger.info("get SseStorage for path {}",path);
                 }
             }
         }catch (Exception e) {

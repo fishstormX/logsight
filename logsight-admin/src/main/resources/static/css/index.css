@@ -1,6 +1,14 @@
 .cm-btn{
     cursor: pointer;
 }
+.alert-unanimed{
+    top: 0;
+    opacity: 0;
+}
+.alert-animed{
+    top:50px !important;
+    opacity: 100% !important;
+}
 .cm-none{
     display:none !important;
 }

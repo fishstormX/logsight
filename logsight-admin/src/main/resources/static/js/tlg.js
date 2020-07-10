@@ -1,5 +1,12 @@
 window.params = new Map();
 var util={
+    alert:function(type,content){
+        let html="<div id=\"alert\" class=\"alert-unanimed alert alert-"+type+"\" role=\"alert\">" + content +"</div>"
+        $(html).appendTo($("body"));
+        setTimeout(function () {
+            $("#alert").attr("class","alert-animed alert alert-"+type)
+        },10)
+    },
     htmlEncode:function (html){
         var temp = document.createElement ("div");
         (temp.textContent != undefined ) ? (temp.textContent = html) : (temp.innerText = html);
