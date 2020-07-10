@@ -1,11 +1,25 @@
 window.params = new Map();
 var util={
-    alert:function(type,content){
-        let html="<div id=\"alert\" class=\"alert-unanimed alert alert-"+type+"\" role=\"alert\">" + content +"</div>"
+    alert:function(type,content,time){
+        $("#alert").remove()
+        if(null!=window.params.get("alertTime")){
+            clearTimeout( window.params.get("alertTime"))
+        }
+        let i=""
+        if(type==="danger"){
+            i="<i class='fa fa-times-circle' style='margin-right: 15px'></i>"
+        }
+        let html="<div id=\"alert\" class=\"alert-unanimed alert alert-"+type+"\" role=\"alert\">" + i + content +"</div>"
         $(html).appendTo($("body"));
         setTimeout(function () {
             $("#alert").attr("class","alert-animed alert alert-"+type)
         },10)
+        let timeout = setTimeout(function () {
+            $("#alert").attr("class","alert-unanimed alert alert-"+type)
+        },time*1000+10)
+        timeout
+        window.params.set("alertTime",timeout)
+
     },
     htmlEncode:function (html){
         var temp = document.createElement ("div");
