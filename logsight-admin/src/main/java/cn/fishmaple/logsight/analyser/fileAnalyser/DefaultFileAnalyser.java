@@ -41,15 +41,14 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
 
     @Override
     public FiltedState filterLog(FileStreamAction fileStreamAction, List<String> logs) {
-        FiltedState filtedState = null;
-        filtedState = new FiltedState();
+        FiltedState filtedState = new FiltedState();
         filtedState.setLines(logs);
         if(null==fileStreamAction){
             return filtedState;
         }
         if(null!=fileStreamAction.getLogFilters()){
             for(LogFilter logFilter :fileStreamAction.getLogFilters()){
-                filtedState = logFilter.filtered(logs);
+                filtedState = logFilter.filtered(filtedState.getLines());
             }
         }
         if(fileStreamAction.isStrFiltered()){

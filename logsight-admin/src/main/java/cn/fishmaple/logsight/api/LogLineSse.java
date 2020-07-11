@@ -25,8 +25,9 @@ public class LogLineSse {
         return loglineService.buildSseEmitter(path,searchContent);
     }
     @GetMapping(value = "/logLine/sse",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter retrieve(@RequestParam Integer fileId,@RequestParam(required = false) String searchContent) {
-        return loglineService.buildSseEmitter(logFieldFileMapper.getFilePath(fileId),searchContent);
+    public SseEmitter retrieve(@RequestParam Integer fileId,@RequestParam(required = false) String searchContent,
+                               @RequestParam(defaultValue = "0") Integer onlyException,@RequestParam(defaultValue = "ALL")String logLevel ) {
+        return loglineService.buildSseEmitter(logFieldFileMapper.getFilePath(fileId),searchContent,onlyException==1,logLevel);
     }
 
 }

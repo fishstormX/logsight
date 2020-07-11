@@ -211,7 +211,7 @@
                     break;
             }
         }, true);
-        function bindLogline() {
+        function bindLogline(type) {
             if(window.params.get("logline-status")===1){
                 $("#start-click i").attr("class","fa fa-play")
                 $("#start-click").attr("class","btn btn-outline-secondary")
@@ -426,40 +426,62 @@
             window.params.set("trueFile",window.params.get("logFile"))
             window.params.set("onlyException",$("#onlyException")[0].checked?1:0)
             window.params.set("logLevel",$('input[name="logLevel"]:checked').val() )
-            if(file!==""){
-                if(null!=window.params.get("sseClient"))
-                    window.params.get("sseClient").close()
-                let i=0;
-                let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile")+
-                            "&onlyEcxception="+window.params.get("onlyException")+
-                            "&logLevel="+window.params.get("logLevel"))
-                eventSource.onmessage=function (event) {
-                    if(i>2000){
-                        $("#logline-pre pre")[0].remove()
-                    }else{
-                        i++;
-                    }
-                    if(searchContent!==""){
-                        if(event.data.indexOf(searchContent)>-1){
-                            let values =event.data.split(searchContent);
-                            let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
-                            $($.parseHTML("<pre>"+preCode+"</pre>", document, true)).appendTo($("#logline-pre"));
-                        }
-                        return ;
-                    }else{
-                        $("<pre>"+event.data+"</pre>").appendTo($("#logline-pre"));
-                    }
-                }
-                eventSource.onerror=function (event) {
-                    console.log('reconnected service!')
-                }
-                window.params.set("sseClient",eventSource)
+            if(file==""){
+                util.alert("danger","[[#{i18n.logline_alert_nofile}]]",2)
+                return ;
             }
+            if(null!=window.params.get("sseClient")){
+                window.params.get("sseClient").close()
+            }
+            let i=0;
+            let highlightContents=[]
+            util.ajax("GET","/logline/highlight?onlyException="+window.params.get("onlyException")+
+            "&logLevel="+window.params.get("logLevel"),null,
+            function (data) {
+                highlightContents=data.data
+            })
+            
+            let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile")+
+                        "&onlyException="+window.params.get("onlyException")+
+                        "&logLevel="+window.params.get("logLevel"))
+            eventSource.onmessage=function (event) {
+                if(i>2000){
+                    $("#logline-pre pre")[0].remove()
+                }else{
+                    i++;
+                }
+                let html = event.data
+                if(searchContent!==""){
+                    if(html.indexOf(searchContent)>-1){
+                        let values = html.split(searchContent);
+                        let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
+                        html=preCode
+                      //  $($.parseHTML("<pre>"+preCode+"</pre>", document, true)).appendTo($("#logline-pre"));
+                    }
+                }
+                for(index in highlightContents){
+                    searchContent = highlightContents[index]
+                    console.log("--------"+searchContent)
+                    if(html.indexOf(searchContent)>-1){
+                        console.log("--------"+searchContent)
+                        let values =html.split(searchContent);
+                        let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
+                        html=preCode
+                    }
+
+                }
+                console.log(html)
+                $($.parseHTML("<pre>"+html+"</pre>")).appendTo($("#logline-pre"));
+            }
+            eventSource.onerror=function (event) {
+                console.log('reconnected service!')
+            }
+            window.params.set("sseClient",eventSource)
         }
 
         $("#submit-file").click(function () {
             window.params.set("search-content",$("#search-text")[0].value)
-            bindLogline()
+            logline()
         })
         $("#senior").click(function () {
             if(window.params.get("senior")===1){
