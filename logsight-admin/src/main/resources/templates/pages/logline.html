@@ -101,6 +101,28 @@
             width: 100%;
             overflow: auto;
         }
+        /*滚动条的宽度*/
+
+        ::-webkit-scrollbar {
+            width:9px;
+            height:9px;
+        }
+
+        /*外层轨道。可以用display:none让其不显示，也可以添加背景图片，颜色改变显示效果*/
+        ::-webkit-scrollbar {
+            width: 9px;
+            height: 0;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            background: #535353;
+        }
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            background: #EDEDED;
+        }
     </style>
     <div class="input-group row">
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
