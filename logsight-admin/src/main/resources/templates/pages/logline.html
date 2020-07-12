@@ -88,6 +88,19 @@
             word-break: break-all;
             margin: 0;
         }
+        #copyright{
+            display: none !important;
+        }
+        main{
+            margin: 20px 0px 0px 40px;
+        }
+        body{
+            overflow: hidden;
+        }
+        #logline-pre{
+            width: 100%;
+            overflow: auto;
+        }
     </style>
     <div class="input-group row">
         <div class="cm-unselect" id="guide-word" style="z-index:100;position: absolute;margin: 6px 7px;color:#d6d6d6;">&gt;_</div>
@@ -194,6 +207,11 @@
     </div>
 
     <script>
+        $("#logline-pre").css("height",document.body.clientHeight-126+"px")
+        window.onresize = function(){
+            $("#logline-pre").css("height","0px")
+            $("#logline-pre").css("height",document.body.clientHeight-126+"px")
+        }
         window.params.set("drawer",0)
         $("#start-click").click(function(){
             bindLogline()
@@ -320,6 +338,7 @@
     <script src="/js/table-ajax.js"></script>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script>
+
         window.params.set("field-sortd",0)
         window.params.set("search-content","")
         window.params.set("field-sortType","")
@@ -328,7 +347,7 @@
         window.params.set("p-file", 1)
         util.ajax("GET", "/api/logField/page?p=1&sortd=0&sortType=", null,
             function (data) {
-                buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"})
+                buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"},[28,0,15])
                 setSearchClickAction()
                 initSelectedSpiritPagination(1, [[${pages}]],"#field-spiritPagination")
             }, function () {})
@@ -338,7 +357,7 @@
                 window.params.set("p-field", page)
                 util.ajax("GET", "/api/logField/page?p=" + page + "&sortd=" + window.params.get("sortd") + "&sortType=" + window.params.get("sortType"), null,
                     function (data) {
-                        buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"})
+                        buildTable("#fieldChoose-form-body", data.logFields, ["path", "createTime", "remarks"], {"class": "field-checked cm-btn"},[28,0,15])
                         setSearchClickAction()
                         initSelectedSpiritPagination(page, [[${pages}]],"#field-spiritPagination")
                     }, function () {})
@@ -346,7 +365,7 @@
                 window.params.set("p-file", page)
                 util.ajax("GET","/api/logField/"+ window.params.get("fieldId")+"/file?p="+page+ "&sortType=" + window.params.get("sortType"),null,
                     function (data) {
-                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"},[22,0,0])
                         setSearchFileClickAction()
                         initSelectedSpiritPagination(page,Math.ceil(data.count/10),"#file-spiritPagination")
                     },function () {})
@@ -359,7 +378,7 @@
                 util.ajax("GET","/api/logField/page?p="+window.params.get("p-field")+"&sortd="+sortd+"&sortType="+sortType,null,
                     function (data) {
                         updateSortStatusWithinSelected(sortd,sortType,"#table-shade","")
-                        buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                        buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"},[22,0,15])
                         setSearchClickAction()
                     },function () {})
             }else{
@@ -370,7 +389,7 @@
                     function (data) {
                         updateSortStatusWithinSelected(sortd,sortType,"#table-shade-file","-file")
                         $('#fieldChoose').modal('hide')
-                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"},[22,0,15])
                         setSearchFileClickAction()
                         initSelectedSpiritPagination(1,Math.ceil(data.count/10),"#file-spiritPagination")
                     },function () {})
@@ -385,7 +404,7 @@
                 util.ajax("GET","/api/logField/"+fieldId+"/file?p=1",null,
                     function (data) {
                         $('#fieldChoose').modal('hide')
-                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"})
+                        buildTable("#fileChoose-form-body", data.files, ["name", "size", "lastModified"], {"class": "file-checked cm-btn"},[22,0,15])
                         setSearchFileClickAction()
                         initSelectedSpiritPagination(1,Math.ceil(data.count/10),"#file-spiritPagination")
                     },function () {})
@@ -456,22 +475,21 @@
                         let values = html.split(searchContent);
                         let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
                         html=preCode
-                      //  $($.parseHTML("<pre>"+preCode+"</pre>", document, true)).appendTo($("#logline-pre"));
                     }
                 }
                 for(index in highlightContents){
                     searchContent = highlightContents[index]
-                    console.log("--------"+searchContent)
                     if(html.indexOf(searchContent)>-1){
-                        console.log("--------"+searchContent)
                         let values =html.split(searchContent);
                         let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
                         html=preCode
                     }
-
                 }
-                console.log(html)
+                let scrollflag=($('#logline-pre')[0].scrollHeight<document.body.clientHeight+50)|| $('#logline-pre')[0].scrollHeight<$('#logline-pre')[0].scrollTop+document.body.clientHeight+10
                 $($.parseHTML("<pre>"+html+"</pre>")).appendTo($("#logline-pre"));
+                if(scrollflag) {
+                    $('#logline-pre').scrollTop($('#logline-pre')[0].scrollHeight);
+                }
             }
             eventSource.onerror=function (event) {
                 console.log('reconnected service!')
