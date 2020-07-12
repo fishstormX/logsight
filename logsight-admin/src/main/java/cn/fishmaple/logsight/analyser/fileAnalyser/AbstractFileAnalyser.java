@@ -1,9 +1,6 @@
 package cn.fishmaple.logsight.analyser.fileAnalyser;
 
-import cn.fishmaple.logsight.analyser.logFilter.FiltedState;
-import cn.fishmaple.logsight.analyser.object.FileStreamAction;
 import cn.fishmaple.logsight.util.FileUtil;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.*;
 import java.util.*;
