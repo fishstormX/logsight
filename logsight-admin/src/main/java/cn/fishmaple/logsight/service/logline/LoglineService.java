@@ -33,13 +33,13 @@ public class LoglineService {
     public SseEmitter buildSseEmitter(String path,String filteredStr,boolean onlyException,String logLevel){
         SseEmitter sseEmitter;
         try{
-            String locked = path;
+            String locked = path+onlyException+logLevel;
             synchronized(locked) {
-                sseEmitter = logLineStorage.getLogLine(path);
+                sseEmitter = logLineStorage.getLogLine(locked);
                 if(null==sseEmitter){
-                    logger.info("build sseEmitter for path {}",path);
+                    logger.info("build sseEmitter for path {}-{}-{}",path,onlyException,logLevel);
                     sseEmitter = new SseEmitter(0L);
-                    logLineStorage.setLogLine(path,sseEmitter);
+                    logLineStorage.setLogLine(locked,sseEmitter);
                     SseEmitter sseEmitter1 = sseEmitter;
                     List<LogFilter> logFilters = new ArrayList<>();
                     if(onlyException){

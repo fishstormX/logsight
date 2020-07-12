@@ -193,7 +193,7 @@
             window.params.set("p",page)
             util.ajax("GET","/api/logField/page?p="+page+"&sortd="+window.params.get("sortd")+"&sortType="+window.params.get("sortType"),null,
                 function (data) {
-                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"},[28,0,15])
                     setSearchClickAction()
                     initSpiritPagination(page, [[${pages}]])
                 },function () {
@@ -219,7 +219,7 @@
             util.ajax("GET","/api/logField/page?p="+window.params.get("p")+"&sortd="+sortd+"&sortType="+sortType,null,
                 function (data) {
                     updateSortStatus(sortd,sortType)
-                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                    buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"},[28,0,15])
                     setSearchClickAction()
                 },function () {
                 })
@@ -231,7 +231,7 @@
             util.ajax("GET","/api/logField/page?p="+window.params.get("p")+"&sortd="+sortd+"&sortType="+sortType,null,
             function (data) {
                 updateSortStatus(sortd,sortType)
-                buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"})
+                buildTable("#fieldChoose-form-body",data.logFields,["path","createTime","remarks"],{"class":"field-checked cm-btn"},[28,,0,15])
                 setSearchClickAction()
             },function () {
                     
