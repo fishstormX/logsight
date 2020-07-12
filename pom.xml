@@ -15,7 +15,7 @@
     </parent>
     <groupId>cn.fishmaple</groupId>
     <artifactId>logsight</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.1.0-RELEASE</version>
     <packaging>pom</packaging>
     <name>logsight</name>
     <description>A visual log system</description>
