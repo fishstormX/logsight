@@ -8,7 +8,7 @@
 ---------
 ### version 
 [![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight)](https://github.com/fishstormX/logsight/releases/tag/1.1.0-RELEASE)
-[![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight?color=orange&include_prereleases)](https://github.com/fishstormX/logsight/releases/tag/1.1.2-alpha)
+[![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight?color=orange&include_prereleases&label=SNAPSHOT)](https://github.com/fishstormX/logsight/releases/tag/1.1.2-alpha)
 ---------
 日志可视化系统(尚在开发中)  
 
