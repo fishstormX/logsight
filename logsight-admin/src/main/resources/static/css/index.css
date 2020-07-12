@@ -10,7 +10,8 @@
     min-width: 380px;
     max-width: 500px;
     opacity: 0;
-    transition: top linear .4s,opacity linear .3s;
+    z-index: 100;
+    transition:     top linear .4s,opacity linear .3s;
 }
 .alert-unanimed{
     top: 0;
@@ -67,8 +68,6 @@ min-width: 100vw;
 #wrapper #sidebar-wrapper.toggled {
 margin-left: 0;
 }
-
-@media (min-width: 768px) {
 #sidebar-wrapper {
     margin-left: 0;
 }
@@ -80,7 +79,6 @@ margin-left: 0;
 
 #wrapper #sidebar-wrapper.toggled{
     margin-left: -15rem;
-}
 }
 main{
 margin:40px;

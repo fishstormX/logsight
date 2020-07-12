@@ -22,6 +22,9 @@ public class FileZoneService {
         Integer fileCount = 0;
 
         List<LogFieldTreeDTO> logFieldTreeDTOS = logFieldTreeMapper.getWidth(fieldId);
+        if(logFieldTreeDTOS.isEmpty()){
+            return null;
+        }
         int level=logFieldTreeDTOS.get(0).getLevel();
         for(LogFieldTreeDTO logFieldTreeDTO:logFieldTreeDTOS){
             if(logFieldTreeDTO.getLevel()==level){
