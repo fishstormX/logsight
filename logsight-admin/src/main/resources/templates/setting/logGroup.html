@@ -16,21 +16,21 @@
         <table class="table table-striped" id="loggroup-tb">
             <thead class="text-center">
                 <tr>
-                    <th scope="col">
+                    <th scope="col" style="min-width:160px">
                         <div class="sort-abled"  id="th-name" sort-field="name">
                             <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_name}"></span><span style="margin-right:20px"></span></div>
                     </th>
-                    <th scope="col" >
+                    <th scope="col" style="min-width:190px">
                         <div class="sort-abled"  id="th-createTime" sort-field="createTime">
                             <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_timeline}"></span><span style="margin-right:20px"></span></div>
                     </th>
-                    <th scope="col" th:text="#{i18n.setting_loggroup_table_status}"></th>
-                    <th scope="col">
+                    <th scope="col" style="min-width:110px" th:text="#{i18n.setting_loggroup_table_status}"></th>
+                    <th scope="col"  style="min-width:110px">
                         <div class="sort-abled"  id="th-fieldCount" sort-field="fieldCount" >
                             <span style="margin-left: 20px" th:text="#{i18n.setting_loggroup_table_count}"></span><span style="margin-right:20px"></span></div>
                     </th>
                     <th scope="col" th:text="#{i18n.setting_loggroup_table_remarks}"></th>
-                    <th scope="col" th:text="#{i18n.setting_loggroup_handle}"></th>
+                    <th scope="col" style="min-width:120px" th:text="#{i18n.setting_loggroup_handle}"></th>
                 </tr>
             </thead>
             <tbody class="text-center">
@@ -42,7 +42,7 @@
                     <td>
                         <span th:id="${'td-count-'+logGroup.fieldCount}" th:text="${logGroup.fieldCount}"></span>
                     </td>
-                    <td th:text="${logGroup.remarks}"></td>
+                    <td th:class="${#strings.length(logGroup.remarks)>10?'shown-tooltip':''}" th:text="${#strings.abbreviate(logGroup.remarks,10)}" data-toggle="tooltip" data-placement="top" th:attr="data-original-title=${logGroup.remarks}"></td>
                     <td>
                         <svg th:attr="data-id=${logGroup.id}" class="btn-icon change-btn" width="16px" height="16px" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -104,6 +104,7 @@
         <script src="/js/transfer.min.js"></script>
         <script src="/js/bootstrap-table.min.js"></script>
         <script>
+            $('.shown-tooltip').tooltip()
             util.loadStyles("/css/transfer.css")
             util.loadStyles("/css/bootstrap-table.min.css")
             sdata=[]

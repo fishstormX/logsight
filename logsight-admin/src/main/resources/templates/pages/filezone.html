@@ -64,39 +64,49 @@
         .dragged-table .list-group-item{
             font-weight: 500;
         }
+        #table-shade th{
+            padding: .5rem;
+            text-align: center;
+        }
+        #draggedTable-r .text-success{
+            display:inline-block;
+        }
+        .hide-load .text-info{
+            display:none;
+        }
     </style>
     <div th:fragment="logField" class="row">
-        <div class="col-4">
+        <div class="col" style="max-width: 600px;">
             <div id="table-loading" class="spinner-grow text-warning cm-none" style="position: absolute;top: 40%;left: 43%;"></div>
             <div id="table-shade">
                 <table class="table" id="filezone-tb">
                     <thead>
                     <tr>
-                        <th scope="col">
+                        <th scope="col" style="min-width: 180px;">
                             <div class="sort-abled"  id="th-path" sort-field="path">
                                 <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_path}"></span>
                                 <span style="margin-right:20px"></span>
                             </div>
                         </th>
-                        <th scope="col" >
+                        <th scope="col" style="min-width: 190px;">
                             <div class="sort-abled"  id="th-createTime" sort-field="createTime">
                                 <span style="margin-left: 20px" th:text="#{i18n.setting_logfield_table_timeline}"></span><span style="margin-right:20px"></span></div>
                         </th>
-                        <th scope="col" th:text="#{i18n.setting_logfield_table_remarks}"></th>
+                        <th scope="col" style="min-width: 190px;" th:text="#{i18n.setting_logfield_table_remarks}"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:attr="data-id=${logField.id}" class="clicked" th:each="logField,logFieldStat : ${logFields}">
-                        <td th:text="${logField.path}"></td>
+                        <td th:class="${#strings.length(logField.path)>22?'shown-tooltip':''}" th:text="${#strings.abbreviate(logField.path,22)}" data-toggle="tooltip" data-placement="top" th:attr="data-original-title=${logField.path}"></td>
                         <td th:text="${logField.createTime}"></td>
-                        <td th:text="${logField.remarks}"></td>
+                        <td th:class="${#strings.length(logField.remarks)>15?'shown-tooltip':''}" th:text="${#strings.abbreviate(logField.remarks,15)}" data-toggle="tooltip" data-placement="top" th:attr="data-original-title=${logField.remarks}"></td>
                     </tr>
                     </tbody>
                 </table>
                 <div class="spiritPagination"></div>
             </div>
         </div>
-        <div class="col-8" id="d3" style="height:700px;overflow: auto"></div>
+        <div class="col" id="d3" style="height:700px;overflow: auto"></div>
     </div>
     <div class="modal fade" style="margin-top:0%" id="fileOptions" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width:860px">
@@ -212,10 +222,12 @@
         </div>
         <a id='down' href=''  download='' style='display:none'></a>
     </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script src="/js/bootstrap-pagecap.min.js"></script>
     <script src="/js/table-sort.js"></script>
 
     <script>
+        $('.shown-tooltip').tooltip()
         $("#fm-splitTime").bind("input propertychange change",function(){
             if($(this)[0].checked){
                 $("#fm-append-timeAnalyser").attr("class","")
@@ -235,6 +247,7 @@
         updateSortStatus([[${sortd}]],'[[${sortType}]]')
         //点击下载
         $("#fm-submit-download").click(function () {
+            $("#draggedTable-r .hide-load").attr("class","list-group-item")
             //if more than one file
             let upfiles = false
             let timer = null
@@ -256,6 +269,12 @@
                     upfiles = true
                     timer = setInterval(function(){
                         util.ajax("GET","/api/filezone/files/status/"+result.id,null,function (status) {
+                            let keys = Object.keys(status.fileRate)
+                            for(index in keys){
+                                if(status.fileRate[keys[index]]==100){
+                                    document.getElementById("fileload-"+status.logAnalyseState.files[index]).className="text-success fa fa-check"
+                                }
+                            }
                             if(status.fileRate[Object.keys(status.fileRate)[Object.keys(status.fileRate).length-1]]!=0){
                                 clearInterval(timer)
                             }
@@ -277,12 +296,14 @@
                     $("#draggedTable-count-r").text("("+result.files.length+")")
                     $("#draggedTable-count-l").text("("+result.unSelectFiles.length+")")
                     for(index in result.files){
-                        tableRight+="<div class='list-group-item'><span class='file'>"+result.files[index].name+
-                            "</span><span style='float:right;color:forestgreen'>"+result.files[index].size+"</span></div>"
+                        tableRight+="<div class='list-group-item hide-load'><span class='file'>"+result.files[index].name+
+                            "</span> <div id=\"fileload-"+result.files[index].name+"\" class=\"text-info spinner-border spinner-border-sm\" role=\"status\"></div>" +
+                            "<span style='float:right;color:forestgreen'>"+result.files[index].size+"</span></div>"
                     }
                     for(index in result.unSelectFiles){
-                        tableLeft+="<div class='list-group-item'><span class='file'>"+result.unSelectFiles[index].name+
-                            " </span><span style='float:right;color:forestgreen'>"+result.unSelectFiles[index].size+"</span></div>"
+                        tableLeft+="<div class='list-group-item hide-load'><span class='file'>"+result.unSelectFiles[index].name+
+                            " </span> <div id=\"fileload-"+result.unSelectFiles[index].name+"\" class=\"text-info spinner-border spinner-border-sm\" role=\"status\"></div>" +
+                            "                    <span style='float:right;color:forestgreen'>"+result.unSelectFiles[index].size+"</span></div>"
                     }
                     $("#draggedTable-l").html(tableLeft)
                     $("#draggedTable-r").html(tableRight)
@@ -324,11 +345,16 @@
             d3.select("#d3").select("svg").remove()
             util.ajax("GET","/api/filezone/fileNodes?fieldId="+$(this).attr("data-id"),null,
                 function(result){
-                    d3Tree(result.root,"#d3",result.maxWidth,result.depth);
+                    if(result.data==null){
+                        util.alert("danger","[[#{i18n.timezone_alert_nodata}]]",2)
+                    }else {
+                        d3Tree(result.data.root, "#d3", result.data.maxWidth, result.data.depth);
+                    }
                     $("#table-shade").attr("class","")
                     $("#table-loading").attr("class","spinner-grow text-warning cm-none")
                     $(".unclicked").attr("class","clicked")
                 }, function(){
+                    util.alert("alert","[[#{i18n.timezone_alert_nodata}]]",2)
                     $("#table-shade").attr("class","")
                     $("#table-loading").attr("class","spinner-grow text-warning cm-none")
                     $(".unclicked").attr("class","clicked")}
