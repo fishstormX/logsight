@@ -70,9 +70,9 @@ case "$last" in
         else
             echo -n -e "starting logsight ... "
             if [ "$back_run" = "0" ]; then
-                java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$config_file/
+                java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$config_file
             else
-                nohup java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$CURRENT_PATH/ >> ${config_logsight_logdir}/logsight.log 2>>${config_logsight_logdir}/logsight-error.log  &
+                nohup java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$config_file >> ${config_logsight_logdir}/logsight.log 2>>${config_logsight_logdir}/logsight-error.log  &
             fi
             if [ "$?" = "0" ]; then
                 echo -e "\033[32mStartup is complete\033[0m  please check the log to ensure success"
