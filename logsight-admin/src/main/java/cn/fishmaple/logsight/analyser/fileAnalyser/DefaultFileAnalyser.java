@@ -93,8 +93,8 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
                     lines = new LinkedList<>();
                 }
                 if(null==line||line.equals("")){
-                    logger.info("EmptyLine{}",lines);
-                    Thread.sleep(2000);
+                    logger.debug("EmptyLine{}",lines);
+                    Thread.sleep(1000);
                     if (!lines.isEmpty()){
                         i = 10;
                     }

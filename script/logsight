@@ -1,0 +1,115 @@
+#!/bin/bash
+export LANG=zh_CN.UTF-8
+export LC_LANG=zh_CN.UTF-8
+export LC_ALL=zh_CN.UTF-8
+for last; do true; done
+CURRENT_PATH=$(cd "$(dirname "$0")"; pwd)
+service_name=logsight.jar
+back_run=0
+config_file=${CURRENT_PATH}/logsight.yml
+config_logsight_logdir=./log
+while getopts f:e OPT; do
+  case ${OPT} in
+    f) config_file=${OPTARG}
+       ;;
+    e) back_run=1
+       ;;
+    \?)
+           echo -e "\033[31mIt may has invalid option\033[0m"
+       printf "\n[Usage]\n      logsight [-f <filename>] [-e] <start|restart|stop|status>\n
+
+Options : \n     -f  Assign a yaml config file for logsight \n     -e  Run logsight process in background\n\n" >&2
+       exit 1
+  esac
+done
+function parse_yaml() {
+    local yaml_file=$1
+    local prefix=$2
+    local s
+    local w
+    local fs
+    s='[[:space:]]*'
+    w='[a-zA-Z0-9_.-]*'
+    fs="$(echo @|tr @ '\034')"
+    (
+        sed -ne '/^--/s|--||g; s|\"|\\\"|g; s/\s*$//g;' \
+            -e "/#.*[\"\']/!s| #.*||g; /^#/s|#.*||g;" \
+            -e  "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+            -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" |
+        awk -F"$fs" '{
+            indent = length($1)/2;
+            if (length($2) == 0) { conj[indent]="+";} else {conj[indent]="";}
+            vname[indent] = $2;
+            for (i in vname) {if (i > indent) {delete vname[i]}}
+                if (length($3) > 0) {
+                    vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+                    printf("%s_%s%s%s=(\"%s\")\n","'"$prefix"'",vn, $2, conj[indent-1],$3);
+                }
+            }' |
+        sed -e 's/_=/+=/g' \
+            -e '/\..*=/s|\.|_|' \
+            -e '/\-.*=/s|\-|_|'
+    ) < "$yaml_file"
+}
+function create_variables() {
+    local yaml_file="$1"
+    eval "$(parse_yaml "$yaml_file" "config" )"
+}
+create_variables $config_file
+echo "read config with $config_file"
+JPXMS="-Xms512m"
+JPXMX="-Xmx512m"
+if [ -z "$config_logsight_port" ]; then
+    config_logsight_port=8558
+fi
+PID=$(ps -ef | grep logsight.jar | grep -v grep | awk '{ print $2 }')
+case "$last" in
+    start)
+        if [ ! -z "$PID" ]; then
+            echo "Logsight already started, process number: $PID"
+        else
+            echo -n -e "starting logsight ... "
+            if [ "$back_run" = "0" ]; then
+                java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$config_file/
+            else
+                nohup java $JPXMS $JPXMX -jar ${CURRENT_PATH}/logsight.jar --server.port=${config_logsight_port} --logsight.config-path=$CURRENT_PATH/ >> ${config_logsight_logdir}/logsight.log 2>>${config_logsight_logdir}/logsight-error.log  &
+            fi
+            if [ "$?" = "0" ]; then
+                echo -e "\033[32mStartup is complete\033[0m  please check the log to ensure success"
+            else
+                echo -e "\033[31mStartup failed\n\033[0m"
+            fi
+        fi
+        ;;
+    stop)
+        if [ -z "$PID" ]; then
+            echo "Logsight Not running, no need to close"
+        else
+            echo "stoping  Logsight ..."
+              kill -9 $PID
+            if [ "$?" = "0" ]; then
+                echo -e "\033[32mstop success\033[0m"
+            else
+                echo -e "\033[31mstop failed\n\033[0m"
+            fi
+        fi
+        ;;
+    restart)
+        ${0} stop
+        sleep 10
+        ${0} start
+        ;;
+    status)
+        if [ ! -z "$PID" ]; then
+            echo "$JAR running"
+        else
+            echo "$JAR not running"
+        fi
+        ;;
+  *)
+    echo -e "\033[31mIt may has invalid option\033[0m"
+    printf "\n[Usage]\n      logsight [-f <filename>] [-e] <start|restart|stop|status>\n
+
+Options : \n     -f  Assign a yaml config file for logsight \n     -e  Run logsight process in background\n\n" >&2 
+        exit 1
+esac

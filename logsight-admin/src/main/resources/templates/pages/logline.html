@@ -484,7 +484,8 @@
             
             let eventSource = new EventSource("/logLine/sse?fileId="+window.params.get("trueFile")+
                         "&onlyException="+window.params.get("onlyException")+
-                        "&logLevel="+window.params.get("logLevel"))
+                        "&logLevel="+window.params.get("logLevel")+
+                        "&searchContent="+searchContent)
             eventSource.onmessage=function (event) {
                 if(i>2000){
                     $("#logline-pre pre")[0].remove()
@@ -493,11 +494,7 @@
                 }
                 let html = event.data
                 if(searchContent!==""){
-                    if(html.indexOf(searchContent)>-1){
-                        let values = html.split(searchContent);
-                        let preCode= values.join("<span style='color:red'>" + searchContent + '</span>')
-                        html=preCode
-                    }
+                    highlightContents.push(searchContent)
                 }
                 for(index in highlightContents){
                     searchContent = highlightContents[index]
@@ -512,6 +509,7 @@
                 if(scrollflag) {
                     $('#logline-pre').scrollTop($('#logline-pre')[0].scrollHeight);
                 }
+
             }
             eventSource.onerror=function (event) {
                 console.log('reconnected service!')

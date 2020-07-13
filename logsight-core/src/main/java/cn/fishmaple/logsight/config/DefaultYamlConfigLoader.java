@@ -24,16 +24,16 @@ public class DefaultYamlConfigLoader implements ConfigLoader{
         Yaml yaml = new Yaml();
         if(null==configPath){
             if(EnvUtil.getOs().contains(OsEnum.Windows.getSystemName())){
-                configPath = "C:/data/logsight/";
+                configPath = "C:/data/logsight/logsight.yml";
             }else{
-                configPath = "/data/logsight/";
+                configPath = "/data/logsight/logsight.yml";
             }
         }
         if(configPath.lastIndexOf("/")==configPath.length()-1){
             configPath = configPath.substring(0,configPath.length()-1);
         }
         try {
-            properties = yaml.load(new FileInputStream(configPath+"/logsight.yml"));
+            properties = yaml.load(new FileInputStream(configPath));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
