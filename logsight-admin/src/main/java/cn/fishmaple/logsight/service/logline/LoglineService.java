@@ -85,7 +85,6 @@ public class LoglineService {
             }
             for(String logLevelStr:logLevelLogFilter.getLogLevel()){
                 result.add(" "+logLevelStr+" ");
-                logLevel.cha
             }
         }
         return result;
