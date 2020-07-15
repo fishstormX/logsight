@@ -55,7 +55,7 @@ public class LoglineService {
                                 .setFilterString(filteredStr)
                                 .setLogFilters(logFilters)
                                 .setStrFiltered(null==filteredStr)
-                                .setStrFiltered(false)
+                                .setStrFiltered(false),locked
                         );
                     });
                 }else {
@@ -85,6 +85,7 @@ public class LoglineService {
             }
             for(String logLevelStr:logLevelLogFilter.getLogLevel()){
                 result.add(" "+logLevelStr+" ");
+                logLevel.cha
             }
         }
         return result;

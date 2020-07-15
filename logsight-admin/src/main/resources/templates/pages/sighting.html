@@ -139,7 +139,12 @@
         $("#choose-field-btn").click(function () {
             $('#fieldChoose').modal('show')
         })
-        $("#select-btn").click(sighting())
+        $("#select-btn").click(
+            function(){
+                sighting()
+            }
+
+        )
         function sighting(){
             $("#searchField").html("")
             $("#loading").attr("class","loader")

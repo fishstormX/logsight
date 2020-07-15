@@ -97,6 +97,9 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
                     Thread.sleep(1000);
                     if (!lines.isEmpty()){
                         i = 10;
+                    }else{
+                        //保活措施
+                        sseEmitter.send("");
                     }
                     continue;
                 }
@@ -108,6 +111,53 @@ public class DefaultFileAnalyser extends AbstractFileAnalyser {
             e.printStackTrace();
         }finally {
             logLineStorage.rmLogLine(fileStreamAction.getFile());
+        }
+    }
+
+    @Override
+    public void fileTail(SseEmitter sseEmitter, FileStreamAction fileStreamAction,String storgeKey) {
+        File file = new File(fileStreamAction.getFile());
+        if(!file.exists()){
+            return;
+        }
+        String line =null;
+        try {
+            RandomAccessFile raf=new RandomAccessFile(file, "r");
+            raf.seek(raf.length());
+            int i=0;
+            List<String> lines = new LinkedList<>();
+            Queue<List<String>> lineKeeper = new LinkedList<>();
+            while(null!=sseEmitter){
+                line = raf.readLine();
+                if(i>9){
+                    FiltedState filtedState = filterLog(fileStreamAction, lines);
+                    lines = filtedState.getLines();
+                    lineKeeper.offer(lines);
+                    if(filtedState.isEndFlag()){
+                        sendLogs(lineKeeper,sseEmitter);
+                    }
+                    i=0;
+                    lines = new LinkedList<>();
+                }
+                if(null==line||line.equals("")){
+                    logger.debug("EmptyLine{}",lines);
+                    Thread.sleep(1000);
+                    if (!lines.isEmpty()){
+                        i = 10;
+                    }else{
+                        //保活措施
+                        sseEmitter.send("");
+                    }
+                    continue;
+                }
+                line = new String(line.getBytes("ISO-8859-1"),"UTF-8");
+                lines.add(line);
+                i++;
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally {
+            logLineStorage.rmLogLine(storgeKey);
         }
     }
 

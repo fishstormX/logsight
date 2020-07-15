@@ -22,6 +22,7 @@ public class LogLineStorage {
     public void rmLogLine(String id){
         logger.info("rm Sse {}",id);
         logLineMap.remove(id);
+        logger.info(logLineMap.toString());
     }
 
     public SseEmitter getLogLine(String id) {

@@ -19,5 +19,6 @@ public interface FileAnalyser {
      Map<String,Integer> getFileTypeMap();
      boolean needHandle(String fileName);
      void fileTail(SseEmitter sseEmitter, FileStreamAction fileStreamAction);
+    void fileTail(SseEmitter sseEmitter, FileStreamAction fileStreamAction,String storageKey);
     FiltedState filterLog(FileStreamAction fileStreamAction, List<String> log);
 }
