@@ -37,7 +37,8 @@ public class FileZoneAPI {
     }
 
     @GetMapping("/file/{id}/split")
-    public void splitAndDownload(HttpServletResponse response, @RequestParam String startTime ,@RequestParam String endTime,
+    public void splitAndDownload(HttpServletResponse response, @RequestParam(required = false) String startTime ,
+                                 @RequestParam(required = false) String endTime,
                                  @PathVariable Integer id) {
         String path = fileZoneService.getNodePath(id);
         fileSplitService.timeSplitWithResponse(startTime,endTime, path, response);

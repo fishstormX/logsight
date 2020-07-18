@@ -137,6 +137,46 @@ public class FileSplitService {
         }
     }
 
+    public void handledFileWithNiOutputStream(String filepath, OutputStream outputStream){
+        int state = -1;
+        TimeAnalyser defaultTimeAnalyser = new DefaultTimeAnalyser();
+        try(RandomAccessFile randomAccessFile = new RandomAccessFile(filepath, "rw")) {
+            FileChannel channel = randomAccessFile.getChannel();
+            ByteBuffer buffer = ByteBuffer.allocate(1024 * 1024);
+            int bytesRead = channel.read(buffer);
+            ByteBuffer stringBuffer = ByteBuffer.allocate(20);
+            while (bytesRead != -1) {
+                buffer.flip();
+                while (buffer.hasRemaining()) {
+                    byte b = buffer.get();
+                    if (stringBuffer.hasRemaining()) {
+                        stringBuffer.put(b);
+                    } else {
+                        stringBuffer = reAllocate(stringBuffer);
+                        stringBuffer.put(b);
+                    }
+                    if (b == 10 || b == 13) {
+                        stringBuffer.flip();
+                        final String line = Charset.forName("utf-8").decode(stringBuffer.asReadOnlyBuffer()).toString();
+                        int len = stringBuffer.limit() - stringBuffer.position();
+                        byte[] bytes1 = new byte[len];
+                        stringBuffer.get(bytes1);
+                        outputStream.write(bytes1);
+                        stringBuffer.clear();
+                    }
+                }
+                buffer.clear();
+                bytesRead = channel.read(buffer);
+                if (state == 1) {
+                    break;
+                }
+            }
+        }catch (IOException e){
+
+        }
+    }
+
+
     public void timeHandledFileWithNiOutputStream(String startTime, String endTime, String filepath, OutputStream outputStream){
         TimeUtil.initedFormatter("yyyy-MM-dd HH:mm:ss");
         timeHandledFileWithNiOutputStream(TimeUtil.parseTimeUnchecked(startTime),TimeUtil.parseTimeUnchecked(endTime),filepath,outputStream,0);
@@ -148,7 +188,11 @@ public class FileSplitService {
         String fileName = new File(filepath).getName();
         response.setHeader("Content-disposition", "attachment;filename=" + fileName);
         try (OutputStream outputStream =  response.getOutputStream()){
-            timeHandledFileWithNiOutputStream(startTime,endTime, filepath, outputStream);
+            if(null==startTime||null==endTime){
+                handledFileWithNiOutputStream(filepath,outputStream);
+            }else {
+                timeHandledFileWithNiOutputStream(startTime, endTime, filepath, outputStream);
+            }
             outputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
