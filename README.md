@@ -13,6 +13,7 @@
 [![GitHub Tag](https://img.shields.io/github/v/release/fishstormX/logsight?color=orange&include_prereleases&label=SNAPSHOT)](https://github.com/fishstormX/logsight/releases/tag/1.1.2-alpha)
 ---------
 日志可视化系统(尚在开发中)  
+已有小规模生产实践
 
 Logsight为基于文件的开源日志查询系统，具有以下应用特点
 *   基于跨平台Shell指令的查询，封装了常用的日志查看细节，可以轻松的兼有指令集操作的速度和基于日志持久化存储的便捷  
